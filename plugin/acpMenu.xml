@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/acpMenu.xsd">
+  <import>
+    
+    <acpmenuitem name="wcf.acp.menu.link.gman.guildedit">
+      <controller>wcf\acp\form\GuildEditForm</controller>
+      <parent>wcf.acp.menu.link.user.management</parent>
+      <permissions>admin.gman.canChangeGuild</permissions>
+    </acpmenuitem>
+
+  </import>
+</data>

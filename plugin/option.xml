@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/option.xsd">
+	<import>
+		<categories>
+			<category name="gman"></category>
+			<category name="gman.main">
+				<parent>gman</parent>
+			</category>
+			<category name="gman.app">
+				<parent>gman</parent>
+			</category>   
+			<category name="gman.bnet">
+				<parent>gman</parent>
+			</category>
+			<category name="gman.calendar">
+				<parent>gman</parent>
+			</category>    
+		</categories>
+		<options>
+      <option name="gman_app_openrecruitment">
+        <categoryname>gman.app</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>  
+      <option name="gman_app_forumid">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>   
+      <option name="gman_app_articleid">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>         
+      <option name="gman_app_labelid_new">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="gman_app_labelid_waiting">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="gman_app_labelid_ready">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="gman_app_labelid_done">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>      
+      <option name="gman_app_labelid_issue">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="gman_app_labelid_deney">
+        <categoryname>gman.app</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      
+        
+       <option name="gman_main_guildname">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Sylvanas Garde</defaultvalue>
+      </option> 
+       <option name="gman_main_homerealm">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Forscherliga</defaultvalue>
+      </option>
+      
+      <option name="gman_main_rank0">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Gildenmeister</defaultvalue>
+      </option>
+      <option name="gman_main_rank1">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Hochexekutor</defaultvalue>
+      </option>
+      <option name="gman_main_rank2">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Exekutor</defaultvalue>
+      </option>
+      <option name="gman_main_rank3">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Dunkelläufer</defaultvalue>
+      </option>
+      <option name="gman_main_rank4">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Mentor</defaultvalue>
+      </option>
+      <option name="gman_main_rank5">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Todespirscher</defaultvalue>
+      </option>
+      <option name="gman_main_rank6">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Soldat</defaultvalue>
+      </option>
+      <option name="gman_main_rank7">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Reservist</defaultvalue>
+      </option>
+      <option name="gman_main_rank8">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Verwarnt</defaultvalue>
+      </option>
+      <option name="gman_main_rank9">
+        <categoryname>gman.main</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>Rekrut</defaultvalue>
+      </option>     
+      
+      <option name="gman_calendar_active">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option> 
+      
+      <option name="gman_calendar_readholidays">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option> 
+
+    <option name="gman_calendar_readfromwow">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option>   
+
+      <option name="gman_calendar_readbonus">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option>         
+      
+      <option name="gman_calendar_cockie">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue></defaultvalue>
+      </option>       
+
+      <option name="gman_calendar_useapi">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option>         
+      
+      <option name="gman_calendar_apikey">
+        <categoryname>gman.calendar</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue></defaultvalue>
+      </option>     
+      
+    
+      <option name="gman_bnet_key">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue></defaultvalue>
+      </option>      
+      <option name="gman_bnet_secret">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue></defaultvalue>
+      </option>      
+      
+      <option name="gman_bnet_region">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>select</optiontype>
+        <selectoptions>
+<![CDATA[eu.api.battle.net:eu.api.battle.net
+us.api.battle.net:us.api.battle.net
+kr.api.battle.net:kr.api.battle.net
+tw.api.battle.net:tw.api.battle.net]]>
+
+        </selectoptions>
+        <defaultvalue><![CDATA[eu.api.battle.net]]></defaultvalue>
+      </option>
+
+      <option name="gman_bnet_language">
+        <categoryname>gman.bnet</categoryname>
+	<optiontype>select</optiontype>
+				<selectoptions><![CDATA[de_DE:de_DE
+en_GB:en_GB				
+es_ES:es_ES
+fr_FR:fr_FR
+ru_RU:ru_RU
+ko_KR:ko_KR
+zh_TW:zh_TW
+pt_BR:pt_BR
+es_MX:es_MX]]></selectoptions>
+        <defaultvalue><![CDATA[de_DE]]></defaultvalue>
+
+      </option>        
+		</options>
+	</import>
+</data>

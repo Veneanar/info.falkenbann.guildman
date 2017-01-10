@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="info.falkenbann.gman" xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/package.xsd">
+	<packageinformation>
+		<packagename>Guild manager for World of Warcraft</packagename>
+		<packagename language="de">Gildenmanager für World of Warcraft</packagename>
+		<packagedescription>Gildenmanager</packagedescription>
+		<packagedescription language="de">Gildenmanager</packagedescription>
+		<version>1.0.0</version>
+		<date>2017-01-15</date>
+	</packageinformation>
+
+	<authorinformation>
+		<author>Veneanar Falkenbann</author>
+		<authorurl>http://falkenbann.info/</authorurl>
+	</authorinformation>
+
+	<requiredpackages>
+		<requiredpackage minversion="2.1.0">com.woltlab.wcf</requiredpackage>
+    <requiredpackage minversion="4.1.0">com.woltlab.wbb</requiredpackage>
+
+  </requiredpackages>
+
+	<instructions type="install">
+		<instruction type="sql">install.sql</instruction>
+		<instruction type="file">files.tar</instruction>
+		<instruction type="template">template.tar</instruction>
+		<instruction type="language">language/*.xml</instruction>
+		<instruction type="option">option.xml</instruction>
+    <instruction type="userGroupOption">userGroupOption.xml</instruction>
+    <instruction type="acpMenu">acpMenu.xml</instruction>
+  </instructions>
+		
+</package>

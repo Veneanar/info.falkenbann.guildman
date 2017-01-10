@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{A0786B88-2ADB-4C21-ABE8-AA2D79766269}") = "info.falkenbann.guildman", "info.falkenbann.guildman.phpproj", "{C57FE3BB-49BE-42FB-A9E0-F44827EA1F7D}"
+EndProject
+Project("{A0786B88-2ADB-4C21-ABE8-AA2D79766269}") = "Woltlab Suite Core", "..\..\Libs\wsc\Woltlab Suite Core.phpproj", "{6BA67479-4140-4699-AA6A-EDD0C30DFA7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C57FE3BB-49BE-42FB-A9E0-F44827EA1F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C57FE3BB-49BE-42FB-A9E0-F44827EA1F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BA67479-4140-4699-AA6A-EDD0C30DFA7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BA67479-4140-4699-AA6A-EDD0C30DFA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

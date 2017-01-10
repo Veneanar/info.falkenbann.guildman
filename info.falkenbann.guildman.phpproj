@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>info.falkenbann.guildman</Name>
+    <ProjectGuid>c57fe3bb-49be-42fb-a9e0-f44827ea1f7d</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>
+    </RootNamespace>
+    <ProjectTypeGuids>{A0786B88-2ADB-4C21-ABE8-AA2D79766269}</ProjectTypeGuids>
+    <AssemblyName>info.falkenbann.guildmanager</AssemblyName>
+    <ProjectHome />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <IncludeDebugInformation>false</IncludeDebugInformation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="index.php" />
+    <Compile Include="lala.php" />
+    <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
+    <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
+    <Compile Include="wcf\lib\data\guild\achievments\GuildACMList.class.php" />
+    <Compile Include="wcf\lib\data\guild\application\GuildApplication.class.php" />
+    <Compile Include="wcf\lib\data\guild\application\GuildApplicationAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\application\GuildApplicationDecorated.class.php" />
+    <Compile Include="wcf\lib\data\guild\application\GuildApplicationEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\application\GuildApplicationList.class.php" />
+    <Compile Include="wcf\lib\data\guild\feed\FeedList.class.php" />
+    <Compile Include="wcf\lib\data\guild\feed\FeedListList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\GuildGroup.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\GuildGroupAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\GuildGroupDecorated.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\GuildGroupEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\GuildGroupList.class.php" />
+    <Compile Include="wcf\lib\data\guild\Guild.class.php" />
+    <Compile Include="wcf\lib\data\guild\GuildAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\GuildEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\GuildList.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\PointTransaction.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\PointTransactionAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\PointTransactionDecorated.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\PointTransactionEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\PointTransactionList.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\type\PointType.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\type\PointTypeAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\type\PointTypeDecorated.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\type\PointTypeEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\point\type\PointTypeList.class.php" />
+    <Compile Include="wcf\lib\data\JSONExtendedDatabaseObject.class.php" />
+    <Compile Include="wcf\lib\data\wow\acm\WowACM.class.php" />
+    <Compile Include="wcf\lib\data\wow\acm\WowACMList.class.php" />
+    <Compile Include="wcf\lib\data\wow\acm\WowGuildACM.class.php" />
+    <Compile Include="wcf\lib\data\wow\acm\WowGuildACMList.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowDefaultCharacterAvatar.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacter.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacterAction.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacterAvatar.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacterEditor.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacterItemSet.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacterList.class.php" />
+    <Compile Include="wcf\lib\data\wow\item\WowItem.class.php" />
+    <Compile Include="wcf\lib\data\wow\item\WowItemClasses.class.php" />
+    <Compile Include="wcf\lib\data\wow\realm\WowRealm.class.php" />
+    <Compile Include="wcf\lib\data\wow\realm\WowRealmList.class.php" />
+    <Compile Include="wcf\lib\data\wow\WowClasses.class.php" />
+    <Compile Include="wcf\lib\data\wow\WowRace.class.php" />
+    <Compile Include="wcf\lib\system\wow\bnetAPI.class.php" />
+    <Compile Include="wcf\test.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="plugin\" />
+    <Folder Include="plugin\language\" />
+    <Folder Include="wcf\" />
+    <Folder Include="wcf\acp\templates\" />
+    <Folder Include="wcf\acp\images\" />
+    <Folder Include="wcf\acp\js\" />
+    <Folder Include="wcf\acp\style\" />
+    <Folder Include="wcf\images\" />
+    <Folder Include="wcf\images\wow\" />
+    <Folder Include="wcf\images\wow\avatars\" />
+    <Folder Include="wcf\js\" />
+    <Folder Include="wcf\js\WoltLabSuite\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\UI\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\" />
+    <Folder Include="wcf\lib\" />
+    <Folder Include="wcf\lib\data\" />
+    <Folder Include="wcf\lib\acp\" />
+    <Folder Include="wcf\lib\acp\form\" />
+    <Folder Include="wcf\lib\data\guild\" />
+    <Folder Include="wcf\lib\data\guild\achievments\" />
+    <Folder Include="wcf\lib\data\guild\application\" />
+    <Folder Include="wcf\lib\data\guild\feed\" />
+    <Folder Include="wcf\lib\data\guild\group\" />
+    <Folder Include="wcf\lib\data\guild\point\" />
+    <Folder Include="wcf\lib\data\guild\point\type\" />
+    <Folder Include="wcf\lib\data\wow\" />
+    <Folder Include="wcf\lib\data\wow\acm\" />
+    <Folder Include="wcf\lib\data\wow\character\" />
+    <Folder Include="wcf\lib\data\wow\item\" />
+    <Folder Include="wcf\lib\data\wow\realm\" />
+    <Folder Include="wcf\lib\system\" />
+    <Folder Include="wcf\lib\system\wow\" />
+    <Folder Include="wcf\acp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="plugin\acpMenu.xml" />
+    <Content Include="plugin\cronjob.xml" />
+    <Content Include="plugin\eventListener.xml" />
+    <Content Include="plugin\install.sql" />
+    <Content Include="plugin\language\de.xml" />
+    <Content Include="plugin\language\en.xml" />
+    <Content Include="plugin\option.xml" />
+    <Content Include="plugin\package.xml" />
+    <Content Include="plugin\pageMenu.xml" />
+    <Content Include="plugin\templateListener.xml" />
+    <Content Include="plugin\userGroupOption.xml" />
+    <Content Include="wcf\acp\templates\guildEdit.tpl" />
+    <Content Include="wcf\acp\templates\guildList.tpl" />
+    <Content Include="wcf\images\wow\avatars\0-0-avatar.jpg" />
+    <Content Include="wcf\images\wow\avatars\0-0-inset.jpg" />
+    <Content Include="wcf\images\wow\avatars\1-0-avatar.jpg" />
+    <Content Include="wcf\images\wow\avatars\1-1-avatar.jpg" />
+    <Content Include="wcf\images\wow\avatars\2-0-avatar.jpg" />
+    <Content Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\input.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libs\wsc\Woltlab Suite Core.phpproj">
+      <Name>Woltlab Suite Core</Name>
+      <Project>{6ba67479-4140-4699-aa6a-edd0c30dfa7d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

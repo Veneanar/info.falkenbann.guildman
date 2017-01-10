@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/userGroupOption.xsd">
+  <import>
+    <categories>
+      <category name="admin.gman">
+        <parent>admin</parent>
+      </category>
+      <category name="mod.gman">
+        <parent>mod</parent>
+      </category>
+      <category name="user.gman">
+        <parent>user</parent>
+      </category>
+    </categories>
+
+    <options>
+      <option name="admin.gman.canChangeGuild">
+        <categoryname>admin.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="admin.gman.canAddGroups">
+        <categoryname>admin.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="admin.gman.canEditGroups">
+        <categoryname>admin.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="admin.gman.canDeleteGroups">
+        <categoryname>admin.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="mod.gman.canAddCharsToGroups">
+        <categoryname>mod.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option>
+      <option name="mod.gman.canEditCharOwner">
+        <categoryname>admin.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="user.gman.canViewChar">
+        <categoryname>user.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="user.gman.canAddChar">
+        <categoryname>user.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+    </options>
+  </import>
+</data>
