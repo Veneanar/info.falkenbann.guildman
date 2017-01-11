@@ -1,9 +1,11 @@
 <?php
 namespace wcf\data\wow\character;
+use wcf\data\ISearchAction;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\exception\UserInputException;
 
 /**
+ * 
  * Executes WoW Charackter-related actions.
  * @author	Veneanar Falkenbann
  * @copyright	2017  2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
@@ -12,7 +14,7 @@ use wcf\system\exception\UserInputException;
  *
  */
 
-class WowCharacterAction extends AbstractDatabaseObjectAction {
+class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearchAction {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -43,7 +45,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction {
      * @inheritDoc
      */
 	public function validateGetSearchResultList() {
-		$this->readBoolean('includeUserGroups', false, 'data');
+		// $this->readBoolean('includeUserGroups', false, 'data');
 		$this->readString('searchString', false, 'data');
 
 		if (isset($this->parameters['data']['excludedSearchValues']) && !is_array($this->parameters['data']['excludedSearchValues'])) {
@@ -62,9 +64,9 @@ class WowCharacterAction extends AbstractDatabaseObjectAction {
 		}
 		$list = [];
 		$wowCharList = new WowCharacterList();
-		$wowCharList->getConditionBuilder()->add("charname LIKE ?", [$searchString.'%']);
+		$wowCharList->getConditionBuilder()->add("charID LIKE ?", [$searchString.'%']);
 		if (!empty($excludedSearchValues)) {
-			$wowCharList->getConditionBuilder()->add("charname NOT IN (?)", [$excludedSearchValues]);
+			$wowCharList->getConditionBuilder()->add("charID NOT IN (?)", [$excludedSearchValues]);
 		}
 		$wowCharList->sqlLimit = 10;
 		$wowCharList->readObjects();
@@ -74,7 +76,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction {
 		foreach ($wowCharList as $wowChar) {
 			$list[] = [
 				'icon' => $wowChar->getAvatar("avatar")->getImageTag(16),
-				'label' => $wowChar->charname,
+				'label' => $wowChar->charID,
 				'objectID' => $wowChar->charID,
 				'type' => 'user'
 			];

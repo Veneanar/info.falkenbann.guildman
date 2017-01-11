@@ -28,7 +28,8 @@ abstract class JSONExtendedDatabaseObject extends DatabaseObject {
 	public function __construct($id, array $row = null, DatabaseObject $object = null) {
         parent::__construct($id, $row, $object);
 		if (isset($this->data[static::$JSONfield])) {
-            $this->data = json_decode($this->data[static::$JSONfield], true);
+            $bnetData = json_decode($this->data[static::$JSONfield], true);
+            $this->data = array_merge($bnetData, $this->data);
 		}
 	}
 }

@@ -18,15 +18,11 @@ define(['Core', 'WoltLabSuite/Core/Ui/Search/Input'], function (Core, UiSearchIn
     function UiCharacterSearchInput(element, options) { this.init(element, options); }
     Core.inherit(UiCharacterSearchInput, UiSearchInput, {
         init: function (element, options) {
-            var includeCharacterGroups = (Core.isPlainObject(options) && options.includeCharacterGroups === true);
 
             options = Core.extend({
                 ajax: {
                     className: 'wcf\\data\\wow\\character\\WowCharacterAction',
                     parameters: {
-                        data: {
-                            includeCharacterGroups: (includeCharacterGroups ? 1 : 0)
-                        }
                     }
                 }
             }, options);
@@ -40,10 +36,9 @@ define(['Core', 'WoltLabSuite/Core/Ui/Search/Input'], function (Core, UiSearchIn
 
             var box = elCreate('div');
             box.className = 'box16';
-            box.innerHTML = (item.type === 'group') ? '<span class="icon icon16 fa-users"></span>' : item.icon;
+            box.innerHTML = item.icon;
             box.appendChild(listItem.children[0]);
             listItem.appendChild(box);
-
             return listItem;
         }
     });

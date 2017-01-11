@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\wow\realm;
 use wcf\system\WCF;
+use wcf\util\JSON;
 use wcf\data\DatabaseObject;
 
 /**
@@ -54,6 +55,7 @@ class WowRealm extends DatabaseObject {
      */
     public function getConnetedRealmCount() {
         if ($this->realmCount < 0) {
+            $this->connected_realms = JSON::decode($this->connected_realms, true);
             foreach ($this->connected_realms as $realmslug) {
                 if ($this->slug != $realmslug) $this->connectedRealms[] = new WowRealm($realmslug);
             }

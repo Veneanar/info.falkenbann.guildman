@@ -54,21 +54,21 @@ class Guild extends JSONExtendedDatabaseObject {
      *
      * @var	Media
      */
-    protected $logo = null;
+    private $logo = null;
 
     /**
      * The guild's relam(s).
      *
      * @var WowRealm
      */
-    protected $homeRealm = null;
+    private $homeRealm = null;
 
     /**
      * The guild leader.
      *
      * @var WowCharacter
      */
-    protected $leader = null;
+    private $leader = null;
 
     /**
      * Returns the Guildleader
@@ -112,7 +112,7 @@ class Guild extends JSONExtendedDatabaseObject {
         $statement = \wcf\system\WCF::getDB()->prepareStatement($sql, 1);
         $statement->execute();
         $row = $statement->fetchSingleRow();
-        // echo "Gildenobject <pre>"; var_dump($row); echo "</pre>"; die;
+        if (!$row) return null;
         parent::__construct(null, $row, null);
 	}
 

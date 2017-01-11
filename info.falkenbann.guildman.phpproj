@@ -19,7 +19,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.php" />
-    <Compile Include="lala.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACMList.class.php" />

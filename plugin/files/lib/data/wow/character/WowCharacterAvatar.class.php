@@ -14,7 +14,7 @@ use wcf\system\WCF;
  * @package	info.falkenbann.guildman
  *
  */
-class CharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar {
+class WowCharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar {
 	/**
      * {@inheritDoc}
      */
@@ -68,7 +68,7 @@ class CharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar {
 	/**
 	 * @inheritDoc
 	 */
-	public function getURL() {
+	public function getURL($size = NULL) {
 		return WCF::getPath() . 'images/wow/avatars/' . $this->getFilename();
 	}
 
@@ -81,12 +81,11 @@ class CharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar {
 	 */
 	public function getImageTag($size = null) {
         if ($size===null) {
-            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$this->getWidth().'px; height: '.$this->getHeight().'px" alt="" class="userAvatarImage">';
+            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$this->getWidth().'px; height: '.$this->getHeight().'px" alt="unsized call" class="userAvatarImage">';
         } else {
             $sizeWidth = $this->type == "avatar" ? $size : round($size * 1.98, 1);
-            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$sizeWidth.'px; height: '.$size.'px" alt="" class="userAvatarImage">';
+            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$sizeWidth.'px; height: '.$size.'px" alt="sized call" class="userAvatarImage">';
           }
-
     }
 
 	/**

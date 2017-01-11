@@ -89,7 +89,7 @@ class Guild extends JSONExtendedDatabaseObject {
      */
     public function getRealm() {
         if (!isset($this->homeRealm)) {
-            $this->homeRealm =  WowRealm::getByName($this->realm);
+            $this->homeRealm =  new WowRealm($this->realm);
         }
         return $this->homeRealm;
     }

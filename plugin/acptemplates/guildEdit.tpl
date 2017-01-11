@@ -15,28 +15,17 @@
 
 <script data-relocate="true">
 	require(['WoltLabSuite/Core/Ui/Page/Search/Input'], function(UiPageSearchInput) {
-	    new UiPageSearchInput(elBySel('input[name="contentpage"]'));
+	    new UiPageSearchInput(elBySel('input[name="pagesearch"]'));
 	});
 </script>
 
-<script data-relocate="true">
-	require(['WoltLabSuite/GMan/Ui/Character/Search/Input'], function(UiCharacterSearchInput) {
-	    new UiCharacterSearchInput(elBySel('input[name="charsearch"]'));
-	});
-</script>
+
 
 
 <header class="contentHeader">
 	<div class="contentHeaderTitle">
-	  <h1 class="contentTitle">{lang}wcf.acp.gman.guild.edit{/lang} bearbeiten</h1>
+	  <h1 class="contentTitle">{lang}wcf.acp.gman.guild{/lang} bearbeiten</h1>
 	</div>
-	
-	<nav class="contentHeaderNavigation">
-		<ul>
-			<li><a href="{link controller='GuildList'}{/link}" class="button"><span class="icon icon16 fa-list"></span> <span>{lang}wcf.acp.menu.link.guild.list{/lang}</span></a></li>
-			{event name='contentHeaderNavigation'}
-		</ul>
-	</nav>
 </header>
 
 {include file='formError'}
@@ -49,9 +38,8 @@
     {/if}
 
 
-<form id="guildEditForm" method="post" action="{link controller='GuildEdit' id=$guild->guildID}{/link}" enctype="multipart/form-data">
+<form id="guildEditForm" method="post" action="{link controller='GuildEdit'}{/link}" enctype="multipart/form-data">
 	<div class="section">
-     	<section class="section">
 		<header class="sectionHeader">
 			<h2 class="sectionTitle">{lang}wcf.acp.gman.guild.bnetdata{/lang} Battle.net Daten</h2>
 			<p class="sectionDescription">{lang}wcf.acp.gman.guild.bnetdata.desc{/lang} Daten aus dem battle.net</p>
@@ -97,9 +85,8 @@
                 <small>{lang}wcf.page.gman.guildleader.desc{/lang}</small>
 			</dd>
 		</dl>                                        
-        </section>
-
-     	<section class="section">
+     </div>
+     <div class="section">
 		<header class="sectionHeader">
 			<h2 class="sectionTitle">{lang}wcf.acp.gman.guild.guildinfo{/lang} Gildeninformationen</h2>
 			<p class="sectionDescription">{lang}wcf.acp.gman.guild.guildinfo.desc{/lang}  weitere Gildeninfos</p>
@@ -128,25 +115,66 @@
 					</dd>
 				</dl>
 			{/if}    
-        
-		<dl{if $errorField == 'birthtime'} class="formError"{/if}>
-			<dt><label for="birthtime">{lang}wcf.acp.gman.guild.birthdate{/lang}</label></dt>
-			<dd>
-				<input type="datetime" id="birthtime" name="birthtime" value="{$time}" class="medium">
-				{if $errorField == 'time'}
-					<small class="innerError">
-						{if $errorType == 'empty'}
-							{lang}wcf.global.form.error.empty{/lang}
-						{else}
-							{lang}wcf.acp.article.time.error.{@$errorType}{/lang}
-						{/if}
-					</small>
-				{/if}
-			</dd>
-		</dl>
-             
-    </section>
- 	<section class="section">
+		    <dl{if $errorField == 'birthdayDate'} class="formError"{/if}>
+			    <dt><label for="birthdayDate">{lang}wcf.acp.gman.guild.birthdate{/lang}</label></dt>
+			    <dd>
+				    <input type="datetime" id="birthdayDate" name="birthdayDate" value="{$birthday}" class="medium">
+				    {if $errorField == 'birthdayDate'}
+					    <small class="innerError">
+						    {if $errorType == 'empty'}
+							    {lang}wcf.global.form.error.empty{/lang}
+						    {else}
+							    {lang}wcf.acp.article.time.error.{@$errorType}{/lang}
+						    {/if}
+					    </small>
+				    {/if}
+			    </dd>
+		    </dl>
+         <dl{if $errorField=='articleID'} class="formError" {/if}>
+             <dt><label for="articleID">{lang}wcf.acp.gman.guild.article{/lang}</label></dt>
+             <dd>
+                 <select name="articleID" id="articleID">
+                     <option value="0">{lang}wcf.global.noSelection{/lang}</option>
+
+                     {foreach from=$articles item=$article}
+                     <option value="{$article->articleID}" {if $article->articleID == $articleID} selected{/if}>{$article->getTitle()}</option>
+                     {/foreach}
+                 </select>
+                 {if $errorField == 'articleID'}
+                 <small class="innerError">
+                     {if $errorType == 'empty'}
+                     {lang}wcf.global.form.error.empty{/lang}
+                     {else}
+                     {lang}wcf.acp.article.category.error.{@$errorType}{/lang}
+                     {/if}
+                 </small>
+                 {/if}
+             </dd>
+         </dl>
+         <dl{if $errorField=='pageID'} class="formError" {/if}>
+         <dt><label for="pageID">{lang}wcf.acp.gman.guild.article{/lang}</label></dt>
+         <dd>
+             <select name="pageID" id="pageID">
+                 <option value="0">{lang}wcf.global.noSelection{/lang}</option>
+
+                 {foreach from=$pages item=$page}
+                 <option value="{$page->pageID}" {if $page->pageID == $pageID} selected{/if}>{$page->getTitle()}</option>
+                 {/foreach}
+             </select>             
+             {if $errorField == 'pageID'}
+             <small class="innerError">
+                 {if $errorType == 'empty'}
+                 {lang}wcf.global.form.error.empty{/lang}
+                 {else}
+                 {lang}wcf.user.username.error.{@$errorType}{/lang}
+                 {/if}
+             </small>
+             {/if}
+         </dd>
+         </dl
+    </div>
+
+ 	<div class="section">
 		<header class="sectionHeader">
 			<h2 class="sectionTitle">{lang}wcf.acp.gman.guild.data{/lang} Daten</h2>
 			<p class="sectionDescription">{lang}wcf.acp.gman.guild.data.desc{/lang} Daten auslesen</p>
@@ -169,8 +197,7 @@
 				<label><input name="autosync" type="checkbox" id="autosync" value="0">{lang}wcf.acp.gman.guild.data.sync.desc{/lang} Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.</label>
 			</dd>
 		</dl>
-	</section>
-    </div>
+	</div>
 	<div class="formSubmit">
     	<input type="hidden">
 		<input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s">

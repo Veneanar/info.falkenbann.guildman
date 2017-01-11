@@ -22,3 +22,9 @@ echo "Leider geil";
 
 
 ?>
+
+<!--<script data-relocate="true">
+    require(['WoltLabSuite/GMan/Ui/Character/Search/Input'], function(UiCharacterSearchInput) {
+        new UiCharacterSearchInput(elBySel('input[name="charsearch"]'));
+    });
+</script>-->

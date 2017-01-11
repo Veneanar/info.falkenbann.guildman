@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\wow\character;
 use wcf\data\JSONExtendedDatabaseObject;
+use wcf\system\WCF;
 
 /**
  * Represents a WoW Charackter
@@ -20,7 +21,7 @@ use wcf\data\JSONExtendedDatabaseObject;
  * @property string		            $groups			                weitere Gruppen
  * @property integer		        $bnetUpdate			            Letztes Update (intern)
  * @property integer		        $firstSeen			            Eintragedatum
- *
+ * @property integer                $guildRank
  * @property-read	integer			$lastModified					Aktualesierungszeitpunkt des Charakters
  * @property-read	string			$name							Name des Charakters
  * @property-read	string			$realm							Server auf dem der Character beheimatet ist
@@ -74,12 +75,12 @@ class WowCharacter extends JSONExtendedDatabaseObject {
 	public function getAvatar() {
         if ($this->avatar === null) {
             if ($this->thumbnail) {
-                $this->avatar = new CharacterAvatar($this, "avatar");
+                $this->avatar = new WowCharacterAvatar($this, "avatar");
             } else {
-                $this->avatar = new DefaultCharacterAvatar("avatar");
+                $this->avatar = new WowDefaultCharacterAvatar($this->race, $this->gender, "avatar");
             }
             if (!file_exists($this->avatar->getLocation()) ) {
-                $this->avatar = new DefaultCharacterAvatar("avatar");
+                $this->avatar = new WowDefaultCharacterAvatar($this->race, $this->gender, "avatar");
             }
         }
         return $this->avatar;
@@ -91,16 +92,31 @@ class WowCharacter extends JSONExtendedDatabaseObject {
      * @return	\wcf\data\user\avatar\IUserAvatar
      */
 	public function getInset() {
-        if ($this->avatar === null) {
+        if ($this->inset === null) {
             if ($this->thumbnail) {
-                $this->inset = new CharacterAvatar($this, "inset");
+                $this->inset = new WowCharacterAvatar($this, "inset");
             } else {
-                $this->inset = new DefaultCharacterAvatar("inset");
+                $this->inset = new WowDefaultCharacterAvatar("inset");
             }
             if (!file_exists($this->avatar->getLocation()) ) {
-                $this->inset = new DefaultCharacterAvatar("inset");
+                $this->inset = new WowDefaultCharacterAvatar("inset");
             }
         }
         return $this->inset;
+    }
+
+    /**
+     * get Guild leader
+     * @return	WowCharacter
+     */
+    public static function getGuildLeader() {
+        $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_wow_character
+			    WHERE		guildRank = 0";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute();
+		$row = $statement->fetchArray();
+		if (!$row) $row = [];
+		return new WowCharacter(null, $row);
     }
 }

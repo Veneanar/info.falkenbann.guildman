@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\wow\character;
 use wcf\data\JSONExtendedDatabaseObject;
+use wcf\system\WCF;
 
 /**
  * Represents a WoW Charackter
@@ -20,7 +21,7 @@ use wcf\data\JSONExtendedDatabaseObject;
  * @property string		            $groups			                weitere Gruppen
  * @property integer		        $bnetUpdate			            Letztes Update (intern)
  * @property integer		        $firstSeen			            Eintragedatum
- *
+ * @property integer                $guildRank
  * @property-read	integer			$lastModified					Aktualesierungszeitpunkt des Charakters
  * @property-read	string			$name							Name des Charakters
  * @property-read	string			$realm							Server auf dem der Character beheimatet ist
@@ -102,5 +103,24 @@ class WowCharacter extends JSONExtendedDatabaseObject {
             }
         }
         return $this->inset;
+    }
+
+    /**
+     * get Guild leader
+     * @return	WowCharacter
+     */
+    public static function getGuildLeader() {
+        $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_wow_character
+			    WHERE		guildRank = 0";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute();
+		$row = $statement->fetchArray();
+		if (!$row) $row = [];
+		return new WowCharacter(null, $row);
+    }
+
+    public function getLevel() {
+        
     }
 }
