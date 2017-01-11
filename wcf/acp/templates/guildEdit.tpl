@@ -1,4 +1,4 @@
-﻿{include file='header' pageTitle='{lang}wcf.acp.gman.guild.edit{/lang} Gilde bearbeiten'}
+﻿{include file='header' pageTitle='{lang}wcf.acp.menu.link.gman.guildedit{/lang}'}
 
 {if $__wcf->session->getPermission('admin.content.cms.canUseMedia')}
 	<script data-relocate="true">
@@ -15,7 +15,7 @@
 
 <header class="contentHeader">
 	<div class="contentHeaderTitle">
-	  <h1 class="contentTitle">{lang}wcf.acp.gman.guild{/lang} bearbeiten</h1>
+	  <h1 class="contentTitle">{lang}wcf.acp.menu.link.gman.guildedit{/lang}</h1>
 	</div>
 </header>
 
@@ -38,19 +38,18 @@
 		<dl>
 			<dt>{lang}wcf.acp.gman.guild.name{/lang}</dt>
 			<dd>
-				<p>{$guild->name} ({$guild->side})</p>
+				<p>{$guild->name} ({$guild->getFaction()})</p>
                 <small>{lang}wcf.acp.gman.guild.name.desc{/lang}</small>
 			</dd>
 		</dl>  
 		<dl>
-			<dt>{lang}wcf.acp.gman.guild.realm Realm{/lang}</dt>
+			<dt>{lang}wcf.acp.gman.guild.realm{/lang}</dt>
 			<dd>
 				<p>{$guild->getRealm()->name} 
                 {if $guild->getRealm()->getConnetedRealmCount()>0}
                     <br />({foreach from=$guild->getRealm()->getConnectedRealms() item=$realm name=realm}
                         {if !($tpl.foreach.realm.last == $realm)}{$realm->name},{else}{$realm->name}{/if}
                     {/foreach})
-                 <small>{lang}wcf.page.gman.guild.realm.connected{/lang}</small>
                 {/if}
                
             </p>
@@ -67,8 +66,8 @@
         <dl>
 			<dt>{lang}wcf.acp.page.lastUpdateTime{/lang}</dt>
 			<dd>
-				<p>{$guild->lastModified} / </p>
-                <small>{lang}wcf.acp.gman.lastChangeAndUpdate{/lang}</small>
+				<p>{@$guild->lastModified|time} / {@$guild->bnetUpdate|time}</p>
+                <small>{lang}wcf.acp.gman.guild.bnetupdate{/lang}</small>
 			</dd>
 		</dl>  
         <dl>
@@ -81,7 +80,7 @@
                         <div class="containerHeadline">
                             <h3>{$glead->name}</h3>
                             <p>
-                                <small class="separatorLeft"><span>{$glead->level}</span>, <span>{$glead->race}</span>, <span>{$glead->class}</span></small>
+                                <small class="separatorLeft"><span>{$glead->getLevel()}</span>, <span>{@$glead->getRace()->getTag()}</span>, {@$glead->getClass()->getTag()}</small>
                             </p>
                         </div>
 
@@ -186,13 +185,13 @@
 			<p class="sectionDescription">{lang}wcf.acp.gman.guild.data.desc{/lang}</p>
 		</header>
 		<dl>
-			<dt>{lang}wcf.page.gman.guildmember{/lang} Gildenmember</dt>
+			<dt>{lang}wcf.page.gman.guildmember{/lang}</dt>
 			<dd>
 				[BUTTON GILDENMEMBER]
 			</dd>
 		</dl>    
 		<dl>
-			<dt>{lang}wcf.page.guildacm{/lang} Gildenerfolge</dt>
+			<dt>{lang}wcf.page.guildacm{/lang}</dt>
 			<dd>
 				[BUTTON GILDENACMS]
 			</dd>

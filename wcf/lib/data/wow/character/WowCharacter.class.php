@@ -1,16 +1,17 @@
 <?php
 namespace wcf\data\wow\character;
 use wcf\data\JSONExtendedDatabaseObject;
+use wcf\data\wow\WowClasses;
+use wcf\data\wow\WowRace;
 use wcf\system\WCF;
 
 /**
  * Represents a WoW Charackter
  * @author	Veneanar Falkenbann
- * @copyright	2017  2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
+ * @copyright	2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
-
  * @property string		            $charID		                    Name des Charackters-Realm
  * @property integer		        $userID                         WCF UserID
  * @property integer		        $isMain			                ist Hauptchar
@@ -65,6 +66,18 @@ class WowCharacter extends JSONExtendedDatabaseObject {
      * @var	\wcf\data\user\avatar\IUserAvatar
      */
     private $inset = null;
+
+    /**
+     * saves the chars's class information.
+     * @var WowClasses
+     */
+    private $classData = null;
+
+    /**
+     * saves the chars's race inofrmation.
+     * @var WoWRace
+     */
+    private $raceData = null;
 
 
     /**
@@ -121,6 +134,16 @@ class WowCharacter extends JSONExtendedDatabaseObject {
     }
 
     public function getLevel() {
-        
+        return WCF::getLanguage()->get('wcf.page.gman.wow.level') . $this->level;
     }
+
+    public function getRace() {
+        if ($this->raceData === null)  $this->raceData = new WowRace($this->race);
+        return $this->raceData;
+    }
+    public function getClass() {
+        if ($this->classData === null)  $this->classData = new WowClasses($this->class);
+        return $this->classData;
+    }
+
 }

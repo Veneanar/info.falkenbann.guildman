@@ -26,14 +26,10 @@ class WowClasses extends DatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = '';
+	protected static $databaseTableIndexName = 'wclassID';
 
-    public static function getClass($id) {
-        WCF::getLanguage()->get('wcf.acp.notice.gman.norealm');
-    }
-
-    public static function getClassTag($id) {
-
+    public function getTag() {
+        return '<span style="color:'.$this->data['color'].'">'. $this->name .'</span>';
     }
 
 }

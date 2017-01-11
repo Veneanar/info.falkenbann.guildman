@@ -6,6 +6,7 @@ use wcf\data\wow\realm\WowRealm;
 use wcf\data\wow\character\WowCharacter;
 use wcf\data\media\Media;
 use wcf\data\media\ViewableMedia;
+use wcf\system\WCF;
 
 /**
  * Represents a Gildenbewerbung
@@ -116,4 +117,18 @@ class Guild extends JSONExtendedDatabaseObject {
         parent::__construct(null, $row, null);
 	}
 
+    public function getFaction() {
+        $factext = WCF::getLanguage()->get('wcf.page.gman.wow.horde');
+        if ($this->side==0) {
+            $factext = WCF::getLanguage()->get('wcf.page.gman.wow.alliance');
+        }
+        return $factext;
+    }
+    public function getFactionTag() {
+        $color = '#AA0000';
+        if ($this->side==0) {
+            $color = '#144587';
+        }
+        return '<span style="color:'.$color.'">'. $this->getFaction .'</span>';
+    }
 }

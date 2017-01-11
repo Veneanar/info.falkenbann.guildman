@@ -7,21 +7,21 @@ use wcf\data\DatabaseObject;
 /**
  * Represents a WoW Realms
  * @author	Veneanar Falkenbann
- * @copyright	2017  2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
+ * @copyright	2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property string		 $name			PRIMARY KEY
- * @property string		 $type			pvp, pve etc
- * @property string		 $population			low high
- * @property integer		 $queue			ja/nein
- * @property integer		 $status			-1: Unknown 0: Idle 1: Populating 2: Active 3: Concluded
- * @property string		 $battlegroup
- * @property string		 $timezone
- * @property array		 $connected_realms
- * @property string		 $slug
- * @property string		 $locale
- * @property integer		 $isGuildRealm
+ * @property string		    $name			PRIMARY KEY
+ * @property string		    $type			pvp, pve etc
+ * @property string		    $population		low high
+ * @property integer		$queue			ja/nein
+ * @property integer		$status			-1: Unknown 0: Idle 1: Populating 2: Active 3: Concluded
+ * @property string		    $battlegroup
+ * @property string		    $timezone
+ * @property array		    $connected_realms
+ * @property string		    $slug
+ * @property string		    $locale
+ * @property integer		$isGuildRealm
  *
  */
 
