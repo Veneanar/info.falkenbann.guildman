@@ -3,9 +3,13 @@ namespace wcf\data\wow\character;
 use wcf\data\ISearchAction;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\exception\UserInputException;
+use wcf\system\background\BackgroundQueueHandler;
+use wcf\system\background\job\WowCharacterUpdateJob;
+use wcf\system\WCF;
+use wcf\system\wow\bnetAPI;
 
 /**
- * 
+ *
  * Executes WoW Charackter-related actions.
  * @author	Veneanar Falkenbann
  * @copyright	2017  2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
@@ -22,7 +26,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $permissionsUpdate = array();
+	protected $permissionsUpdate = array('mod.gman.canUpdateChar', 'user.gman.canUpdateOwnChar');
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,5 +87,46 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 		}
 		return $list;
 	}
+
+    public function validateUpdateData() {
+        parent::validateUpdate();
+        /**
+         * @var WowCharacter $wowChar
+         */
+        foreach($this->objects as $wowChar) {
+            if ($wowChar->userID != WCF::getUser()->userID)  WCF::getSession()->checkPermissions(['mod.gman.canUpdateChar']);
+        }
+    }
+
+    public function updateData() {
+        foreach($this->objects as $wowChar) {
+            bnetAPI::updateCharacter([
+                'charID'        => $wowChar->charID,
+                'bnetUpdate'    => $wowChar->bnetUpdate,
+                'forceUpdate'   => true,
+                ]);
+        }
+    }
+
+    public static function bulkUpdate($isCron = false, $forceALL = false) {
+        $GMAN_UPDATE_GUILDOONLY = false;
+        $charList = new WowCharacterList();
+        if ($GMAN_UPDATE_GUILDOONLY && !$forceALL)  $charList->getConditionBuilder()->add('inGuild = ?', [1]);
+        $charList->readObjects();
+        $updateList = [];
+        $jobs = [];
+        $counter = 0;
+        foreach ($charList as $char) {
+            $updateList[] = ['charID' => $char->charID, 'bnetUpdate' => $char->bnetUpdate];
+            $counter++;
+            if (!$isCron && $counter == GMAN_BNET_JOBSIZE) {
+                $counter = 0;
+                $jobs[] = new WowCharacterUpdateJob($updateList);
+                $updateList = [];
+            }
+        }
+        return ($isCron) ? $updateList : $jobs;
+        // BackgroundQueueHandler::getInstance()->enqueueIn
+    }
 
 }

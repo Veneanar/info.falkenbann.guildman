@@ -39,7 +39,7 @@ class WowCharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar 
 	 * @return	string
 	 */
 	public function getLocation($type = "avatar") {
-		return WCF_DIR . 'images/wow/avatars/' . $this->getFilename($type);
+		return WCF_DIR . 'images/wow/' . $this->getFilename($type);
 	}
 
     /**
@@ -62,18 +62,18 @@ class WowCharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar 
 	 * @return	string
 	 */
 	public function getFilename() {
-		return basename($this->thumbnail, "-avatar.jpg") ."-". $this->type . ".jpg";
+        return $this->type=='avatar' ? $this->thumbnail : StringUtil::replaceIgnoreCase('avatar',$this->type, $this->thumbnail);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getURL($size = NULL) {
-		return WCF::getPath() . 'images/wow/avatars/' . $this->getFilename();
+		return WCF::getPath() . 'images/wow/' . $this->getFilename();
 	}
 
     public function getAlt() {
-        return WCF::getPath() . 'images/wow/avatars/' . $this->race . $this->gender . "-". $this->type . ".jpg";
+        return WCF::getPath() . 'images/wow/' . $this->race . $this->gender . "-". $this->type . ".jpg";
     }
 
 	/**

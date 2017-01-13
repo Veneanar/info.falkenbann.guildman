@@ -44,6 +44,11 @@
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
+      <option name="mod.gman.canUpdateChar">
+        <categoryname>user.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
       <option name="user.gman.canViewChar">
         <categoryname>user.guildtool</categoryname>
         <optiontype>boolean</optiontype>
@@ -54,6 +59,16 @@
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
+      <option name="user.gman.canAddCharOwner">
+        <categoryname>user.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>      
+      <option name="user.gman.canUpdateOwnChar">
+        <categoryname>user.guildtool</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>      
     </options>
   </import>
 </data>

@@ -56,11 +56,11 @@ class WowDefaultCharacterAvatar implements IUserAvatar {
      * @inheritDoc
      */
 	public function getURL($size = null) {
-        return WCF::getPath() . 'images/wow/avatars/' . $this->race ."-". $this->gender . "-". $this->type . ".jpg";
+        return WCF::getPath() . 'images/wow/' . $this->race ."-". $this->gender . "-". $this->type . ".jpg";
 	}
 
     public function getAlt() {
-        return WCF::getPath().'images/wow/avatars/0-0-'.$this->type.'.jpg';
+        return WCF::getPath().'images/wow/0-0-'.$this->type.'.jpg';
     }
 	/**
      * @inheritDoc

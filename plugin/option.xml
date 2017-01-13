@@ -207,7 +207,22 @@ pt_BR:pt_BR
 es_MX:es_MX]]></selectoptions>
         <defaultvalue><![CDATA[de_DE]]></defaultvalue>
 
-      </option>        
-		</options>
+      </option>
+      <option name="gman_bnet_usejobs">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option>
+      <option name="gman_bnet_jobsize">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>text</optiontype>
+        <defaultvalue>5</defaultvalue>
+      </option>      
+      <option name="gman_bnet_useexterncron">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>0</defaultvalue>
+      </option>      
+    </options>
 	</import>
 </data>

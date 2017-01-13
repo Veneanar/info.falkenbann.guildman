@@ -9,12 +9,12 @@ use wcf\data\DatabaseObject;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property 		 			 PRIMARY KEY
- * @property integer		 $wraceID
- * @property integer		 $mask
- * @property string		 $side
- * @property integer		 $sideID
- * @property string		 $name
+ * @property 		 	    PRIMARY KEY
+ * @property integer		$wraceID
+ * @property integer		$mask
+ * @property string		    $side
+ * @property integer		$sideID
+ * @property string		    $name
  *
  */
 
@@ -26,6 +26,14 @@ class WowRace extends DatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = '';
+	protected static $databaseTableIndexName = 'wraceID';
 
+    private $allyColor = '';
+
+    private $hordeColor = '';
+
+    public function getTag() {
+        $color =  $this->sideID==0 ? '#144587' : '#AA0000';
+        return '<span style="color:'.$color.'">'. $this->name .'</span>';
+    }
 }

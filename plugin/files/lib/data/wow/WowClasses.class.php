@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\wow;
 use wcf\data\DatabaseObject;
+use wcf\system\WCF;
 
 /**
  * Represents a WoW Klassen
@@ -9,11 +10,11 @@ use wcf\data\DatabaseObject;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property integer		 $wclassID      PRIMARY KEY
- * @property integer		 $mask
+ * @property integer		$wclassID      PRIMARY KEY
+ * @property integer	    $mask
  * @property string		    $powerType			Ressourcentyp
- * @property string		 $name			Klassenname
- * @property string		 $color			Klassenfarbe HMLT Code
+ * @property string		    $name			    Klassenname
+ * @property string		    $color			    Klassenfarbe HMLT Code
  *
  */
 
@@ -25,6 +26,10 @@ class WowClasses extends DatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = '';
+	protected static $databaseTableIndexName = 'wclassID';
+
+    public function getTag() {
+        return '<span style="color:'.$this->data['color'].'">'. $this->name .'</span>';
+    }
 
 }

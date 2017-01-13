@@ -52,6 +52,12 @@ class GuildEditForm extends AbstractForm {
 	 */
     private $guild = null;
 
+    /**
+     * Force start page
+     * @var	boolean
+     */
+    private $forceStart = false;
+
 	/**
      * publication date (ISO 8601)
      * @var	string
@@ -100,10 +106,12 @@ class GuildEditForm extends AbstractForm {
             if (GMAN_MAIN_HOMEREALM == '') {
                 throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.norealm'));
             }
+            if (GMAN_BNET_KEY == '') {
+                throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.nokey'));
+            }
             bnetAPI::updateRealms();
-            bnetAPI::updateGuild();
-            bnetAPI::updateGuildMemberList();
-            $this->guild = new Guild();
+            $this->forceStart = true;
+
         }
         $guildLeader = WowCharacter::getGuildLeader();
         if ($guildLeader === null) {
@@ -125,7 +133,7 @@ class GuildEditForm extends AbstractForm {
 		parent::readFormParameters();
             if (isset($_POST['birthdayDate'])) {
                 $this->birthday = $_POST['birthdayDate'];
-                $this->birthdayObj = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $this->birthday);
+                $this->birthdayObj = \DateTime::createFromFormat('Y-m-d', $this->birthday);
             }
             if (WCF::getSession()->getPermission('admin.content.cms.canUseMedia')) {
                 //echo "ja: <pre>"; var_dump($_POST['imageID']); echo "</pre>";
@@ -208,6 +216,7 @@ class GuildEditForm extends AbstractForm {
 	 */
 	public function readData() {
 		parent::readData();
+        if ($this->forceStart) return;
 		if (empty($_POST)) {
 			$this->articleID = $this->guild->articleID;
 			$this->pageID = $this->guild->pageID;
@@ -219,31 +228,40 @@ class GuildEditForm extends AbstractForm {
         }
 	}
 
+
+
+
+
 	/**
 	 * @inheritDoc
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
+        if ($this->forceStart) {
+            WCF::getTPL()->assign([
+			    'action'    => 'new',
+        ]);
+        }
+        else {
+            $articleList = new ArticleList;
+            $articleList->readObjects();
+            $articles = $articleList->getObjects();
 
-        $articleList = new ArticleList;
-        $articleList->readObjects();
-        $articles = $articleList->getObjects();
-
-        $pageList = new PageList;
-        $pageList->readObjects();
-        $pages = $pageList->getObjects();
-        //echo "<pre>"; var_dump($pages); echo "</pre>"; die;
-        WCF::getTPL()->assign([
-			'action'    => 'edit',
-			'articles'  => $articles,
-            'pages'     => $pages,
-			'imageID'   => $this->imageID,
-			'images'    => $this->images,
-            'guild'     => $this->guild,
-            'birthday'  => $this->birthday,
-            'articleID' => $this->articleID,
-            'pageID'    =>  $this->pageID,
-		]);
-
+            $pageList = new PageList;
+            $pageList->readObjects();
+            $pages = $pageList->getObjects();
+            //echo "<pre>"; var_dump($pages); echo "</pre>"; die;
+            WCF::getTPL()->assign([
+			    'action'    => 'edit',
+			    'articles'  => $articles,
+                'pages'     => $pages,
+			    'imageID'   => $this->imageID,
+			    'images'    => $this->images,
+                'guild'     => $this->guild,
+                'birthday'  => $this->birthday,
+                'articleID' => $this->articleID,
+                'pageID'    =>  $this->pageID,
+		    ]);
+        }
 	}
 }
