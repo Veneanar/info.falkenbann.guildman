@@ -158,7 +158,7 @@ CREATE TABLE wcf1_gman_wow_classes (
   name VARCHAR(20)  NOT NULL ,
   color VARCHAR(12)  NOT NULL 
 ) ;
-INSERT INTO wcf1_gman_wow_classes (wclassID, mask, powerType, name, color) VALUES ('1', '1', 'rage', 'Krieger', '#C79C6E'), ('2', '2', 'mana', 'Paladin', '#F58CBA'), ('3', '4', 'focus', 'Jäger', '#ABD473'), ('4', '8', 'energy', 'Schurke', '#FFF569'), ('5', '16', 'mana', 'Priester', '#FFFFFF'), ('6', '32', 'runic-power', 'Todesritter', '#C41F3B'), ('7', '64', 'mana', 'Schamane', '#0070DE'), ('8', '128', 'mana', 'Magier', '#69CCF0'), ('9', '256', 'mana', 'Hexenmeister', '#9482C9'), ('10', '512', 'energy', 'Mönch', '#00FF96'), ('11', '1024', 'mana', 'Druide', '#FF7D0A'), ('12', '2048', 'fury', 'Dämonenjäger', '#A330C9')
+INSERT INTO wcf1_gman_wow_classes (wclassID, mask, powerType, name, color) VALUES ('1', '1', 'rage', 'Krieger', '#C79C6E'), ('2', '2', 'mana', 'Paladin', '#F58CBA'), ('3', '4', 'focus', 'Jäger', '#ABD473'), ('4', '8', 'energy', 'Schurke', '#FFF569'), ('5', '16', 'mana', 'Priester', '#FFFFFF'), ('6', '32', 'runic-power', 'Todesritter', '#C41F3B'), ('7', '64', 'mana', 'Schamane', '#0070DE'), ('8', '128', 'mana', 'Magier', '#69CCF0'), ('9', '256', 'mana', 'Hexenmeister', '#9482C9'), ('10', '512', 'energy', 'Mönch', '#00FF96'), ('11', '1024', 'mana', 'Druide', '#FF7D0A'), ('12', '2048', 'fury', 'Dämonenjäger', '#A330C9');
 
 DROP TABLE IF EXISTS wcf1_gman_wow_races;
 CREATE TABLE wcf1_gman_wow_races (
