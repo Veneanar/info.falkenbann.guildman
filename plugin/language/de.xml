@@ -20,7 +20,7 @@
     <item name="wcf.page.gman.guildleader"><![CDATA[Gildenleiter]]></item>
     <item name="wcf.page.gman.guildleader.desc"><![CDATA[Mädchen für alles]]></item>
     <item name="wcf.page.gman.guildmember"><![CDATA[Gildenmitglieder]]></item>
-    <item name="wcf.page.gman.guildacm"><![CDATA[Gilden Erfolge]]></item>
+    <item name="wcf.page.gman.guildacm"><![CDATA[Gildenerfolge]]></item>
 
 
     <item name="wcf.page.gman.application"><![CDATA[Bewerben]]></item>
@@ -41,12 +41,12 @@
 
     <item name="wcf.acp.option.gman_app_openrecruitment"><![CDATA[Rekrutierung geöffnet]]></item>
     <item name="wcf.acp.option.gman_app_forumid"><![CDATA[Rekrutierungsforum]]></item>
-    <item name="wcf.acp.option.gman_app_articleid"><![CDATA[Artikel welcher angezeigt wird.]]></item>
+    <item name="wcf.acp.option.gman_app_articleid"><![CDATA[Artikel, welcher angezeigt wird.]]></item>
     <item name="wcf.acp.option.gman_app_labelid_new"><![CDATA[Label ID: Neue Bewerbung]]></item>
     <item name="wcf.acp.option.gman_app_labelid_waiting"><![CDATA[Label ID: Warte auf Rückmeldung]]></item>
-    <item name="wcf.acp.option.gman_app_labelid_ready"><![CDATA[Label ID: kann aufgenommen werden]]></item>
+    <item name="wcf.acp.option.gman_app_labelid_ready"><![CDATA[Label ID: Kann aufgenommen werden]]></item>
     <item name="wcf.acp.option.gman_app_labelid_done"><![CDATA[Label ID: Spieler wurde aufgenommen]]></item>
-    <item name="wcf.acp.option.gman_app_labelid_issue"><![CDATA[Label ID: An Gildenleitung weitergeleitet]]></item>
+    <item name="wcf.acp.option.gman_app_labelid_issue"><![CDATA[Label ID: An die Gildenleitung weitergeleitet]]></item>
     <item name="wcf.acp.option.gman_app_labelid_deney"><![CDATA[Label ID: Abgelehnt]]></item>
 
     <item name="wcf.acp.option.gman_main_guildname"><![CDATA[Name der Gilde]]></item>
@@ -55,17 +55,17 @@
     <item name="wcf.acp.option.gman_calendar_active"><![CDATA[Kalendersynchronisation aktivieren]]></item>
     <item name="wcf.acp.option.gman_calendar_readholidays"><![CDATA[Feiertage eintragen]]></item>
     <item name="wcf.acp.option.gman_calendar_readbonus"><![CDATA[Bonusevent eintragen]]></item>
-    <item name="wcf.acp.option.gman_calendar_readfromwow"><![CDATA[Lese Kalenderdaten aus WoW.]]></item>
-    <item name="wcf.acp.option.gman_calendar_cockie"><![CDATA[Cockie kopieren]]></item>
+    <item name="wcf.acp.option.gman_calendar_readfromwow"><![CDATA[Lese Kalenderdaten aus WoW aus.]]></item>
+    <item name="wcf.acp.option.gman_calendar_cockie"><![CDATA[Cookie kopieren]]></item>
     <item name="wcf.acp.option.gman_calendar_useapi"><![CDATA[Benutze GMan API]]></item>
     <item name="wcf.acp.option.gman_calendar_apikey"><![CDATA[GMan API Key]]></item>
 
     <item name="wcf.acp.option.gman_bnet_usejobs"><![CDATA[Benutze Hintergrundjobs für Updates]]></item>
-    <item name="wcf.acp.option.gman_bnet_usejobs.description"><![CDATA[Die Hintergrundjobs eignen sich für kleine Gilden, vor allem wenn kein Zugriff auf die Shell möglich ist. Die Jobs werden in Gruppen gestartet. Alle 30 min. wird geprüft, ob ein neue Jobs gestartet werden können. Dieses verhalten kannst du im ACP Cronjobs ändern. Beachte bitte, dass du den Cronjob GuildCharUpdate das erste Mal manuell starten musst!]]></item>
+    <item name="wcf.acp.option.gman_bnet_usejobs.description"><![CDATA[Die Hintergrundjobs eignen sich für kleine Gilden, vor allem wenn kein Zugriff auf die Shell möglich ist. Die Jobs werden in Gruppen gestartet. Alle 30 min. wird geprüft, ob ein neue Jobs gestartet werden können. Dieses Verhalten kannst du im ACP unter Cronjobs ändern. Beachte bitte, dass du den Cronjob GuildCharUpdate das erste Mal manuell starten musst!]]></item>
     <item name="wcf.acp.option.gman_bnet_useexterncron"><![CDATA[Externen Cronjob verwenden (Hast du beide Optionen aktiviert wird dein System direkt zur Hölle fahren!)]]></item>
-    <item name="wcf.acp.option.gman_bnet_useexterncron.description"><![CDATA[Für größere Gilden dringend zu emfpehlen. Benötigt shell zugang. erklärung hier: LINK Beachte bitte, dass du den Cronjob GuildCharUpdate im ACP deaktivieren musst!]]></item>
+    <item name="wcf.acp.option.gman_bnet_useexterncron.description"><![CDATA[Für größere Gilden dringend zu emfpehlen. Benötigt shell Zugang. Erklärung hier: LINK Beachte bitte, dass du den Cronjob GuildCharUpdate im ACP deaktivieren musst!]]></item>
     <item name="wcf.acp.option.gman_bnet_jobsize"><![CDATA[Gruppengröße für Hintergrundjobs]]></item>
-    <item name="wcf.acp.option.gman_bnet_jobsize.description"><![CDATA[Dieser Wert sollte in Abhänigkeit des Servers und der Gildengröße gewählt werden. Empfohlen wird 5 Chars auf einmal zu updaten. ]]></item>
+    <item name="wcf.acp.option.gman_bnet_jobsize.description"><![CDATA[Dieser Wert sollte in Abhängigkeit des Servers und der Gildengröße gewählt werden. Empfohlen wird 5 Chars auf einmal zu updaten. ]]></item>
 
 
 
@@ -73,7 +73,7 @@
     <item name="wcf.acp.option.gman_bnet_secret"><![CDATA[Battle.net API Secret]]></item>
     <item name="wcf.acp.option.gman_bnet_region"><![CDATA[Battle.net region.]]></item>
     <item name="wcf.acp.option.gman_bnet_language"><![CDATA[Sprache für die Abfragen]]></item>
-    <item name="wcf.acp.option.gman_bnet_enabled"><![CDATA[battle.net API benutzen.]]></item>
+    <item name="wcf.acp.option.gman_bnet_enabled"><![CDATA[Battle.net API benutzen.]]></item>
     <item name="wcf.acp.option.gman_main_rank0"><![CDATA[Gildenrang 1 (Gildenmeister)]]></item>
     <item name="wcf.acp.option.gman_main_rank1"><![CDATA[Gildenrang 2]]></item>
     <item name="wcf.acp.option.gman_main_rank2"><![CDATA[Gildenrang 3]]></item>
@@ -87,9 +87,9 @@
 
   </category>
   <category name="wcf.acp.notice">
-    <item name="wcf.acp.notice.gman.nokey"><![CDATA[Der Battle.net API wurde nicht eingestellt. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Battle.net" die Keydaten eingeben.]]></item>
-    <item name="wcf.acp.notice.gman.noguild"><![CDATA[Der Gildenname wurde nicht eingestellt. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Gilde" die Gilde und den Realmnamen angeben.]]></item>
-    <item name="wcf.acp.notice.gman.norealm"><![CDATA[Der Heimat Realm wurde nicht eingestellt. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Gilde" die Gilde und den Realmnamen angeben.]]></item>
+    <item name="wcf.acp.notice.gman.nokey"><![CDATA[Das Battle.net API wurde nicht eingetragen. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Battle.net" die Keydaten eingeben.]]></item>
+    <item name="wcf.acp.notice.gman.noguild"><![CDATA[Der Gildenname wurde nicht eingetragen. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Gilde" die Gilde und den Realmnamen angeben.]]></item>
+    <item name="wcf.acp.notice.gman.norealm"><![CDATA[Der Heimatrealm wurde nicht eingetragen. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Gilde" die Gilde und den Heimatrealmnamen angeben.]]></item>
 
   </category>
 
@@ -105,35 +105,35 @@
     <item name="wcf.acp.group.option.admin.gman.canAddGroups"><![CDATA[Kann WoW Gruppen hinzufügen]]></item>
     <item name="wcf.acp.group.option.admin.gman.canEditGroups"><![CDATA[Kann WoW Gruppen bearbeiten]]></item>
     <item name="wcf.acp.group.option.admin.gman.canDeleteGroups"><![CDATA[Kann WoW Gruppen löschen]]></item>
-    <item name="wcf.acp.group.option.mod.gman.canAddCharsToGroups"><![CDATA[Kann Chars zu Gruppen hinzufügen]]></item>
-    <item name="wcf.acp.group.option.mod.gman.canEditCharOwner"><![CDATA[Kann die Char zuordnung ändern]]></item>
-    <item name="wcf.acp.group.option.mod.gman.canUpdateChar"><![CDATA[Kann die Chars updaten]]></item>
-    <item name="wcf.acp.group.option.user.gman.canAddChar"><![CDATA[Kann bisher unbekannte Chars zum eigenem Profil hinzufügen]]></item>
-    <item name="wcf.acp.group.option.user.gman.canAddCharOwner"><![CDATA[Kann bekannte Chars, die bisher nicht zugeordnet sind, zum eigenem Profil hinzufügen]]></item>
-    <item name="wcf.acp.group.option.user.gman.canViewChar"><![CDATA[Kann Chars sehen]]></item>
-    <item name="wcf.acp.group.option.user.gman.canUpdateOwnChar"><![CDATA[Kann eigene Chars updaten]]></item>
+    <item name="wcf.acp.group.option.mod.gman.canAddCharsToGroups"><![CDATA[Kann Charaktere zu Gruppen hinzufügen]]></item>
+    <item name="wcf.acp.group.option.mod.gman.canEditCharOwner"><![CDATA[Kann die Charakterzuordnung ändern]]></item>
+    <item name="wcf.acp.group.option.mod.gman.canUpdateChar"><![CDATA[Kann die Charaktere aktualisieren]]></item>
+    <item name="wcf.acp.group.option.user.gman.canAddChar"><![CDATA[Kann bisher unbekannte Charaktere zum eigenem Profil hinzufügen]]></item>
+    <item name="wcf.acp.group.option.user.gman.canAddCharOwner"><![CDATA[Kann bekannte Charaktere, die bisher nicht zugeordnet sind, zum eigenem Profil hinzufügen]]></item>
+    <item name="wcf.acp.group.option.user.gman.canViewChar"><![CDATA[Kann Charaktere sehen]]></item>
+    <item name="wcf.acp.group.option.user.gman.canUpdateOwnChar"><![CDATA[Kann eigene Charaktere aktualisieren]]></item>
 
   </category> 
   <category name="wcf.acp">
     <item name="wcf.acp.gman.guild.bnetupdate"><![CDATA[Zeitpunkt der letzten Aktualisierung im Battle.net / auf dieser Seite]]></item>
     <item name="wcf.acp.gman.guild.bnetdata"><![CDATA[Battle.net Daten]]></item>
-    <item name="wcf.acp.gman.guild.bnetdata.desc"><![CDATA[Daten aus dem battle.net]]></item>
+    <item name="wcf.acp.gman.guild.bnetdata.desc"><![CDATA[Daten aus dem Battle.net]]></item>
     <item name="wcf.acp.gman.guild.name"><![CDATA[Gildenname & Fraktion]]></item>
     <item name="wcf.acp.gman.guild.name.desc"><![CDATA[Name der Gilde und die Fraktion]]></item>
     <item name="wcf.acp.gman.guild.realm"><![CDATA[Realm]]></item>
-    <item name="wcf.acp.gman.guild.realm.desc"><![CDATA[Realm u. verbundene Realms]]></item>
+    <item name="wcf.acp.gman.guild.realm.desc"><![CDATA[Realm und verbundene Realms]]></item>
 
   <item name="wcf.acp.gman.guild.guildinfo"><![CDATA[Gildeninformationen]]></item>
-	<item name="wcf.acp.gman.guild.guildinfo.desc"><![CDATA[weitere Gildeninfos]]></item>
+	<item name="wcf.acp.gman.guild.guildinfo.desc"><![CDATA[Weitere Gildeninfos]]></item>
 	<item name="wcf.acp.gman.guild.image"><![CDATA[Gildenlogo]]></item>
 	<item name="wcf.acp.gman.guild.birthdate"><![CDATA[Gründungsdatum der Gilde]]></item>
 	<item name="wcf.acp.gman.guild.article"><![CDATA[Über uns Artikel]]></item>
 	<item name="wcf.acp.gman.guild.article"><![CDATA[Seite auf dem das Über uns angezeigt wird]]></item>
 	<item name="wcf.acp.gman.guild.data"><![CDATA[Daten abrufen]]></item>
-	<item name="wcf.acp.gman.guild.data.desc"><![CDATA[Manuelles abrufen der Gildendaten]]></item>
+	<item name="wcf.acp.gman.guild.data.desc"><![CDATA[Manuelles Abrufen der Gildendaten]]></item>
 
-	<item name="wcf.acp.gman.guild.data.sync"><![CDATA[Automatische Synchroniersung erlauben]]></item>
-	<item name="wcf.acp.gman.guild.data.sync.desc"><![CDATA[Automatisches abrufen aktivieren. (Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.)]]></item>
+	<item name="wcf.acp.gman.guild.data.sync"><![CDATA[Automatische Synchronisierung erlauben]]></item>
+	<item name="wcf.acp.gman.guild.data.sync.desc"><![CDATA[Automatisches Abrufen aktivieren. (Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.)]]></item>
 
     <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Syncronisieren]]></item>
     <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[Syncronisieren]]></item>
