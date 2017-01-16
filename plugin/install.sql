@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS wcf1_gman_group;
 CREATE TABLE wcf1_gman_group (
   groupID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(50)  NOT NULL,
+  groupName VARCHAR(50)  NOT NULL,
   teaser VARCHAR(250) NOT NULL DEFAULT '',
   wcfGroupID INT(10) NOT NULL,
   showCalender TINYINT(1) NOT NULL DEFAULT 0,
@@ -16,7 +16,7 @@ CREATE TABLE wcf1_gman_group (
   threadID INT(10) NULL,
   boardID INT(10) NULL,
   mediaID INT(10) NULL,
-  isRaidgruop INT(10) NOT NULL,
+  isRaidgruop TINYINT(01) NOT NULL DEFAULT 0,
   fetchWCL TINYINT(1) NOT NULL DEFAULT 0,
   wclQuerry VARCHAR(100) NOT NULL DEFAULT '',
   orderNo SMALLINT(4) NOT NULL,
@@ -28,6 +28,8 @@ ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (articIeID) REFERENCES wcf1_article 
 ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (threadID) REFERENCES wbb1_thread (threadID) ON DELETE SET NULL;
 ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (boardID) REFERENCES wbb1_board (boardID) ON DELETE SET NULL;
 ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (mediaID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
+
+INSERT INTO wcf1_gman_group (groupID, groupName, teaser, wcfGroupID, showCalender, calendarTitle, calendartext, fetchCalendar, calendarQuerry, gameTitle, gameRank, showRoaster, articIeID, threadID, boardID, mediaID, isRaidgruop, fetchWCL, wclQuerry, orderNo, lastUpdate) VALUES (NULL, 'Gildenleiter', 'Gruppe des Gildenleiters', '4', '0', '', NULL, '0', '', 'Gildenleiter', '0', '1', NULL, NULL, NULL, NULL, '0', '0', '', '1', '1');
 
 DROP TABLE IF EXISTS wcf1_gman_wow_realm;
 CREATE TABLE wcf1_gman_wow_realm (
@@ -48,14 +50,13 @@ CREATE TABLE wcf1_gman_wow_realm (
 
 DROP TABLE IF EXISTS wcf1_gman_wow_character;
 CREATE TABLE wcf1_gman_wow_character (
-  charID VARBINARY(35) NOT NULL PRIMARY KEY,
+  charID VARBINARY(70) NOT NULL PRIMARY KEY,
   userID INT(10) NULL,
   isMain TINYINT(1) NOT NULL DEFAULT 0,
   inGuild  TINYINT(1) NOT NULL DEFAULT 0,
   realmID VARCHAR(30) NOT NULL ,
   bnetData TEXT NULL,
   primaryGroup INT(10) NULL,
-  groups VARCHAR(100) NOT NULL,
   bnetUpdate INT(10) NOT NULL,
   firstSeen INT(10) NOT NULL,
   guildRank TINYINT(2) NULL DEFAULT 11, 
@@ -78,18 +79,30 @@ CREATE TABLE wcf1_gman_wow_character (
   trinket2 TEXT NULL,
   mainHand TEXT NULL,
   offHand TEXT NULL,
+  bnetError INT(10) NULL, 
   KEY(userID, realmID, primaryGroup)
 ) ;
 
 ALTER TABLE wcf1_gman_wow_character ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
 ALTER TABLE wcf1_gman_wow_character ADD FOREIGN KEY (primaryGroup) REFERENCES wcf1_gman_group (groupID) ON DELETE SET NULL;
 
+DROP TABLE IF EXISTS wcf1_gman_char_to_group;
+CREATE TABLE wcf1_gman_char_to_group (
+  charID VARBINARY(70) NOT NULL,
+  groupID int(5) NOT NULL,
+  KEY (charID, groupID)
+) ;
+
+ALTER TABLE wcf1_user_to_group ADD FOREIGN KEY (charID) REFERENCES wcf1_gman_wow_character (charID) ON DELETE CASCADE;
+ALTER TABLE wcf1_user_to_group ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
+
+
 DROP TABLE IF EXISTS wcf1_gman_guild;
 CREATE TABLE wcf1_gman_guild (
  guildID SMALLINT(4) NOT NULL PRIMARY KEY,
  articleID INT(10) NULL,
  pageID INT(10) NULL,
- leaderID VARBINARY(35) NULL,
+ leaderID VARBINARY(70) NULL,
  birthday INT(10) NOT NULL,
  logoID INT(10) NULL,
  bnetUpdate INT(10) NOT NULL,
@@ -115,6 +128,7 @@ CREATE TABLE wcf1_gman_application (
   interviewDate INT(10) NOT NULL ,
   appState TINYINT(1) NOT NULL DEFAULT 0,
   openDate INT(10) NOT NULL,
+  appTypeID INT(10) NOT NULL,
   KEY (assignedOfficerID, threadID, pollID)
 ) ;
 ALTER TABLE wcf1_gman_application ADD FOREIGN KEY (assignedOfficerID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
@@ -130,7 +144,7 @@ CREATE TABLE wcf1_gman_pointtype (
 DROP TABLE IF EXISTS wcf1_gman_pointtrans;
 CREATE TABLE wcf1_gman_pointtrans (
   transID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  charID VARBINARY(35) NULL,
+  charID VARBINARY(70) NULL,
   groupID INT(10) NULL,
   eventID INT(10) NULL,
   amount SMALLINT(4) NOT NULL,
@@ -204,21 +218,23 @@ CREATE TABLE wcf1_gman_guild_acm (
   gacmID int(5) NOT NULL,
   gacmTime int(10) NOT NULL,
   articelID int(10) NULL
-)
+) ;
 
 DROP TABLE IF EXISTS wcf1_gman_feedlist;
 CREATE TABLE wcf1_gman_feedlist (
-  type enum('ACHIEVEMENT','CRITERIA','LOOT','BOSSKILL')  NOT NULL ,
-  charID VARBINARY(35)   NULL,
+  charID VARBINARY(70)  NULL,
+  type TINYINT(1) NOT NULL DEFAULT 0,
   itemID INT(10) NULL,
   acmID INT(10) NULL,
-  quantity INT(10) NOT NULL,
+  quantity INT(10)  NOT NULL DEFAULT 0,
   bonusLists TEXT NULL,
   context TEXT NULL,
+  criteria TEXT NULL,
   feedTime INT(10) NOT NULL,
-  inGuild TINYINT(1) NOT NULL DEFAULT 1,
-  KEY (charID, feedTime)
-  UNIQUE KEY(charID, feedTime)
+  inGuild TINYINT(1) NOT NULL DEFAULT 0,
+  KEY (charID, type, feedTime),
+  UNIQUE KEY charFeed (charID, type, feedTime)
 ) ;
 
 ALTER TABLE wcf1_gman_feedlist ADD FOREIGN KEY (charID) REFERENCES wcf1_gman_wow_character (charID) ON DELETE CASCADE;
+

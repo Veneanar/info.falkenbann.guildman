@@ -113,17 +113,18 @@ class GuildEditForm extends AbstractForm {
             $this->forceStart = true;
 
         }
-        $guildLeader = WowCharacter::getGuildLeader();
+        $guildLeader = $this->guild->getLeader();
         if ($guildLeader === null) {
             throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.nodata'));
         }
-        $this->guild->leaderID = $guildLeader->getObjectID();
         $objectAction = new GuildAction([$this->guild], 'update' ,[
             'data' => [
                 'leaderID' => $this->guild->leaderID,
                 ]
             ]);
         $objectAction->executeAction();
+
+
 	}
 
 	/**

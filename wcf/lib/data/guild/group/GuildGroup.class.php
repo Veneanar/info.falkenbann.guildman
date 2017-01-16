@@ -10,7 +10,7 @@ use wcf\data\DatabaseObject;
  * @package	info.falkenbann.guildman
  *
  * @property integer		 $groupID			    PRIMARY KEY
- * @property string		     $title			        Name der Gruppe
+ * @property string		     $groupName			        Name der Gruppe
  * @property string		     $teaser			    Kurzbeschreibung f. minibox und wowprogress
  * @property integer		 $wcfGroupID			Gruppen ID vom WSC
  * @property integer		 $showCalender			zeige im Kalender

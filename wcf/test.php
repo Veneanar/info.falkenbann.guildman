@@ -10,16 +10,16 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 //bnetAPI::updateGuild();
 //bnetAPI::updateGuildMemberList();
-//bnetAPI::updateCharacter([
-//        [
-//            'charID' =>'Aiox-Forscherliga',
-//            'bnetUpdate' => 10
-//        ],
-//        [
-//            'charID' => 'Veneanar-Forscherliga',
-//            'bnetUpdate' => 10
-//        ],
-//    ]);
+bnetAPI::updateCharacter([
+        [
+            'charID' =>'Aiox-Forscherliga',
+            'bnetUpdate' => 10
+        ],
+        [
+            'charID' => 'Veneanar-Forscherliga',
+            'bnetUpdate' => 10
+        ],
+    ]);
 // WowCharacterAction::bulkUpdate();
 //while (BackgroundQueueHandler::getInstance()->getRunnableCount() > 0)
     BackgroundQueueHandler::getInstance()->performNextJob();
@@ -31,7 +31,7 @@ echo $myChar->getAvatar()->getImageTag();
 //$wowCharList->sqlLimit = 10;
 //$wowCharList->readObjects();
 
-\wcf\system\cronjob\GuildCharUpdateCronjob::directexecute();
+// \wcf\system\cronjob\GuildCharUpdateCronjob::directexecute();
 echo "Leider geil";
 
 

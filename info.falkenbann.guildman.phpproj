@@ -20,6 +20,7 @@
   <ItemGroup>
     <Compile Include="index.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
+    <Compile Include="wcf\lib\acp\page\GuildGroupListPage.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACMList.class.php" />
     <Compile Include="wcf\lib\data\guild\application\GuildApplication.class.php" />
@@ -92,6 +93,7 @@
     <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\" />
     <Folder Include="wcf\lib\" />
+    <Folder Include="wcf\lib\acp\page\" />
     <Folder Include="wcf\lib\data\" />
     <Folder Include="wcf\lib\acp\" />
     <Folder Include="wcf\lib\acp\form\" />
@@ -129,6 +131,8 @@
     <Content Include="plugin\templateListener.xml" />
     <Content Include="plugin\userGroupOption.xml" />
     <Content Include="wcf\acp\templates\guildEdit.tpl" />
+    <Content Include="wcf\acp\templates\guildGroupAdd.tpl" />
+    <Content Include="wcf\acp\templates\guildGroupList.tpl" />
     <Content Include="wcf\images\wow\0-0-avatar.jpg" />
     <Content Include="wcf\images\wow\0-0-inset.jpg" />
     <Content Include="wcf\images\wow\1-0-avatar.jpg" />
@@ -224,6 +228,16 @@
     <Content Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\input.js" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Libs\moderatedUserGroups\moderatedUserGroups.phpproj">
+      <Name>moderatedUserGroups</Name>
+      <Project>{2c18f6ca-5e4b-4bd2-8d39-a09c8fb3bfc4}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\WBB3_0x\Woltlab Suite Board.phpproj">
+      <Name>Woltlab Suite Board</Name>
+      <Project>{f6a07864-c39a-4030-8f0f-03e4d036e89e}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libs\wsc\Woltlab Suite Core.phpproj">
       <Name>Woltlab Suite Core</Name>
       <Project>{6ba67479-4140-4699-aa6a-edd0c30dfa7d}</Project>
