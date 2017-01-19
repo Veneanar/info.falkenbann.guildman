@@ -1,4 +1,4 @@
-﻿{include file='header' pageTitle='{lang}wcf.acp.menu.link.gman.group{/lang}'}
+﻿{include file='header' pageTitle='{lang}wcf.acp.menu.link.gman.group.{$action}{/lang}'}
 
 {if $__wcf->session->getPermission('admin.content.cms.canUseMedia')}
 <script data-relocate="true">
@@ -28,7 +28,7 @@
 
 <header class="contentHeader">
     <div class="contentHeaderTitle">
-        <h1 class="contentTitle">{lang}wcf.acp.menu.link.gman.group{/lang}</h1>
+        <h1 class="contentTitle">{lang}wcf.acp.menu.link.gman.group.{$action}{/lang}</h1>
     </div>
 </header>
 
@@ -44,10 +44,10 @@
             <p class="sectionDescription">{lang}wcf.acp.gman.group.groupmain.desc{/lang}</p>
         </header>
 
-        <dl {if $errorField=='groupName'} class="formError" {/if}>
+        <dl{if $errorField= ='groupName' } class="formError" {/if}>
         <dt><label for="groupName">{lang}wcf.acp.gman.group.name{/lang}</label></dt>
         <dd>
-            <input name="groupName" id="groupName" value="{$groupName}" class="medium" pattern="{literal}[A-Z0-9 _]{4,50}{/literal}" required>
+            <input name="groupName" id="groupName" value="{$groupName}" class="medium" pattern="[A-Z0-9 _]{4,50}" required>
             <small>{lang}wcf.acp.gman.group.name.description{/lang}</small>
             {if $errorField == 'groupName'}
             <small class="innerError">
@@ -61,7 +61,7 @@
         </dd>
         </dl>
 
-        <dl {if $errorField =='groupTeaser'} class="formError" {/if}>
+        <dl{if $errorField= ='groupTeaser' } class="formError" {/if}>
         <dt><label for="groupTeaser">{lang}wcf.acp.gman.group.teaser{/lang}</label></dt>
         <dd>
             <input name="groupTeaser" id="groupTeaser" value="{$groupTeaser}" class="medium" maxlength="250">
@@ -78,7 +78,7 @@
         </dd>
         </dl>
 
-        <dl {if $errorField=='groupWcfID'} class="formError" {/if}>
+        <dl{if $errorField= ='groupWcfID' } class="formError" {/if}>
         <dt><label for="groupWcfID">{lang}wcf.acp.gman.group.wcfgroup{/lang}</label></dt>
         <dd>
             <select name="groupWcfID" id="groupWcfID">
@@ -88,7 +88,6 @@
                 <option value="{$group->groupID}" {if $group->groupID == $groupWcfID} selected{/if}>{$group->getTitle()}</option>
                 {/foreach}
             </select>
-            <small>{lang}wcf.acp.gman.group.wcfgroup.description{/lang}</small>
             {if $errorField == 'groupWcfID'}
             <small class="innerError">
                 {if $errorType == 'empty'}
@@ -101,17 +100,16 @@
         </dd>
         </dl>
 
-        <dl{if $errorField=='gameRank'} class="formError" {/if}>
-        <dt><label for="gameRank">{lang}wcf.acp.gman.group.gamerank{/lang}</label></dt>
+        <dl{if $errorField= ='gameRank' } class="formError" {/if}>
+        <dt><label for="gameRank">{lang}wcf.acp.gman.group.gameRank{/lang}</label></dt>
         <dd>
             <select name="gameRank" id="gameRank">
                 <option value="0">{lang}wcf.global.noSelection{/lang}</option>
 
-                {foreach from=$rankList item=$rank}
-                <option value="{$rank['rankID']}" {if $rank['rankID'] == $gameRank} selected{/if}>{$rank['rankName']}</option>
+                {foreach from=$ranks item=$rank}
+                <option value="{$rank->rankID}" {if $rank->rankID == $gameRank} selected{/if}>{$rank->getTitle()}</option>
                 {/foreach}
             </select>
-            <small>{lang}wcf.acp.gman.group.gamerank.description{/lang}</small>
             {if $errorField == 'gameRank'}
             <small class="innerError">
                 {if $errorType == 'empty'}
@@ -132,7 +130,7 @@
             <p class="sectionDescription">{lang}wcf.acp.group.calendar.description{/lang}</p>
         </header>
 
-        <dl{if $errorField=='showCalender'} class="formError" {/if}>
+        <dl{if $errorField=='showCalender' } class="formError" {/if}>
         <dd>
             <label><input type="checkbox" name="showCalender" value="1" {if $showCalender} checked{/if}> {lang}wcf.acp.gman.group.showcalendar{/lang}</label>
             <small>{lang}wcf.acp.gman.group.showcalendar.description{/lang}</small>
@@ -149,10 +147,10 @@
         </dl>
 
    <div id="calendarDetails">
-       <dl{if $errorField=='calendarTitle'} class="formError" {/if}>
+       <dl{if $errorField=='calendarTitle' } class="formError" {/if}>
        <dt><label for="calendarTitle">{lang}wcf.acp.gman.group.calendartitle{/lang}</label></dt>
        <dd>
-           <input name="calendarTitle" id="calendarTitle" value="{$calendarTitle}" class="medium" pattern={literal}"[A-Z0-9 _]{4,50}"{/literal}>
+           <input name="calendarTitle" id="calendarTitle" value="{$calendarTitle}" class="medium" pattern="[A-Z0-9 _]{4,50}" required>
            <small>{lang}wcf.acp.gman.group.calendartitle.description{/lang}</small>
            {if $errorField == 'calendarTitle'}
            <small class="innerError">
@@ -166,7 +164,7 @@
        </dd>
        </dl>
 
-       <dl{if $errorField=='calendarText'} class="formError" {/if}>
+       <dl{if $errorField= ='calendarText' } class="formError" {/if}>
        <dt><label for="calendarText">{lang}wcf.acp.gman.group.calendartext{/lang}</label></dt>
        <dd>
            <input name="calendarText" id="calendarText" value="{$calendarText}" class="medium" maxlength="250">
@@ -183,10 +181,10 @@
        </dd>
        </dl>
 
-       <dl{if $errorField=='calendarQuery'} class="formError" {/if}>
+       <dl{if $errorField= ='calendarQuery' } class="formError" {/if}>
        <dt><label for="calendarQuery">{lang}wcf.acp.gman.calendarquery.name{/lang}</label></dt>
        <dd>
-           <input name="calendarQuery" id="calendarQuery" value="{$calendarQuery}" class="medium" pattern={literal}"[A-Z0-9 _-]{4,50}"{/literal}>
+           <input name="calendarQuery" id="calendarQuery" value="{$calendarQuery}" class="medium" pattern="[A-Z0-9 _-]{4,50}">
            <small>{lang}wcf.acp.gman.group.calendarquery.description{/lang}</small>
            {if $errorField == 'calendarQuery'}
            <small class="innerError">
@@ -200,8 +198,8 @@
        </dd>
        </dl>
 
-       <dl{if $errorField=='calendarCategoryID'} class="formError" {/if}>
-       <dt><label for="calendarCategoryID">{lang}wcf.acp.gman.group.calcat{/lang}</label></dt>
+       <dl{if $errorField= ='calendarCategoryID' } class="formError" {/if}>
+       <dt><label for="calendarCategoryID">{lang}wcf.acp.gman.group.wcfgroup{/lang}</label></dt>
        <dd>
            <select name="calendarCategoryID" id="calendarCategoryID">
                <option value="0">{lang}wcf.global.noSelection{/lang}</option>
@@ -210,7 +208,6 @@
                <option value="{$category->categoryID}" {if $category->categoryID == $calendarCategoryID} selected{/if}>{$category->getTitle()}</option>
                {/foreach}
            </select>
-           <small>{lang}wcf.acp.gman.group.calcat.description{/lang}</small>
            {if $errorField == 'calendarCategoryID'}
            <small class="innerError">
                {if $errorType == 'empty'}
@@ -230,12 +227,12 @@
 
     <div class="section">
         <header class="sectionHeader">
-            <h2 class="sectionTitle">{lang}wcf.acp.gman.group.appearance{/lang}</h2>
-            <p class="sectionDescription">{lang}wcf.acp.gman.guild.appearance.desc{/lang}</p>
+            <h2 class="sectionTitle">{lang}wcf.acp.gman.group.apperance{/lang}</h2>
+            <p class="sectionDescription">{lang}wcf.acp.gman.guild.apperance.desc{/lang}</p>
         </header>
         {if $__wcf->session->getPermission('admin.content.cms.canUseMedia')}
-        <dl{if $errorField=='image'} class="formError" {/if}>
-        <dt><label for="image">{lang}wcf.acp.gman.group.image{/lang}</label></dt>
+        <dl{if $errorField= ='image' } class="formError" {/if}>
+        <dt><label for="image">{lang}wcf.acp.gman.guild.image{/lang}</label></dt>
         <dd>
             <div id="imageDisplay" class="selectedImagePreview">
                 {if $images[0]|isset}
@@ -257,8 +254,8 @@
             </dd>
         </dl>
         {/if}
-        <dl{if $errorField=='articleID'} class="formError" {/if}>
-        <dt><label for="articleID">{lang}wcf.acp.gman.group.article{/lang}</label></dt>
+        <dl{if $errorField= ='articleID' } class="formError" {/if}>
+        <dt><label for="articleID">{lang}wcf.acp.gman.guild.article{/lang}</label></dt>
         <dd>
             <select name="articleID" id="articleID">
                 <option value="0">{lang}wcf.global.noSelection{/lang}</option>
@@ -267,7 +264,6 @@
                 <option value="{$article->articleID}" {if $article->articleID == $articleID} selected{/if}>{$article->getTitle()}</option>
                 {/foreach}
             </select>
-            <small>{lang}wcf.acp.gman.group.article.description{/lang}</small>
             {if $errorField == 'articleID'}
             <small class="innerError">
                 {if $errorType == 'empty'}
@@ -279,17 +275,16 @@
             {/if}
         </dd>
         </dl>
-        <dl{if $errorField=='boardID'} class="formError" {/if}>
-        <dt><label for="boardID">{lang}wcf.acp.gman.guild.board{/lang}</label></dt>
+        <dl{if $errorField= ='boardID' } class="formError" {/if}>
+        <dt><label for="pageID">{lang}wcf.acp.gman.guild.board{/lang}</label></dt>
         <dd>
             <select name="boardID" id="boardID">
                 <option value="0">{lang}wcf.global.noSelection{/lang}</option>
 
-                {foreach from=$boardList item=$board}
-                <option value="{$board->boardID}" {if $board->boardID == $boardID} selected{/if}>{$board->getTitle()}</option>
+                {foreach from=$boards item=$board}
+                <option value="{$board->boardID}" {if $board->boardID == $boardID} selected{/if}>{$page->getTitle()}</option>
                 {/foreach}
             </select>
-            <small>{lang}wcf.acp.gman.group.board.description{/lang}</small>
             {if $errorField == 'boardID'}
             <small class="innerError">
                 {if $errorType == 'empty'}
@@ -303,11 +298,11 @@
         </dl>
     </div>
 
-    <dl{if $errorField=='threadID'} class="formError" {/if}>
+    <dl{if $errorField= ='threadID' } class="formError" {/if}>
     <dt><label for="threadID">{lang}wcf.acp.gman.group.thread{/lang}</label></dt>
     <dd>
-        <input name="threadID" id="threadID" value="{$threadID}" class="small" pattern={literal}"[0-9]{0,5}"{/literal}>
-        <small>{lang}wcf.acp.gman.group.thread.description{/lang}</small>
+        <input name="threadID" id="threadID" value="{$threadID}" class="small" pattern="[0-9]{0,5}">
+        <small>{lang}wcf.acp.gman.group.name.description{/lang}</small>
         {if $errorField == 'threadID'}
         <small class="innerError">
             {if $errorType == 'empty'}
@@ -320,11 +315,11 @@
     </dd>
     </dl>
 
-    <dl{if $errorField=='orderNo'} class="formError" {/if}>
+    <dl{if $errorField= ='orderNo' } class="formError" {/if}>
     <dt><label for="orderNo">{lang}wcf.acp.gman.group.order{/lang}</label></dt>
     <dd>
-        <input name="orderNo" id="orderNo" value="{$orderNo}" class="small" pattern={literal}"[0-9]{0,5}"{/literal}>
-        <small>{lang}wcf.acp.gman.group.order.description{/lang}</small>
+        <input name="orderNo" id="orderNo" value="{$orderNo}" class="small" pattern="[0-9]{0,5}">
+        <small>{lang}wcf.acp.gman.group.name.description{/lang}</small>
         {if $errorField == 'orderNo'}
         <small class="innerError">
             {if $errorType == 'empty'}
@@ -341,7 +336,7 @@
             <h2 class="sectionTitle">{lang}wcf.acp.gman.group.raid{/lang}</h2>
             <p class="sectionDescription">{lang}wcf.acp.gman.group.raid.desc{/lang}</p>
         </header>
-        <dl{if $errorField=='isRaidgruop'} class="formError" {/if}>
+        <dl{if $errorField= ='isRaidgruop' } class="formError" {/if}>
         <dd>
             <label><input type="checkbox" name="isRaidgruop" value="1" {if $isRaidgruop} checked{/if}> {lang}wcf.acp.gman.group.israidgruop{/lang}</label>
             <small>{lang}wcf.acp.gman.group.israidgruop.description{/lang}</small>
@@ -356,7 +351,7 @@
             {/if}
         </dd>
         </dl>
-        <dl{if $errorField=='fetchWCL'} class="formError" {/if}>
+        <dl{if $errorField= ='fetchWCL' } class="formError" {/if}>
         <dd>
             <label><input type="checkbox" name="fetchWCL" value="1" {if $fetchWCL} checked{/if}> {lang}wcf.acp.gman.group.fetchwcl{/lang}</label>
             <small>{lang}wcf.acp.gman.group.fetchwcl.description{/lang}</small>
@@ -371,10 +366,10 @@
             {/if}
         </dd>
         </dl>
-        <dl{if $errorField=='wclQuery'} class="formError" {/if}>
+        <dl{if $errorField= ='wclQuery' } class="formError" {/if}>
         <dt><label for="calendarQuery">{lang}wcf.acp.gman.wclquery.name{/lang}</label></dt>
         <dd>
-            <input name="wclQuery" id="wclQuery" value="{$wclQuery}" class="medium" pattern={literal}"[A-Z0-9 _-]{4,50}"{/literal}>
+            <input name="wclQuery" id="wclQuery" value="{$wclQuery}" class="medium" pattern="[A-Z0-9 _-]{4,50}">
             <small>{lang}wcf.acp.gman.group.wclquery.description{/lang}</small>
             {if $errorField == 'wclQuery'}
             <small class="innerError">

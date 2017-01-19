@@ -19,6 +19,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.php" />
+    <Compile Include="wcf\lib\acp\form\GuildGroupAddForm.class.php" />
+    <Compile Include="wcf\lib\acp\form\GuildGroupEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
     <Compile Include="wcf\lib\acp\page\GuildGroupListPage.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
@@ -50,6 +52,7 @@
     <Compile Include="wcf\lib\data\guild\point\type\PointTypeEditor.class.php" />
     <Compile Include="wcf\lib\data\guild\point\type\PointTypeList.class.php" />
     <Compile Include="wcf\lib\data\JSONExtendedDatabaseObject.class.php" />
+    <Compile Include="wcf\lib\data\moderation\queue\activation\ModerationQueueCharownerAction.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowACM.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowACMList.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowGuildACM.class.php" />
@@ -104,6 +107,9 @@
     <Folder Include="wcf\lib\data\guild\group\" />
     <Folder Include="wcf\lib\data\guild\point\" />
     <Folder Include="wcf\lib\data\guild\point\type\" />
+    <Folder Include="wcf\lib\data\moderation\" />
+    <Folder Include="wcf\lib\data\moderation\queue\" />
+    <Folder Include="wcf\lib\data\moderation\queue\activation\" />
     <Folder Include="wcf\lib\data\wow\" />
     <Folder Include="wcf\lib\data\wow\acm\" />
     <Folder Include="wcf\lib\data\wow\character\" />
@@ -113,6 +119,8 @@
     <Folder Include="wcf\lib\system\background\" />
     <Folder Include="wcf\lib\system\background\job\" />
     <Folder Include="wcf\lib\system\cronjob\" />
+    <Folder Include="wcf\lib\system\moderation\" />
+    <Folder Include="wcf\lib\system\moderation\queue\" />
     <Folder Include="wcf\lib\system\wow\" />
     <Folder Include="wcf\acp\" />
     <Folder Include="wcf\lib\system\wow\exception\" />
@@ -125,6 +133,7 @@
     <Content Include="plugin\install.sql" />
     <Content Include="plugin\language\de.xml" />
     <Content Include="plugin\language\en.xml" />
+    <Content Include="plugin\objectType.xml" />
     <Content Include="plugin\option.xml" />
     <Content Include="plugin\package.xml" />
     <Content Include="plugin\pageMenu.xml" />
@@ -226,6 +235,7 @@
     <Content Include="wcf\images\wow\9-1-inset.jpg" />
     <Content Include="wcf\images\wow\9-1-profilemain.jpg" />
     <Content Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\input.js" />
+    <Content Include="wcf\templates\moderationCharEnable.tpl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\moderatedUserGroups\moderatedUserGroups.phpproj">
@@ -236,6 +246,11 @@
     <ProjectReference Include="..\..\Libs\WBB3_0x\Woltlab Suite Board.phpproj">
       <Name>Woltlab Suite Board</Name>
       <Project>{f6a07864-c39a-4030-8f0f-03e4d036e89e}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\woltlabCalendar\woltlabCalendar.phpproj">
+      <Name>woltlabCalendar</Name>
+      <Project>{2e00ee22-0410-4ef0-a3df-cd568fa2498d}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libs\wsc\Woltlab Suite Core.phpproj">

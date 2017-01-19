@@ -10,15 +10,15 @@ use wcf\data\DatabaseObject;
  * @package	info.falkenbann.guildman
  *
  * @property integer		 $groupID			    PRIMARY KEY
- * @property string		     $groupName			        Name der Gruppe
+ * @property string		     $groupName			    Name der Gruppe
  * @property string		     $teaser			    Kurzbeschreibung f. minibox und wowprogress
  * @property integer		 $wcfGroupID			Gruppen ID vom WSC
  * @property integer		 $showCalender			zeige im Kalender
+ * @property integer		 $calendarCategoryID			zeige im Kalender
  * @property string		     $calendarTitle			Kalender Standarttitel
- * @property string		     $calendartext			Kalendar Stadrttext
+ * @property string		     $calendarText			Kalendar Stadrttext
  * @property integer		 $fetchCalendar			Synchronisiere WoW Kalender
- * @property string		     $calendarQuerry		Kalendererkennung
- * @property string		     $gameTitle			    Name der Ranges im Spiel
+ * @property string		     $calendarQuery		    Kalendererkennung
  * @property integer		 $gameRank			    Rang ID (0-10)
  * @property integer		 $showRoaster			zeige Gruppe im Roaster
  * @property integer		 $articIeID			    Artikel ID vom CMS
@@ -27,7 +27,7 @@ use wcf\data\DatabaseObject;
  * @property integer		 $mediaID			    Medien ID (Bild)
  * @property integer		 $isRaidgruop			Ist das eine Raidgruppe
  * @property integer		 $fetchWCL			    synchronisiere mit WCL
- * @property string		     $wclQuerry			    WCL name der Gruppe
+ * @property string		     $wclQuery			    WCL name der Gruppe
  * @property integer		 $orderNo			    Sortierung
  * @property integer		 $lastUpdate			Letztes Update
  *

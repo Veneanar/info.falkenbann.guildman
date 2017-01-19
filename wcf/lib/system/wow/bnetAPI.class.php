@@ -125,8 +125,8 @@ final class bnetAPI {
     static public function createCharacter($charID) {
         $data = explode("-", $charID, 2);
         $sql = "INSERT INTO  wcf".WCF_N."_gman_wow_character
-                            (charID, isMain, inGuild, realmID, bnetData, groups, bnetUpdate, firstSeen, guildRank)
-                VALUES      (?,0,0,?,?,0,?,?,?)
+                            (charID, isMain, inGuild, realmID, bnetData, bnetUpdate, firstSeen, guildRank)
+                VALUES      (?,0,0,?,?,?,?,?)
                 ON DUPLICATE KEY UPDATE
                             charID = VALUES(charID)
             ";
@@ -173,7 +173,7 @@ final class bnetAPI {
                     else {
                         if ($char->inGuild==1) {
                             $charEditor = new WowCharacterEditor($char);
-                            $charEditor->removeFromAllGroups();
+                            $charEditor->changeRank($charData['guildRank']);
                         }
                         $charData['inGuild'] = 0;
                         $charData['guildRank'] = 11;
@@ -370,8 +370,8 @@ final class bnetAPI {
         }
         $guildmember = JSON::decode($reply['body'], true)['members'];
         $sql = "INSERT INTO  wcf".WCF_N."_gman_wow_character
-                            (charID, isMain, inGuild, realmID, bnetData, groups, bnetUpdate, firstSeen, guildRank)
-                VALUES      (?,0,1,?,?,0,?,?,?)
+                            (charID, isMain, inGuild, realmID, bnetData, bnetUpdate, firstSeen, guildRank)
+                VALUES      (?,0,1,?,?,?,?,?)
                 ON DUPLICATE KEY UPDATE
                             inGuild = VALUES(inGuild),
                             bnetData = VALUES(bnetData),

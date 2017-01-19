@@ -95,6 +95,10 @@
 
   <category name="wcf.acp.menu">
     <item name="wcf.acp.menu.link.gman.guildedit"><![CDATA[Gilde Verwalten]]></item>
+    <item name="wcf.acp.menu.link.gman.group.list"><![CDATA[Gildengruppen verwalten]]></item>
+
+
+    
 
   </category>  
   <category name="wcf.acp.group">

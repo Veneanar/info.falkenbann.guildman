@@ -5,20 +5,20 @@ CREATE TABLE wcf1_gman_group (
   teaser VARCHAR(250) NOT NULL DEFAULT '',
   wcfGroupID INT(10) NOT NULL,
   showCalender TINYINT(1) NOT NULL DEFAULT 0,
-  calendarTitle VARCHAR(50) NOT NULL,
+  calendarTitle VARCHAR(50) NULL DEFAULT '',
   calendartext TEXT NULL,
   fetchCalendar TINYINT(1) NOT NULL DEFAULT 0,
-  calendarQuerry VARCHAR(25) NOT NULL DEFAULT '',
-  gameTitle VARCHAR(50)  NOT NULL DEFAULT '',
+  calendarCategoryID INT(10) NULL,
+  calendarQuery VARCHAR(25) NOT NULL DEFAULT '',
   gameRank TINYINT(1) NOT NULL DEFAULT 0,
   showRoaster TINYINT(1) NOT NULL DEFAULT 1,
   articIeID INT(10) NULL,
   threadID INT(10) NULL,
   boardID INT(10) NULL,
-  mediaID INT(10) NULL,
+  imageID INT(10) NULL,
   isRaidgruop TINYINT(01) NOT NULL DEFAULT 0,
   fetchWCL TINYINT(1) NOT NULL DEFAULT 0,
-  wclQuerry VARCHAR(100) NOT NULL DEFAULT '',
+  wclQuery VARCHAR(100) NOT NULL DEFAULT '',
   orderNo SMALLINT(4) NOT NULL,
   lastUpdate INT(10) NOT NULL
   KEY (wcfGroupID, articIeID, threadID, boardID, mediaID);
@@ -27,9 +27,8 @@ CREATE TABLE wcf1_gman_group (
 ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (articIeID) REFERENCES wcf1_article (articleID) ON DELETE SET NULL;
 ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (threadID) REFERENCES wbb1_thread (threadID) ON DELETE SET NULL;
 ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (boardID) REFERENCES wbb1_board (boardID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (mediaID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (imageID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
 
-INSERT INTO wcf1_gman_group (groupID, groupName, teaser, wcfGroupID, showCalender, calendarTitle, calendartext, fetchCalendar, calendarQuerry, gameTitle, gameRank, showRoaster, articIeID, threadID, boardID, mediaID, isRaidgruop, fetchWCL, wclQuerry, orderNo, lastUpdate) VALUES (NULL, 'Gildenleiter', 'Gruppe des Gildenleiters', '4', '0', '', NULL, '0', '', 'Gildenleiter', '0', '1', NULL, NULL, NULL, NULL, '0', '0', '', '1', '1');
 
 DROP TABLE IF EXISTS wcf1_gman_wow_realm;
 CREATE TABLE wcf1_gman_wow_realm (
@@ -80,6 +79,8 @@ CREATE TABLE wcf1_gman_wow_character (
   mainHand TEXT NULL,
   offHand TEXT NULL,
   bnetError INT(10) NULL, 
+  isDisabled TINYINT(1) NULL DEFAULT 0,
+  tempUserID INT(10) NULL,
   KEY(userID, realmID, primaryGroup)
 ) ;
 
@@ -93,8 +94,8 @@ CREATE TABLE wcf1_gman_char_to_group (
   KEY (charID, groupID)
 ) ;
 
-ALTER TABLE wcf1_user_to_group ADD FOREIGN KEY (charID) REFERENCES wcf1_gman_wow_character (charID) ON DELETE CASCADE;
-ALTER TABLE wcf1_user_to_group ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_char_to_group ADD FOREIGN KEY (charID) REFERENCES wcf1_gman_wow_character (charID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_char_to_group ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
 
 
 DROP TABLE IF EXISTS wcf1_gman_guild;

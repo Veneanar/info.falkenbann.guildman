@@ -1,6 +1,8 @@
 <?php
 namespace wcf\data\wow\character;
 use wcf\data\JSONExtendedDatabaseObject;
+use wcf\system\request\IRouteController;
+use wcf\system\request\LinkHandler;
 use wcf\data\wow\WowClasses;
 use wcf\data\wow\WowRace;
 use wcf\system\WCF;
@@ -36,10 +38,12 @@ use wcf\system\WCF;
  * @property-read	string			$calcClass						???
  * @property-read	integer			$faction						Fraktion des Charakters
  * @property-read	integer			$totalHonorableKills			Ehrenpunkte des Charakters
+ * @property integer                $isDisabled                     ist der Char aktiviert?
+ * @property integer                $tempUserID                     save groupinfos.
  *
  */
 
-class WowCharacter extends JSONExtendedDatabaseObject {
+class WowCharacter extends JSONExtendedDatabaseObject implements IRouteController {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -198,6 +202,24 @@ class WowCharacter extends JSONExtendedDatabaseObject {
     }
 
 	/**
+     * @inheritDoc
+     */
+	public function getTitle() {
+		return $this->name;
+	}
+
+	/**
+     * @inheritDoc
+     */
+	public function getLink() {
+		return LinkHandler::getInstance()->getLink('User', [
+			'application' => 'wcf',
+			'object' => $this,
+			'forceFrontend' => true
+		]);
+	}
+
+    /**
      * Returns an array with all the groups in which the actual character is a member.
      *
      * @return	integer[]
@@ -225,6 +247,5 @@ class WowCharacter extends JSONExtendedDatabaseObject {
             $groupIDs[] = $char->getGroupIDs();
         }
         return array_unique($groupIDs);
-
     }
 }

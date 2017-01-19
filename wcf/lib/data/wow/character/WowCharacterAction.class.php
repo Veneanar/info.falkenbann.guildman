@@ -5,6 +5,7 @@ use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\exception\UserInputException;
 use wcf\system\background\BackgroundQueueHandler;
 use wcf\system\background\job\WowCharacterUpdateJob;
+use wcf\system\clipboard\ClipboardHandler;
 use wcf\system\WCF;
 use wcf\data\guild\Guild;
 use wcf\system\wow\bnetAPI;
@@ -15,6 +16,7 @@ use wcf\data\user\group\UserGroup;
 use wcf\data\guild\group\GuildGroup;
 use wcf\data\guild\group\GuildGroupList;
 use wcf\system\exception\PermissionDeniedException;
+use wcf\system\exception\UserException;
 
 /**
  *
@@ -26,7 +28,7 @@ use wcf\system\exception\PermissionDeniedException;
  *
  */
 
-class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearchAction {
+class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearchAction, IClipboardAction{
 	/**
 	 * {@inheritDoc}
 	 */
@@ -51,10 +53,11 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 	 * {@inheritDoc}
 	 */
 	protected $requireACP = array();
+
 	/**
-	 * {@inheritDoc}
-	 */
-	protected $allowGuestAccess = array();
+     * @inheritDoc
+     */
+	protected $allowGuestAccess = ['getSearchResultList'];
 
 
     /**
@@ -143,6 +146,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
    }
 
     public function update() {
+        parent::update();
 		$groupIDs = isset($this->parameters['groups']) ? $this->parameters['groups'] : [];
 		$removeGroups = isset($this->parameters['removeGroups']) ? $this->parameters['removeGroups'] : [];
 		if (!empty($groupIDs)) {
@@ -153,7 +157,6 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 			]);
 			$action->executeAction();
 		}
-
 		if (!empty($removeGroups)) {
 			$action = new WowCharacterAction($this->objects, 'removeFromGroups', [
 				'groups' => $removeGroups,
@@ -161,10 +164,107 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 			]);
 			$action->executeAction();
 		}
-
-        // ... update fertig schreiben.
     }
 
+    public function setMain() {
+        /**
+         * @var WowCharacter $wowChar
+         */
+        foreach($this->objects as $wowChar) {
+            $charList = new WowCharacterList();
+            $charList->getConditionBuilder->add('WHERE userID = ?', $wowChar->userID);
+            $charList->readObjects();
+            $action = new WowCharacterAction($charList->getObjects, 'update', [
+                'data' => [
+                    'isMain' => 0,
+                ]]);
+            $action->executeAction();
+            $action = new WowCharacterAction($this->objects, 'update', [
+                'data' => [
+                    'isMain' => 1,
+                ]]);
+            $action->executeAction();
+        }
+    }
+
+    public function validateSetUser() {
+        /**
+         * @var WowCharacter $wowChar
+         */
+        $groupIDs = [];
+        foreach($this->objects as $wowChar) {
+            $groupIDs[] = $wowChar->getGroupIDs();
+        }
+        $this->parameters['groups'] = array_unique($groupIDs);
+        try {
+            $this->validateUpdate();
+        }
+        catch (PermissionDeniedException $e)  {
+            // set in moderated queue
+        }
+    }
+
+
+
+    public function setUser() {
+        foreach($this->objects as $wowChar) {
+            $action = new WowCharacterAction([$wowChar], 'update', [
+                'data' => [
+                    'userID'    => $wowChar->tempUserID,
+                    'disabled'  => 0,
+                ]]);
+            $action->executeAction();
+            $groupIDs[] = $wowChar->getGroupIDs();
+            if (!empty($groupIDs)) {
+                $this->addWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+            }
+        }
+    }
+
+
+	/**
+	 * Validates the enable action.
+	 */
+	public function validateEnable() {
+		WCF::getSession()->checkPermissions(['admin.user.canEnableUser']);
+	}
+
+	/**
+	 * Enables wowchar.
+	 */
+	public function enable() {
+        foreach($this->objects as $wowChar) {
+            $action = new WowCharacterAction([$wowChar], 'update', [
+                'data' => [
+                    'userID'    => $this->parameters['userID'],
+                    'disabled'  => 0,
+                ]]);
+            $action->executeAction();
+            $groupIDs[] = $wowChar->getGroupIDs();
+            if (!empty($groupIDs)) {
+                $this->addWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+            }
+        }
+    }
+
+	/**
+     * Enables wowchar ownerusers.
+     */
+	public function disable() {
+        foreach($this->objects as $wowChar) {
+            $groupIDs[] = $wowChar->getGroupIDs();
+            if (!empty($groupIDs)) {
+                $this->removeWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+            }
+            $action = new WowCharacterAction([$wowChar], 'update', [
+                'data' => [
+                    'userID'         => 0,
+                    'tempUuserID'    => $wowChar->userID,
+                    'disabled'  => 1,
+                ]]);
+            $action->executeAction();
+        }
+    }
 
 	/**
      * function for rank changes.
@@ -202,7 +302,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 		$groupIDs = $this->parameters['groups'];
 		foreach ($this->getObjects() as $charEditor) {
 			$charEditor->removeFromGroups($groupIDs);
-            if (isset($this->parameters['deleteWCFGroups']) && $this->parameters['deleteWCFGroups']==true && $charEditor->userID > 0){
+            if (isset($this->parameters['deleteWCFGroups']) && $this->parameters['deleteWCFGroups']==true){
                 $this->removeWCFUserGroups($charEditor);
             }
         }
@@ -216,15 +316,14 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 		if (empty($this->objects)) {
 			$this->readObjects();
 		}
-
 		$groupIDs = $this->parameters['groups'];
 		$deleteOldGroups = $addDefaultGroups = true;
 		if (isset($this->parameters['deleteOldGroups'])) $deleteOldGroups = $this->parameters['deleteOldGroups'];
 
 		foreach ($this->getObjects() as $charEditor) {
 			$charEditor->addToGroups($groupIDs, $deleteOldGroups, $addDefaultGroups);
-            if (isset($this->parameters['addWCFGroups']) && $this->parameters['addWCFGroups']==true && $charEditor->userID > 0){
-                $this->addWCFUserGroups($charEditor);
+            if (isset($this->parameters['addWCFGroups']) && $this->parameters['addWCFGroups']==true){
+                $this->addWCFUserGroups($charEditor, $this->parameters['addWCFGroups']);
             }
 		}
 	}
@@ -232,13 +331,13 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 	/**
      * Internal function for removing WCF Groups for the account.
      *
-     * @param $userObject
+     * @param $charEditor
      */
-    private function removeWCFUserGroups($userObject) {
-        $user = new User($userObject->userID);
+    private function removeWCFUserGroups($charEditor) {
+        $user = new User($charEditor->userID);
         if ($user->getObjectID>0) {
             $guild = new Guild();
-            $diffGroups = array_diff($guild->getGuildGroupIds(), $userObject->getAccountGroups());
+            $diffGroups = array_diff($guild->getGuildGroupIds(), $charEditor->getAccountGroups());
             $diffGroups = $guild->convertToWCFGroup($diffGroups);
             if (count($diffGroups)) {
                 $objectAction = new UserAction([$user], 'removeFromGroups', [
@@ -254,8 +353,8 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
      *
      * @param $userObject
      */
-    private function addWCFUserGroups($userObject, $groupIDs) {
-        $user = new User($userObject->userID);
+    private function addWCFUserGroups($charEditor, $groupIDs) {
+        $user = new User($charEditor->userID);
         if ($user->getObjectID>0) {
             $guild = new Guild();
             $groupIDs = $guild->convertToWCFGroup($groupIDs);
@@ -289,5 +388,34 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
         return ($isCron) ? $updateList : $jobs;
         // BackgroundQueueHandler::getInstance()->enqueueIn
     }
+
+	/**
+     * @inheritDoc
+     */
+	public function validateUnmarkAll() {
+		// does nothing
+	}
+
+	/**
+     * @inheritDoc
+     */
+	public function unmarkAll() {
+		ClipboardHandler::getInstance()->removeItems(ClipboardHandler::getInstance()->getObjectTypeID('info.falkenbann.gman.character'));
+	}
+
+	/**
+     * Unmarks chars.
+     *
+     * @param	integer[]	$charIDs
+     */
+	protected function unmarkItems(array $charIDs = []) {
+		if (empty($charIDs)) {
+			$charIDs = $this->objectIDs;
+		}
+
+		if (!empty($charIDs)) {
+			ClipboardHandler::getInstance()->unmark($charIDs, ClipboardHandler::getInstance()->getObjectTypeID('info.falkenbann.gman.character'));
+		}
+	}
 
 }

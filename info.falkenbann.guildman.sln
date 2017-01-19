@@ -11,6 +11,8 @@ Project("{A0786B88-2ADB-4C21-ABE8-AA2D79766269}") = "Woltlab Suite Board", "..\.
 EndProject
 Project("{A0786B88-2ADB-4C21-ABE8-AA2D79766269}") = "moderatedUserGroups", "..\..\Libs\moderatedUserGroups\moderatedUserGroups.phpproj", "{2C18F6CA-5E4B-4BD2-8D39-A09C8FB3BFC4}"
 EndProject
+Project("{A0786B88-2ADB-4C21-ABE8-AA2D79766269}") = "woltlabCalendar", "..\..\Libs\woltlabCalendar\woltlabCalendar.phpproj", "{2E00EE22-0410-4EF0-A3DF-CD568FA2498D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,8 @@ Global
 		{F6A07864-C39A-4030-8F0F-03E4D036E89E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C18F6CA-5E4B-4BD2-8D39-A09C8FB3BFC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C18F6CA-5E4B-4BD2-8D39-A09C8FB3BFC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E00EE22-0410-4EF0-A3DF-CD568FA2498D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E00EE22-0410-4EF0-A3DF-CD568FA2498D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

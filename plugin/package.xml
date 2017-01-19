@@ -26,6 +26,7 @@
 		<instruction type="template">template.tar</instruction>
     <instruction type="acpTemplate">acptemplate.tar</instruction>
 		<instruction type="language">language/*.xml</instruction>
+    <instruction type="objectType" />    
 		<instruction type="option">option.xml</instruction>
     <instruction type="userGroupOption">userGroupOption.xml</instruction>
     <instruction type="acpMenu">acpMenu.xml</instruction>
