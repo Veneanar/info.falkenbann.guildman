@@ -6,6 +6,7 @@ use wcf\system\exception\UserInputException;
 use wcf\system\background\BackgroundQueueHandler;
 use wcf\system\background\job\WowCharacterUpdateJob;
 use wcf\system\clipboard\ClipboardHandler;
+use wcf\data\IClipboardAction;
 use wcf\system\WCF;
 use wcf\data\guild\Guild;
 use wcf\system\wow\bnetAPI;

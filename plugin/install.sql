@@ -12,7 +12,7 @@ CREATE TABLE wcf1_gman_group (
   calendarQuery VARCHAR(25) NOT NULL DEFAULT '',
   gameRank TINYINT(1) NOT NULL DEFAULT 0,
   showRoaster TINYINT(1) NOT NULL DEFAULT 1,
-  articIeID INT(10) NULL,
+  articleID INT(10) NULL,
   threadID INT(10) NULL,
   boardID INT(10) NULL,
   imageID INT(10) NULL,

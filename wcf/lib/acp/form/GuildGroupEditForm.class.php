@@ -18,7 +18,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 	/**
 	 * @inheritDoc
 	 */
-	public $activeMenuItem = 'wcf.acp.menu.link.gman.guildgroupedit';
+	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
 
 	/**
 	 * id of the edited ad
@@ -40,7 +40,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 
 		WCF::getTPL()->assign([
 			'action' => 'edit',
-			'adObject' => $this->guildGroupObject
+			'guildGroupObject' => $this->guildGroupObject
 		]);
 	}
 
@@ -95,21 +95,21 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 		$this->objectAction = new GuildGroupAction([$this->guildGroupObject], 'update', [
 			'data' =>  [
 			    'groupName'         => $this->groupName,
-                'groupTeaser'       => $this->groupTeaser,
-                'groupWcfID'        => $this->groupWcfID,
-                'showCalender'      => $this->showCalender,
+                'teaser'            => $this->groupTeaser,
+                'wcfGroupID'        => $this->groupWcfID,
+                'showCalender'      => intval($this->showCalender),
                 'calendarTitle'     => $this->calendarTitle,
                 'calendarText'      => $this->calendarText,
                 'calendarQuery'     => $this->calendarQuery,
                 'calendarCategoryID'=> $this->calendarCategoryID,
                 'gameRank'          => $this->gameRank,
-                'showRoaster'       => $this->showRoaster,
-                'articleID'         => $this->articleID,
-                'boardID'           => $this->boardID,
-                'imageID'           => $this->imageID[0],
-                'threadID'          => $this->threadID,
-                'isRaidgruop'       => $this->isRaidgruop,
-                'fetchWCL'          => $this->fetchWCL,
+                'showRoaster'       => intval($this->showRoaster),
+                'articleID'         => $this->articleID > 0 ? $this->articleID : null,
+                'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
+                'imageID'           => isset($this->imageID[0]) ? $this->imageID[0]: null,
+                'threadID'          => $this->threadID > 0 ? $this->threadID : null,
+                'isRaidgruop'       => intval($this->isRaidgruop),
+                'fetchWCL'          => intval($this->fetchWCL),
                 'wclQuery'          => $this->wclQuery,
                 'orderNo'           => $this->orderNo,
                 'lastUpdate'        => TIME_NOW

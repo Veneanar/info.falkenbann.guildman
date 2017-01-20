@@ -1,6 +1,9 @@
 <?php
 namespace wcf\data\guild\group;
 use wcf\data\DatabaseObject;
+use wcf\system\WCF;
+use wcf\data\user\group\UserGroup;
+use wcf\system\request\IRouteController;
 
 /**
  * Represents a Gildenbewerbung
@@ -33,7 +36,7 @@ use wcf\data\DatabaseObject;
  *
  */
 
-class GuildGroup extends DatabaseObject {
+class GuildGroup extends DatabaseObject implements IRouteController {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -42,5 +45,41 @@ class GuildGroup extends DatabaseObject {
 	 * {@inheritDoc}
 	 */
 	protected static $databaseTableIndexName = 'groupID';
+
+	/**
+     * Returns true if current user may delete this group.
+     *
+     * @return	boolean
+     */
+	public function isDeletable() {
+		// insufficient permissions
+		if (!WCF::getSession()->getPermission('admin.gman.canDeleteGroups')) return false;
+
+        $userGroup = new UserGroup($this->wcfGroupID);
+        if ($userGroup->getObjectID > 0) {
+            return $userGroup->isDeletable();
+        }
+		return true;
+	}
+
+	/**
+     * Returns true if current user may edit this group.
+     *
+     * @return	boolean
+     */
+	public function isEditable() {
+		// insufficient permissions
+		if (!WCF::getSession()->getPermission('admin.gman.canEditGroups')) return false;
+
+        $userGroup = new UserGroup($this->wcfGroupID);
+        if ($userGroup->getObjectID > 0) {
+            return $userGroup->isEditable();
+        }
+		return true;
+	}
+
+    public function getTitle() {
+        return $this->groupName;
+    }
 
 }

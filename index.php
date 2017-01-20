@@ -109,7 +109,18 @@ $DBOCreator->execute($DBOCreator::LISTCLASS); // oder BASECLASS/ EDITCLASS / ACT
     //    $statement->execute([$feed]);
 
     //}
-
+<script data-relocate="true">
+		$(function() {
+		    $('input[type="checkbox"][name="showCalender"]').change(function(event) {
+		        if($(this).is(":checked")) {
+		            $('#calendarDetails'):show()
+		        }
+		        else {
+		            $('#calendarDetails'):hide()
+		        }
+			}).trigger('change');
+		});
+</script>
 
 
 

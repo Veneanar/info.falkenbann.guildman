@@ -140,6 +140,8 @@
 
 	<item name="wcf.acp.gman.guild.data.sync"><![CDATA[Automatische Synchronisierung erlauben]]></item>
 	<item name="wcf.acp.gman.guild.data.sync.desc"><![CDATA[Automatisches Abrufen aktivieren. (Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.)]]></item>
+    <item name="wcf.acp.gman.guild.rank"><![CDATA[Gildenrang]]></item>
+    <item name="wcf.acp.gman.group.list"><![CDATA[Gildengruppen]]></item>
 
     <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Syncronisieren]]></item>
     <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[Syncronisieren]]></item>

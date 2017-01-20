@@ -19,7 +19,7 @@ class GuildGroupListPage extends SortablePage {
 	/**
      * @inheritDoc
      */
-	public $activeMenuItem = 'wcf.acp.menu.link.gman.group.list';
+	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
 
 	/**
      * @inheritDoc
@@ -34,7 +34,7 @@ class GuildGroupListPage extends SortablePage {
 	/**
      * @inheritDoc
      */
-	public $validSortFields = ['groupID', 'groupName', 'gameRank', 'gameTitle', 'orderNo'];
+	public $validSortFields = ['groupID', 'groupName', 'gameRank', 'gameTitle', 'members','orderNo'];
 
 	/**
      * @inheritDoc
@@ -71,7 +71,7 @@ class GuildGroupListPage extends SortablePage {
      * @inheritDoc
      */
 	protected function readObjects() {
-		$this->sqlOrderBy = ($this->sortField != 'members' ? 'user_group.' : '').$this->sortField." ".$this->sortOrder;
+		$this->sqlOrderBy = ($this->sortField != 'members' ? 'gman_group.' : '').$this->sortField." ".$this->sortOrder;
 
 		parent::readObjects();
 	}
