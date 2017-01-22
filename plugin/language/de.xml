@@ -166,7 +166,7 @@
 	<item name="wcf.acp.gman.group.showcalendar.description"><![CDATA[Zeige diese Gruppe im Kalender an]]></item>
 	<item name="wcf.acp.gman.group.calendartitle"><![CDATA[Titel für Kalenderevents]]></item>
 	<item name="wcf.acp.gman.group.calendartitle.description"><![CDATA[Dieser Titel wird für Kalenderevents benutzt wenn kein anderer angegeben wurde]]></item>
-	<item name="wcf.acp.gman.group.calendartext"><![CDATA[Text für Kalenderevnts.]]></item>
+	<item name="wcf.acp.gman.group.calendartext"><![CDATA[Text für Kalenderevents.]]></item>
 	<item name="wcf.acp.gman.group.calendartext.description"><![CDATA[Dieser Text wird für Kalenderevents benutzt wenn kein anderer angegeben wurde.]]></item>
 	<item name="wcf.acp.gman.calendarquery"><![CDATA[WoW Kalendertitel]]></item>
 	<item name="wcf.acp.gman.group.calendarquery.description"><![CDATA[Liest WoW Kalendereinträge mit EXAKT diesem Titel für diese Gruppe aus.]]></item>
