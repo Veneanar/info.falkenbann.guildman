@@ -95,6 +95,11 @@
 
   <category name="wcf.acp.menu">
     <item name="wcf.acp.menu.link.gman.guildedit"><![CDATA[Gilde Verwalten]]></item>
+    <item name="wcf.acp.menu.link.gman.group.list"><![CDATA[Gildengruppen verwalten]]></item>
+	<item name="wcf.acp.menu.link.gman.group"><![CDATA[Gildengruppen]]></item>
+
+
+    
 
   </category>  
   <category name="wcf.acp.group">
@@ -112,6 +117,7 @@
     <item name="wcf.acp.group.option.user.gman.canAddCharOwner"><![CDATA[Kann bekannte Charaktere, die bisher nicht zugeordnet sind, zum eigenem Profil hinzufügen]]></item>
     <item name="wcf.acp.group.option.user.gman.canViewChar"><![CDATA[Kann Charaktere sehen]]></item>
     <item name="wcf.acp.group.option.user.gman.canUpdateOwnChar"><![CDATA[Kann eigene Charaktere aktualisieren]]></item>
+	<item name="wcf.acp.group.calendar.description"><![CDATA[Optionen für den Kalender]]></item>
 
   </category> 
   <category name="wcf.acp">
@@ -123,7 +129,7 @@
     <item name="wcf.acp.gman.guild.realm"><![CDATA[Realm]]></item>
     <item name="wcf.acp.gman.guild.realm.desc"><![CDATA[Realm und verbundene Realms]]></item>
 
-  <item name="wcf.acp.gman.guild.guildinfo"><![CDATA[Gildeninformationen]]></item>
+	<item name="wcf.acp.gman.guild.guildinfo"><![CDATA[Gildeninformationen]]></item>
 	<item name="wcf.acp.gman.guild.guildinfo.desc"><![CDATA[Weitere Gildeninfos]]></item>
 	<item name="wcf.acp.gman.guild.image"><![CDATA[Gildenlogo]]></item>
 	<item name="wcf.acp.gman.guild.birthdate"><![CDATA[Gründungsdatum der Gilde]]></item>
@@ -134,6 +140,8 @@
 
 	<item name="wcf.acp.gman.guild.data.sync"><![CDATA[Automatische Synchronisierung erlauben]]></item>
 	<item name="wcf.acp.gman.guild.data.sync.desc"><![CDATA[Automatisches Abrufen aktivieren. (Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.)]]></item>
+    <item name="wcf.acp.gman.guild.rank"><![CDATA[Gildenrang]]></item>
+    <item name="wcf.acp.gman.group.list"><![CDATA[Gildengruppen]]></item>
 
     <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Syncronisieren]]></item>
     <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[Syncronisieren]]></item>
@@ -142,7 +150,47 @@
     <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Lalala!]]></item>
     <item name="wcf.acp.gman.guildmember.sync"><![CDATA[Manuelles Update der Gildenmitgliederliste]]></item>
     <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[nochmal lalala!]]></item>
-
-
+	
+	<item name="wcf.acp.gman.group.groupmain"><![CDATA[Gildengruppen bilden die Ränge und Gruppen der Gilde ab]]></item>
+	<item name="wcf.acp.gman.group.groupmain.desc"><![CDATA[Gildengruppen können Rang und/oder Benutzergruppen zugeordnet werden.]]></item>
+	<item name="wcf.acp.gman.group.name"><![CDATA[Gruppename]]></item>
+	<item name="wcf.acp.gman.group.name.description"><![CDATA[Der Name der Gruppe. (muss mindest 4 Zeichen haben. Darf nicht länger als 50 Zeichen sein)]]></item>
+	<item name="wcf.acp.gman.group.teaser"><![CDATA[Kurzbeschreibung]]></item>
+	<item name="wcf.acp.gman.group.teaser.description"><![CDATA[Kurze Beschreibung der Gruppen. (Maximal 250 zeichen)]]></item>
+	<item name="wcf.acp.gman.group.wcfgroup"><![CDATA[Verknüpfte Benutzergruppen]]></item>
+	<item name="wcf.acp.gman.group.wcfgroup.description"><![CDATA[Accounts die mit Charaktären in dieser Gruppe verknüpft sind werden automatisch diese Benutzergruppe zugeordnet (VORSICHT!)]]></item>
+	<item name="wcf.acp.gman.group.gamerank"><![CDATA[Rang im Spiel]]></item>
+	<item name="wcf.acp.gman.group.gamerank.description"><![CDATA[Charaktäre die diesen Rang im Spiel haben werden automatisch dieser Gilden Gruppe hinzugefügt. (Vorsicht in verbindung mit der Benutzergruppe!)]]></item>
+	<item name="wcf.acp.gman.group.calendar"><![CDATA[Kalenderoptionen]]></item>
+	<item name="wcf.acp.gman.group.showcalendar"><![CDATA[Im Kalender anziegen]]></item>
+	<item name="wcf.acp.gman.group.showcalendar.description"><![CDATA[Zeige die Gruppe im Kalender an]]></item>
+	<item name="wcf.acp.gman.group.calendartitle"><![CDATA[Titel für Kalenderevents]]></item>
+	<item name="wcf.acp.gman.group.calendartitle.description"><![CDATA[Dieser Titel wird für Kalenderevents benutzt, wenn kein anderer angegeben wurde]]></item>
+	<item name="wcf.acp.gman.group.calendartext"><![CDATA[Text für kalenderevnts.]]></item>
+	<item name="wcf.acp.gman.group.calendartext.description"><![CDATA[Dieser Text wird für Kalenderevents benutzt, wenn kein anderer angegeben wurde.]]></item>
+	<item name="wcf.acp.gman.calendarquery"><![CDATA[WoW Kalendertitel]]></item>
+	<item name="wcf.acp.gman.group.calendarquery.description"><![CDATA[Liest WoW Kalendereinträge mit EXAKT diesem Titel für diese gruppe aus.]]></item>
+	<item name="wcf.acp.gman.group.calcat"><![CDATA[Kalenderkategorie]]></item>
+	<item name="wcf.acp.gman.group.calcat.description"><![CDATA[Events werden in dieser kategorie erstellt.]]></item>
+	<item name="wcf.acp.gman.group.appearance"><![CDATA[Gruppenanzeige]]></item>
+	<item name="wcf.acp.gman.guild.appearance.desc"><![CDATA[Bilder, texte und weiteres für die Gruppe]]></item>
+	<item name="wcf.acp.gman.group.image"><![CDATA[Gruppenbild]]></item>
+	<item name="wcf.acp.gman.group.article"><![CDATA[Artikel für diese Gruppe]]></item>
+	<item name="wcf.acp.gman.group.article.description"><![CDATA[Auf diesen Artikel wird verlinkt, bzw. in größeren Boxen wird der Artikel teilw. angezeigt]]></item>
+	<item name="wcf.acp.gman.guild.board"><![CDATA[Forum der Gruppe]]></item>
+	<item name="wcf.acp.gman.group.board.description"><![CDATA[Falls die Gruppe ein eigenes Forum hat, dann werden Gruppeninfos in der Übersicht des Forums angezeigt.]]></item>
+	<item name="wcf.acp.gman.group.thread"><![CDATA[Vorstellungsthread]]></item>
+	<item name="wcf.acp.gman.group.thread.description"><![CDATA[Auf diesen Thread wird verlinkt. / Wenn kein Artikel angegebn wird, dann wird in größeren Boxen der Thread teilw. angezeigt.]]></item>
+	<item name="wcf.acp.gman.group.order"><![CDATA[Reihenfolge]]></item>
+	<item name="wcf.acp.gman.group.order.description"><![CDATA[Sortierreihenfolge der Gruppe (aufsteigend)]]></item>
+	<item name="wcf.acp.gman.group.raid"><![CDATA[Schlachtzugsoptionen]]></item>
+	<item name="wcf.acp.gman.group.raid.desc"><![CDATA[Wenn die Gruppe ein Schlachtzug ist gibt es weitere Optionen]]></item>
+	<item name="wcf.acp.gman.group.israidgruop"><![CDATA[Schlachtzug]]></item>
+	<item name="wcf.acp.gman.group.israidgruop.description"><![CDATA[Ist die Gruppe ein Schlachtzug, dann wird die Gruppe in der Schlachtzugsübersicht angezeigt]]></item>
+	<item name="wcf.acp.gman.group.fetchwcl"><![CDATA[Warcraftlogs]]></item>
+	<item name="wcf.acp.gman.group.fetchwcl.description"><![CDATA[verlinke Warcraftlogs (benötigt API zugang)]]></item>
+	<item name="wcf.acp.gman.wclquery.name"><![CDATA[Warcraftlogs Gruppenname]]></item>
+	<item name="wcf.acp.gman.group.wclquery.description"><![CDATA[Name der Gruppe bei Warcraftlogs]]></item>
+	
   </category>   
 </language>

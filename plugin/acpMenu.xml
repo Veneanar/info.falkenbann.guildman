@@ -8,5 +8,21 @@
       <permissions>admin.gman.canChangeGuild</permissions>
     </acpmenuitem>
 
+    
+    <acpmenuitem name="wcf.acp.menu.link.gman.grouplist">
+      <controller>wcf\acp\page\GuildGroupListForm</controller>
+      <parent>wcf.acp.menu.link.user.management</parent>
+      <permissions>admin.gman.canEditGroups</permissions>
+    </acpmenuitem>
+
+    
+    <acpmenuitem name="wcf.acp.menu.link.gman.groupadd">
+      <controller>wcf\acp\form\GuildGroupAddForm</controller>
+      <parent>wcf.acp.menu.link.gman.grouplist</parent>
+      <permissions>admin.gman.canAddGroups</permissions>
+      <icon>fa-plus</icon>
+    </acpmenuitem>    
+    
+
   </import>
 </data>

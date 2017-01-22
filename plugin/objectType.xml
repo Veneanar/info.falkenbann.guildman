@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/objectType.xsd">
+	<import>
+		<!-- clipboard items -->
+		<type>
+			<name>info.falkenbann.gman.character</name>
+			<definitionname>com.woltlab.wcf.clipboardItem</definitionname>
+			<listclassname>wcf\data\wow\character\WowCharacterList</listclassname>
+		</type>
+    <type>
+      <name>info.falkenbann.gman.guildgroup</name>
+      <definitionname>com.woltlab.wcf.clipboardItem</definitionname>
+      <listclassname>wcf\data\guild\group\GuildGroupList</listclassname>
+    </type>
+
+    <!-- moderation items -->
+    <type>
+      <name>info.falkenbann.acp.gman.moderation.charowner</name>
+      <definitionname>com.woltlab.wcf.moderation.type</definitionname>
+      <classname>wcf\system\moderation\queue\activation\ModerationQueueCharownerAction</classname>
+    </type>    
+    </import>
+</data>

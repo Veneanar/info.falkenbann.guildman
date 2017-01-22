@@ -4,6 +4,8 @@ use wcf\data\JSONExtendedDatabaseObject;
 use wcf\data\DatabaseObject;
 use wcf\data\wow\realm\WowRealm;
 use wcf\data\wow\character\WowCharacter;
+use wcf\data\guild\group\GuildGroup;
+use wcf\data\guild\group\GuildGroupList;
 use wcf\data\media\Media;
 use wcf\data\media\ViewableMedia;
 use wcf\system\WCF;
@@ -72,13 +74,48 @@ class Guild extends JSONExtendedDatabaseObject {
     private $leader = null;
 
     /**
+     * List of Groups not releated to a wow rank
+     *
+     * @var group\GuildGroup[]
+     */
+    private $GuildGroupsNotWoW;
+
+    /**
+     * List of Groups related to a wow rank
+     *
+     * @var group\GuildGroup[]
+     */
+    private $GuildGroupsWoW;
+
+    /**
+     * List of Groups IDsnot releated to a wow rank
+     *
+     * @var integer[]
+     */
+    private $GuildGroupsNotWoWIDs;
+
+    /**
+     * List of Group IDs related to a wow rank
+     *
+     * @var integer[]
+     */
+    private $GuildGroupsWoWIDs;
+
+    /**
      * Returns the Guildleader
      *
      * @return WowCharacter
      */
     public function getLeader() {
-        if (!isset($this->leader)) {
-            $this->leader = new WowCharacter($this->leaderID);
+        if ($this->leader===null) {
+            $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_wow_character
+			    WHERE		guildRank = 0";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute();
+            $row = $statement->fetchArray();
+            if (!$row) $row = [];
+            $this->leader = new WowCharacter(null, $row);;
         }
         return $this->leader;
     }
@@ -89,7 +126,7 @@ class Guild extends JSONExtendedDatabaseObject {
      * @return WoWRealm
      */
     public function getRealm() {
-        if (!isset($this->homeRealm)) {
+        if ($this->homeRealm===null) {
             $this->homeRealm =  new WowRealm($this->realm);
         }
         return $this->homeRealm;
@@ -101,7 +138,7 @@ class Guild extends JSONExtendedDatabaseObject {
      * @return	Media
      */
     public function getLogo() {
-        if (!isset($this->logo)) {
+        if ($this->logo===null) {
             $this->logo = new Media($this->logoID);
         }
         return $this->logo;
@@ -131,4 +168,62 @@ class Guild extends JSONExtendedDatabaseObject {
         }
         return '<span style="color:'.$color.'">'. $this->getFaction .'</span>';
     }
+
+    public function getGuildGroups($onlyWow = false) {
+        if ($this->GuildGroupsWoW===null) {
+            $guildGroups = new GuildGroupList();
+            $guildGroups->getConditionBuilder()->add("gameRank < 11");
+            $guildGroups->readObjects();
+            $this->GuildGroupsWoW = $guildGroups->getObjects();
+            $this->GuildGroupsWoWIDs = $guildGroups->getObjectIDs();
+            $guildGroups = new GuildGroupList();
+            $guildGroups->getConditionBuilder()->add("gameRank = 11");
+            $guildGroups->readObjects();
+            $this->GuildGroupsNotWoW = $guildGroups->getObjects();
+            $this->GuildGroupsNotWoWIDs = $guildGroups->getObjectIDs();
+        }
+        return $onlyWow ? $this->GuildGroupsWoW : array_merge($this->GuildGroupsWoW, $this->GuildGroupsNotWoW);
+    }
+
+    public function getGuildGroupIds($onlyWow = false) {
+        if ($this->GuildGroupsWoW===null) {
+            $this->getGuildGroups();
+        }
+        return $onlyWow ? $this->GuildGroupsWoWIDs : array_merge($this->GuildGroupsWoWIDs, $this->GuildGroupsNotWoWIDs);
+    }
+
+    public function convertToWCFGroup(array $idList) {
+        if ($this->GuildGroupsWoW===null) {
+            $this->getGuildGroups();
+        }
+        $groupList = $this->getGuildGroups;
+        /**
+         * @var $group  group\GuildGroup
+         */
+        $convert = [];
+        foreach($idList as $id) {
+            foreach($groupList as $group) {
+                if ($group->groupID == $id) {
+                    $convert[] = $group->wcfGroupID;
+                    continue;
+                }
+            }
+        }
+        return $convert;
+    }
+
+
+    public function getGroupfromRank($rank) {
+        $groupList = $this->getGuildGroups(true);
+        foreach($groupList as $group) {
+            if ($group->gameRank == $rank) return $group;
+        }
+        return null;
+    }
+
+    public static function initRanks() {
+
+
+    }
+
 }

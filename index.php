@@ -90,26 +90,37 @@ $DBOCreator->execute($DBOCreator::LISTCLASS); // oder BASECLASS/ EDITCLASS / ACT
 
 
 
-    /**
-	 * name of the base table
-	 * @var	string
-	 */
-    private $baseTable = "gman_wow_character_feed";
+    ///**
+    // * name of the base table
+    // * @var	string
+    // */
+    //private $baseTable = "gman_wow_character_feed";
 
-    public function __construct(DatabaseObject $object) {
-        parent::__construct($object);
+    //public function __construct(DatabaseObject $object) {
+    //    parent::__construct($object);
 
-    }
+    //}
 
-    public function update($feed) {
-        $sql = "UPDATE  wcf".WCF_N."_example
-        SET     bar = ?
-        WHERE   exampleID = ?";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute([$feed]);
+    //public function update($feed) {
+    //    $sql = "UPDATE  wcf".WCF_N."_example
+    //    SET     bar = ?
+    //    WHERE   exampleID = ?";
+    //    $statement = WCF::getDB()->prepareStatement($sql);
+    //    $statement->execute([$feed]);
 
-    }
-
+    //}
+<script data-relocate="true">
+		$(function() {
+		    $('input[type="checkbox"][name="showCalender"]').change(function(event) {
+		        if($(this).is(":checked")) {
+		            $('#calendarDetails'):show()
+		        }
+		        else {
+		            $('#calendarDetails'):hide()
+		        }
+			}).trigger('change');
+		});
+</script>
 
 
 

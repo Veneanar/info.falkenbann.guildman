@@ -1,6 +1,9 @@
 <?php
 namespace wcf\data\guild;
 use wcf\data\AbstractDatabaseObjectAction;
+use wcf\data\wow\character\WowCharacter;
+use wcf\data\wow\character\WowCharacterAction;
+use wcf\data\wow\character\WowCharacterList;
 use wcf\system\WCF;
 use wcf\system\wow\bnetAPI;
 
@@ -57,5 +60,22 @@ class GuildAction extends AbstractDatabaseObjectAction {
             if ($this->parameters['updateType']=='member') bnetAPI::updateGuildMemberList();
             if ($this->parameters['updateType']=='gacms') bnetAPI::updateGuildMemberList();
         }
+    }
+
+    public function updateRanks() {
+        $guildMember = new WowCharacterList();
+        $guildMember->getConditionBuilder()->add("inGuild = 1");
+        $guildMember->readObjects();
+        $memberList = $guildMember->getObjects();
+
+        /**
+         * @var     $member     WowCharacter
+         */
+        foreach ($memberList as $member) {
+            $objectAction = new WowCharacterAction([$member], 'changeRank', [
+                    'rank' => $member->guildRank,
+                    ]);
+            $objectAction->executeAction;
+       }
     }
 }

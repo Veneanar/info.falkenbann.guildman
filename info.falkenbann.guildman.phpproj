@@ -19,7 +19,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.php" />
+    <Compile Include="wcf\lib\acp\form\GuildGroupAddForm.class.php" />
+    <Compile Include="wcf\lib\acp\form\GuildGroupEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
+    <Compile Include="wcf\lib\acp\page\GuildGroupListPage.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACMList.class.php" />
     <Compile Include="wcf\lib\data\guild\application\GuildApplication.class.php" />
@@ -49,6 +52,7 @@
     <Compile Include="wcf\lib\data\guild\point\type\PointTypeEditor.class.php" />
     <Compile Include="wcf\lib\data\guild\point\type\PointTypeList.class.php" />
     <Compile Include="wcf\lib\data\JSONExtendedDatabaseObject.class.php" />
+    <Compile Include="wcf\lib\data\moderation\queue\activation\ModerationQueueCharownerAction.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowACM.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowACMList.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowGuildACM.class.php" />
@@ -92,6 +96,7 @@
     <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\" />
     <Folder Include="wcf\lib\" />
+    <Folder Include="wcf\lib\acp\page\" />
     <Folder Include="wcf\lib\data\" />
     <Folder Include="wcf\lib\acp\" />
     <Folder Include="wcf\lib\acp\form\" />
@@ -102,6 +107,9 @@
     <Folder Include="wcf\lib\data\guild\group\" />
     <Folder Include="wcf\lib\data\guild\point\" />
     <Folder Include="wcf\lib\data\guild\point\type\" />
+    <Folder Include="wcf\lib\data\moderation\" />
+    <Folder Include="wcf\lib\data\moderation\queue\" />
+    <Folder Include="wcf\lib\data\moderation\queue\activation\" />
     <Folder Include="wcf\lib\data\wow\" />
     <Folder Include="wcf\lib\data\wow\acm\" />
     <Folder Include="wcf\lib\data\wow\character\" />
@@ -111,6 +119,8 @@
     <Folder Include="wcf\lib\system\background\" />
     <Folder Include="wcf\lib\system\background\job\" />
     <Folder Include="wcf\lib\system\cronjob\" />
+    <Folder Include="wcf\lib\system\moderation\" />
+    <Folder Include="wcf\lib\system\moderation\queue\" />
     <Folder Include="wcf\lib\system\wow\" />
     <Folder Include="wcf\acp\" />
     <Folder Include="wcf\lib\system\wow\exception\" />
@@ -123,12 +133,15 @@
     <Content Include="plugin\install.sql" />
     <Content Include="plugin\language\de.xml" />
     <Content Include="plugin\language\en.xml" />
+    <Content Include="plugin\objectType.xml" />
     <Content Include="plugin\option.xml" />
     <Content Include="plugin\package.xml" />
     <Content Include="plugin\pageMenu.xml" />
     <Content Include="plugin\templateListener.xml" />
     <Content Include="plugin\userGroupOption.xml" />
     <Content Include="wcf\acp\templates\guildEdit.tpl" />
+    <Content Include="wcf\acp\templates\guildGroupAdd.tpl" />
+    <Content Include="wcf\acp\templates\guildGroupList.tpl" />
     <Content Include="wcf\images\wow\0-0-avatar.jpg" />
     <Content Include="wcf\images\wow\0-0-inset.jpg" />
     <Content Include="wcf\images\wow\1-0-avatar.jpg" />
@@ -222,8 +235,24 @@
     <Content Include="wcf\images\wow\9-1-inset.jpg" />
     <Content Include="wcf\images\wow\9-1-profilemain.jpg" />
     <Content Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\input.js" />
+    <Content Include="wcf\templates\moderationCharEnable.tpl" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Libs\moderatedUserGroups\moderatedUserGroups.phpproj">
+      <Name>moderatedUserGroups</Name>
+      <Project>{2c18f6ca-5e4b-4bd2-8d39-a09c8fb3bfc4}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\WBB3_0x\Woltlab Suite Board.phpproj">
+      <Name>Woltlab Suite Board</Name>
+      <Project>{f6a07864-c39a-4030-8f0f-03e4d036e89e}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libs\woltlabCalendar\woltlabCalendar.phpproj">
+      <Name>woltlabCalendar</Name>
+      <Project>{2e00ee22-0410-4ef0-a3df-cd568fa2498d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libs\wsc\Woltlab Suite Core.phpproj">
       <Name>Woltlab Suite Core</Name>
       <Project>{6ba67479-4140-4699-aa6a-edd0c30dfa7d}</Project>

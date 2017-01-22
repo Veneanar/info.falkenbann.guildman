@@ -74,7 +74,7 @@
     <dl>
         <dt><label for="syncGuild">{lang}wcf.page.gman.guildmember{/lang}</label></dt>
         <dd>
-            <p class="button jsSyncGuild" name="syncGuildMember" id="syncGuildMember" data-sync-type="member">{lang}wcf.acp.gman.guildmember.sync.description{/lang}</p>
+            <p class="button jsSyncGuild" name="syncGuildMember" id="syncGuildMember" data-sync-type="member">{lang}wcf.acp.gman.guildmember.sync{/lang}</p>
             <small>{lang}wcf.acp.gman.guildmember.sync.description{/lang}</small>
         </dd>
     </dl>
@@ -239,14 +239,14 @@
              <dl>
                  <dt><label for="syncGuild">{lang}wcf.page.gman.guildmember{/lang}</label></dt>
                  <dd>
-                     <p class="button jsSyncGuild" name="syncGuildMember" id="syncGuildMember" data-sync-type="member">{lang}wcf.acp.gman.guildmember.sync.description{/lang}</p>
+                     <p class="button jsSyncGuild" name="syncGuildMember" id="syncGuildMember" data-sync-type="member">{lang}wcf.acp.gman.guildmember.sync{/lang}</p>
                      <small>{lang}wcf.acp.gman.guildmember.sync.description{/lang}</small>
                  </dd>
              </dl>    
 		    <dl>
                 <dt><label for="syncGuildACM">{lang}wcf.page.gman.guildacm{/lang}</label></dt>
                 <dd>
-                    <p class="button jsSyncGuild" name="syncGuildACM" id="syncGuildACM" data-sync-type="gacms">{lang}wcf.acp.gman.guildacm.sync.description{/lang}</p>
+                    <p class="button jsSyncGuild" name="syncGuildACM" id="syncGuildACM" data-sync-type="gacms">{lang}wcf.acp.gman.guildacm.sync{/lang}</p>
                     <small>{lang}wcf.acp.gman.guildacm.sync.description{/lang}</small>
                 </dd>
 		    </dl>        

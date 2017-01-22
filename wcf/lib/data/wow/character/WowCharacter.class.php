@@ -1,6 +1,8 @@
 <?php
 namespace wcf\data\wow\character;
 use wcf\data\JSONExtendedDatabaseObject;
+use wcf\system\request\IRouteController;
+use wcf\system\request\LinkHandler;
 use wcf\data\wow\WowClasses;
 use wcf\data\wow\WowRace;
 use wcf\system\WCF;
@@ -36,10 +38,12 @@ use wcf\system\WCF;
  * @property-read	string			$calcClass						???
  * @property-read	integer			$faction						Fraktion des Charakters
  * @property-read	integer			$totalHonorableKills			Ehrenpunkte des Charakters
+ * @property integer                $isDisabled                     ist der Char aktiviert?
+ * @property integer                $tempUserID                     save groupinfos.
  *
  */
 
-class WowCharacter extends JSONExtendedDatabaseObject {
+class WowCharacter extends JSONExtendedDatabaseObject implements IRouteController {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -59,6 +63,13 @@ class WowCharacter extends JSONExtendedDatabaseObject {
      * @var	\wcf\data\user\avatar\IUserAvatar
      */
     private $avatar = null;
+
+    /**
+     * saves the chars's profilemain.
+     *
+     * @var	\wcf\data\user\avatar\IUserAvatar
+     */
+    private $profilemain = null;
 
     /**
      * saves the chars's inset.
@@ -109,41 +120,132 @@ class WowCharacter extends JSONExtendedDatabaseObject {
             if ($this->thumbnail) {
                 $this->inset = new WowCharacterAvatar($this, "inset");
             } else {
-                $this->inset = new WowDefaultCharacterAvatar("inset");
+                $this->inset = new WowDefaultCharacterAvatar($this->race, $this->gender,"inset");
             }
-            if (!file_exists($this->avatar->getLocation()) ) {
-                $this->inset = new WowDefaultCharacterAvatar("inset");
+            if (!file_exists($this->inste->getLocation()) ) {
+                $this->inset = new WowDefaultCharacterAvatar($this->race, $this->gender,"inset");
             }
         }
         return $this->inset;
     }
 
     /**
-     * get Guild leader
-     * @return	WowCharacter
+     * Returns the user's inset.
+     *
+     * @return	\wcf\data\user\avatar\IUserAvatar
      */
-    public static function getGuildLeader() {
-        $sql = "SELECT	*
-			    FROM		wcf".WCF_N."_gman_wow_character
-			    WHERE		guildRank = 0";
-		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute();
-		$row = $statement->fetchArray();
-		if (!$row) $row = [];
-		return new WowCharacter(null, $row);
+	public function getProfileMain() {
+        if ($this->profilemain === null) {
+            if ($this->thumbnail) {
+                $this->profilemain = new WowCharacterAvatar($this, "profilemain");
+            } else {
+                $this->profilemain = new WowDefaultCharacterAvatar($this->race, $this->gender,"profilemain");
+            }
+            if (!file_exists($this->avatar->getLocation()) ) {
+                $this->profilemain = new WowDefaultCharacterAvatar($this->race, $this->gender,"profilemain");
+            }
+        }
+        return $this->profilemain;
     }
 
+	/**
+     * Returns localized level information from actual character .
+     *
+     * @return	string
+     */
     public function getLevel() {
         return WCF::getLanguage()->get('wcf.page.gman.wow.level') . $this->level;
     }
 
+	/**
+     * Returns race information from actual character .
+     *
+     * @return	WowRace
+     */
     public function getRace() {
         if ($this->raceData === null)  $this->raceData = new WowRace($this->race);
         return $this->raceData;
     }
+
+	/**
+     * Returns class information from actual character .
+     *
+     * @return	WowClasses
+     */
     public function getClass() {
         if ($this->classData === null)  $this->classData = new WowClasses($this->class);
         return $this->classData;
     }
 
+	/**
+     * Returns character name and details.
+     *
+     * @return	string
+     */
+    public function getNice($realm = false, $long = true) {
+        return $this->name . $realm ? ' ('.$this->realm.')' : ''. $long ? ' '. $this->getLevel() . ' '. $this->raceData->name . ' '. $this->classData->name : '';
+    }
+
+	/**
+     * Returns character name and details as HTML Output.
+     *
+     * @return	string
+     */
+    public function getNiceTag($realm = false, $long = true) {
+        if ($long) {
+            return  $this->name . $realm ? ' ('.$this->realm.') ' : ' ' . $this->getLevel() . ' '. $this->raceData->getTag() . ' '. $this->classData->getTag();
+
+        } else {
+            return '<span color="'.$this->classData->color.'">'. $this->name . $realm ? ' ('.$this->realm.')' : '' .'</span>';
+        }
+
+    }
+
+	/**
+     * @inheritDoc
+     */
+	public function getTitle() {
+		return $this->name;
+	}
+
+	/**
+     * @inheritDoc
+     */
+	public function getLink() {
+		return LinkHandler::getInstance()->getLink('User', [
+			'application' => 'wcf',
+			'object' => $this,
+			'forceFrontend' => true
+		]);
+	}
+
+    /**
+     * Returns an array with all the groups in which the actual character is a member.
+     *
+     * @return	integer[]
+     */
+	public function getGroupIDs() {
+		if ($this->groupIDs === null) {
+			$sql = "SELECT	groupID
+						FROM	wcf".WCF_N."_gman_char_to_group
+						WHERE	charID = ?";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			$statement->execute([$this->charID]);
+			$this->groupIDs = $statement->fetchAll(\PDO::FETCH_COLUMN);
+			sort($this->groupIDs, SORT_NUMERIC);
+		}
+		return $this->groupIDs;
+	}
+
+    public function getAccountGroups() {
+        $accountList = new WowCharacterList();
+        $accountList->getConditionBuilder()->add('WHERE userID = ?', [$this->userID]);
+        $accountList->readObjects();
+        $charList = $accountList->getObjects();
+        $groupIDs = [];
+        foreach($charList as $char) {
+            $groupIDs[] = $char->getGroupIDs();
+        }
+        return array_unique($groupIDs);
+    }
 }
