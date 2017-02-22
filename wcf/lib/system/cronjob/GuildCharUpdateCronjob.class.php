@@ -16,10 +16,10 @@ use wcf\data\cronjob\Cronjob;
 
  */
 class GuildCharUpdateCronjob extends AbstractCronjob {
-    private static function doaction() {
+    private static function doaction($wcfdir = '') {
         if (GMAN_BNET_USEEXTERNCRON) {
             $data = WowCharacterAction::bulkUpdate(true, false);
-            bnetAPI::updateCharacter($data);
+            bnetAPI::updateCharacter($data, $wcfdir);
         }
         if (GMAN_BNET_USEJOBS) {
             $data = WowCharacterAction::bulkUpdate(false, false);
@@ -33,7 +33,7 @@ class GuildCharUpdateCronjob extends AbstractCronjob {
         parent::execute($cronjob);
         if (GMAN_BNET_KEY != '') static::doaction();
     }
-    public static function directExecute() {
-        if (GMAN_BNET_KEY != '')  static::doaction();
+    public static function directExecute($wcfdir) {
+        if (GMAN_BNET_KEY != '')  static::doaction($wcfdir);
     }
 }

@@ -95,7 +95,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 		$this->objectAction = new GuildGroupAction([$this->guildGroupObject], 'update', [
 			'data' =>  [
 			    'groupName'         => $this->groupName,
-                'teaser'            => $this->groupTeaser,
+                'groupTeaser'       => $this->groupTeaser,
                 'wcfGroupID'        => $this->groupWcfID,
                 'showCalender'      => intval($this->showCalender),
                 'calendarTitle'     => $this->calendarTitle,

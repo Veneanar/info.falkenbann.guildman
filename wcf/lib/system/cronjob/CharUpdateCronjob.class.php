@@ -16,8 +16,8 @@ use wcf\system\exception\SystemException;
 
  */
 class CharUpdateCronjob extends AbstractCronjob {
-    private static function doaction() {
-        bnetAPI::updateCharacter(WowCharacterAction::bulkUpdate(true, true));
+    private static function doaction($wcfdir = '') {
+        bnetAPI::updateCharacter(WowCharacterAction::bulkUpdate(true, true), $wcfdir);
     }
     /**
      * @see wcf\system\cronjob\ICronjob::execute()
@@ -26,7 +26,7 @@ class CharUpdateCronjob extends AbstractCronjob {
         parent::execute($cronjob);
         if (GMAN_BNET_KEY == '') static::doaction();
     }
-    public static function directexecute() {
-        if (GMAN_BNET_KEY == '')  static::doaction();
+    public static function directexecute($wcfdir) {
+        if (GMAN_BNET_KEY == '')  static::doaction($wcfdir);
     }
 }

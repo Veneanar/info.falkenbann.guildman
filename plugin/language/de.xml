@@ -12,8 +12,15 @@
     <item name="wcf.page.gman.roatser.content"><![CDATA[Hier hast du den Überblick wer wir alles sind]]></item>
 
     <item name="wcf.page.gman.wow.level"><![CDATA[Level]]></item>
+    <item name="wcf.page.gman.wow.race"><![CDATA[Rasse]]></item>
+    <item name="wcf.page.gman.wow.class"><![CDATA[Klasse]]></item>
     <item name="wcf.page.gman.wow.horde"><![CDATA[Horde]]></item>
     <item name="wcf.page.gman.wow.alliance"><![CDATA[Allianz]]></item>
+    <item name="wcf.page.gman.wow.averageItemLevel"><![CDATA[iLvl]]></item>
+    <item name="wcf.page.gman.wow.averageItemLevelEquipped"><![CDATA[iLvl (Angezogen)]]></item>
+    <item name="wcf.page.gman.wow.rank"><![CDATA[Rang]]></item>
+    <item name="wcf.page.gman.wow.groups"><![CDATA[Gruppen]]></item>
+
 
     <item name="wcf.page.gman.guildAchievementPoints"><![CDATA[Erfolgspunkte]]></item>
     <item name="wcf.page.gman.guildAchievementPoints.desc"><![CDATA[Erfolgspunkte der Gilde]]></item>
@@ -95,12 +102,16 @@
 
   <category name="wcf.acp.menu">
     <item name="wcf.acp.menu.link.gman.guildedit"><![CDATA[Gilde Verwalten]]></item>
-    <item name="wcf.acp.menu.link.gman.group.list"><![CDATA[Gildengruppen verwalten]]></item>
-	<item name="wcf.acp.menu.link.gman.group"><![CDATA[Gildengruppen]]></item>
+    <item name="wcf.acp.menu.link.gman.grouplist"><![CDATA[Gildengruppen verwalten]]></item>
+    <item name="wcf.acp.menu.link.gman.groupadd"><![CDATA[Gildengruppe hinzufügen]]></item>
+    <item name="wcf.acp.menu.link.gman.charlist"><![CDATA[Charaktere verwalten]]></item>
+    <item name="wcf.acp.menu.link.gman.charadd"><![CDATA[Charakter hinzufügen]]></item>    
+
+    <item name="wcf.acp.menu.link.gman.group"><![CDATA[Gildengruppen]]></item>
+
 
 
     
-
   </category>  
   <category name="wcf.acp.group">
     <item name="wcf.acp.group.option.category.admin.gman"><![CDATA[GMan Admin]]></item>
@@ -158,7 +169,7 @@
 	<item name="wcf.acp.gman.group.teaser"><![CDATA[Kurzbeschreibung]]></item>
 	<item name="wcf.acp.gman.group.teaser.description"><![CDATA[Kurze Beschreibung der Gruppen. (Maximal 250 zeichen)]]></item>
 	<item name="wcf.acp.gman.group.wcfgroup"><![CDATA[Verknüpfte Benutzergruppen]]></item>
-	<item name="wcf.acp.gman.group.wcfgroup.description"><![CDATA[Accounts die mit Charaktären in dieser Gruppe verknüpft sind werden automatisch diese Benutzergruppe zugeordnet (VORSICHT!)]]></item>
+	<item name="wcf.acp.gman.group.wcfgroup.description"><![CDATA[Accounts die mit Charaktären in dieser Gruppe verknüpft sind werden automatisch diese Benutzergruppe zugeordnet (Systemgruppen werden nicht angezeigt. Es sollen nur selbst ertsellte Gruppen verwendet werden.)]]></item>
 	<item name="wcf.acp.gman.group.gamerank"><![CDATA[Rang im Spiel]]></item>
 	<item name="wcf.acp.gman.group.gamerank.description"><![CDATA[Charaktäre die diesen Rang im Spiel haben werden automatisch dieser Gilden Gruppe hinzugefügt. (Vorsicht in verbindung mit der Benutzergruppe!)]]></item>
 	<item name="wcf.acp.gman.group.calendar"><![CDATA[Kalenderoptionen]]></item>

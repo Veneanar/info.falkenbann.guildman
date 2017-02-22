@@ -19,9 +19,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.php" />
+    <Compile Include="wcf\lib\acp\form\CharacterAddForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildGroupAddForm.class.php" />
+    <Compile Include="wcf\lib\acp\form\CharacterEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildGroupEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
+    <Compile Include="wcf\lib\acp\page\CharacterListPage.class.php" />
     <Compile Include="wcf\lib\acp\page\GuildGroupListPage.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACMList.class.php" />
@@ -69,13 +72,21 @@
     <Compile Include="wcf\lib\data\wow\realm\WowRealm.class.php" />
     <Compile Include="wcf\lib\data\wow\realm\WowRealmList.class.php" />
     <Compile Include="wcf\lib\data\wow\WowClasses.class.php" />
+    <Compile Include="wcf\lib\data\wow\WowClassesList.class.php" />
     <Compile Include="wcf\lib\data\wow\WowRace.class.php" />
+    <Compile Include="wcf\lib\data\wow\WowRaceList.class.php" />
     <Compile Include="wcf\lib\system\background\job\WowCharacterUpdateJob.class.php" />
+    <Compile Include="wcf\lib\system\clipboard\action\CharClipboardAction.class.php" />
     <Compile Include="wcf\lib\system\cronjob\CharUpdateCronjob.class.php" />
     <Compile Include="wcf\lib\system\cronjob\GuildCharUpdateCronjob.class.php" />
     <Compile Include="wcf\lib\system\cronjob\GuildUpdateACMCronjob.class.php" />
     <Compile Include="wcf\lib\system\cronjob\GuildUpdateCronjob.class.php" />
+    <Compile Include="wcf\lib\system\moderation\queue\activation\IModerationQueueCharOwnerHandler.class.php" />
+    <Compile Include="wcf\lib\system\wow\SyncCharacterUpdate.class.php" />
+    <Compile Include="wcf\lib\system\wow\AsyncCharacterUpdate.class.php" />
+    <Compile Include="wcf\lib\system\wow\SyncImageDownload.class.php" />
     <Compile Include="wcf\lib\system\wow\bnetAPI.class.php" />
+    <Compile Include="wcf\lib\system\wow\AsyncImageDownload.class.php" />
     <Compile Include="wcf\lib\system\wow\exception\AuthenticationFailure.class.php" />
     <Compile Include="wcf\test.php" />
   </ItemGroup>
@@ -118,9 +129,12 @@
     <Folder Include="wcf\lib\system\" />
     <Folder Include="wcf\lib\system\background\" />
     <Folder Include="wcf\lib\system\background\job\" />
+    <Folder Include="wcf\lib\system\clipboard\action\" />
     <Folder Include="wcf\lib\system\cronjob\" />
     <Folder Include="wcf\lib\system\moderation\" />
     <Folder Include="wcf\lib\system\moderation\queue\" />
+    <Folder Include="wcf\lib\system\moderation\queue\activation\" />
+    <Folder Include="wcf\lib\system\clipboard\" />
     <Folder Include="wcf\lib\system\wow\" />
     <Folder Include="wcf\acp\" />
     <Folder Include="wcf\lib\system\wow\exception\" />
@@ -128,19 +142,23 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="plugin\acpMenu.xml" />
+    <Content Include="plugin\clipboardAction.xml" />
     <Content Include="plugin\cronjob.xml" />
     <Content Include="plugin\eventListener.xml" />
     <Content Include="plugin\install.sql" />
     <Content Include="plugin\language\de.xml" />
     <Content Include="plugin\language\en.xml" />
     <Content Include="plugin\objectType.xml" />
+    <Content Include="plugin\objectTypeDefinition.xml" />
     <Content Include="plugin\option.xml" />
     <Content Include="plugin\package.xml" />
     <Content Include="plugin\pageMenu.xml" />
     <Content Include="plugin\templateListener.xml" />
     <Content Include="plugin\userGroupOption.xml" />
     <Content Include="wcf\acp\templates\guildEdit.tpl" />
+    <Content Include="wcf\acp\templates\guildGroupAdd - Copy.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd.tpl" />
+    <Content Include="wcf\acp\templates\characterList.tpl" />
     <Content Include="wcf\acp\templates\guildGroupList.tpl" />
     <Content Include="wcf\images\wow\0-0-avatar.jpg" />
     <Content Include="wcf\images\wow\0-0-inset.jpg" />

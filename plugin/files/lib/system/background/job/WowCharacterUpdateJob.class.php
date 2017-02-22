@@ -31,7 +31,7 @@ class WowCharacterUpdateJob extends AbstractBackgroundJob {
 	/**
 	 * API calls timeout between the tries.
 	 *
-	 * @return	int	5 minutes, 15 minutes, 1 hour.
+	 * @return	int	5 minutes, 15 minutes, 30 minutes.
 	 */
 	public function retryAfter() {
 		switch ($this->getFailures()) {
@@ -40,7 +40,7 @@ class WowCharacterUpdateJob extends AbstractBackgroundJob {
 			case 2:
 				return 15 * 60;
 			case 3:
-				return  60 * 60;
+				return  30 * 60;
 		}
 	}
 

@@ -76,10 +76,6 @@ class GuildAction extends AbstractDatabaseObjectAction {
                     'rank' => $member->guildRank,
                     ]);
             $objectAction->executeAction;
-            }
-        }
-
-
-
+       }
     }
 }

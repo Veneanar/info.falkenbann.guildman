@@ -25,7 +25,6 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      * Changes the user Rank
      *
      * @param	integer		$groupIDs
-
      */
     public function changeRank($newRank) {
         $guild = new Guild();
@@ -114,7 +113,6 @@ class WowCharacterEditor extends DatabaseObjectEditor {
 	/**
      * Removes a user from multiple user groups.
      *
-     * @param	array		$groupIDs
      */
 	public function removeFromAllGroups() {
 		$sql = "DELETE FROM	wcf".WCF_N."_gman_char_to_group

@@ -1,6 +1,8 @@
 <?php
 namespace wcf\acp\page;
 use wcf\data\guild\group\GuildGroup;
+use wcf\system\exception\NamedUserException;
+use wcf\data\guild\Guild;
 use wcf\data\guild\group\GuildGroupList;
 use wcf\page\SortablePage;
 use wcf\system\WCF;
@@ -19,7 +21,7 @@ class GuildGroupListPage extends SortablePage {
 	/**
      * @inheritDoc
      */
-	public $activeMenuItem = 'wcf.acp.menu.link.gman.group.list';
+	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
 
 	/**
      * @inheritDoc
@@ -34,7 +36,7 @@ class GuildGroupListPage extends SortablePage {
 	/**
      * @inheritDoc
      */
-	public $validSortFields = ['groupID', 'groupName', 'gameRank', 'gameTitle', 'orderNo'];
+	public $validSortFields = ['groupID', 'groupName', 'gameRank', 'gameTitle', 'members','orderNo'];
 
 	/**
      * @inheritDoc
@@ -48,10 +50,21 @@ class GuildGroupListPage extends SortablePage {
 	public $deletedGroups = 0;
 
 	/**
+     * guild Object
+     * @var	Guild
+     */
+    public $guild = null;
+
+	/**
      * @inheritDoc
      */
 	public function readParameters() {
 		parent::readParameters();
+        // check guild 
+        $this->guild = new Guild();
+        if ($this->guild->name == null) {
+            throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.noguild'));
+        }
 
 		// detect group deletion
 		if (isset($_REQUEST['deletedGroups'])) {
@@ -71,7 +84,7 @@ class GuildGroupListPage extends SortablePage {
      * @inheritDoc
      */
 	protected function readObjects() {
-		$this->sqlOrderBy = ($this->sortField != 'members' ? 'user_group.' : '').$this->sortField." ".$this->sortOrder;
+		$this->sqlOrderBy = ($this->sortField != 'members' ? 'gman_group.' : '').$this->sortField." ".$this->sortOrder;
 
 		parent::readObjects();
 	}
@@ -81,8 +94,8 @@ class GuildGroupListPage extends SortablePage {
      */
 	public function assignVariables() {
 		parent::assignVariables();
-
 		WCF::getTPL()->assign([
+            'guild' => $this->guild,
 			'deletedGroups' => $this->deletedGroups
 		]);
 	}

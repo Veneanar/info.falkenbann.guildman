@@ -74,6 +74,13 @@ class Guild extends JSONExtendedDatabaseObject {
     private $leader = null;
 
     /**
+     * ranklist
+     *
+     * @var array
+     */
+    private $rankList = [];
+
+    /**
      * List of Groups not releated to a wow rank
      *
      * @var group\GuildGroup[]
@@ -221,9 +228,31 @@ class Guild extends JSONExtendedDatabaseObject {
         return null;
     }
 
-    public static function initRanks() {
-
-
+    public function getRanks() {
+        if (empty($this->rankList)) {
+            if (strlen(GMAN_MAIN_RANK0) > 1) $this->rankList[] = ['rankID' => 0, 'rankName' => GMAN_MAIN_RANK0];
+            if (strlen(GMAN_MAIN_RANK1) > 1) $this->rankList[] = ['rankID' => 1, 'rankName' => GMAN_MAIN_RANK1];
+            if (strlen(GMAN_MAIN_RANK2) > 1) $this->rankList[] = ['rankID' => 2, 'rankName' => GMAN_MAIN_RANK2];
+            if (strlen(GMAN_MAIN_RANK3) > 1) $this->rankList[] = ['rankID' => 3, 'rankName' => GMAN_MAIN_RANK3];
+            if (strlen(GMAN_MAIN_RANK4) > 1) $this->rankList[] = ['rankID' => 4, 'rankName' => GMAN_MAIN_RANK4];
+            if (strlen(GMAN_MAIN_RANK5) > 1) $this->rankList[] = ['rankID' => 5, 'rankName' => GMAN_MAIN_RANK5];
+            if (strlen(GMAN_MAIN_RANK6) > 1) $this->rankList[] = ['rankID' => 6, 'rankName' => GMAN_MAIN_RANK6];
+            if (strlen(GMAN_MAIN_RANK7) > 1) $this->rankList[] = ['rankID' => 7, 'rankName' => GMAN_MAIN_RANK7];
+            if (strlen(GMAN_MAIN_RANK8) > 1) $this->rankList[] = ['rankID' => 8, 'rankName' => GMAN_MAIN_RANK8];
+            if (strlen(GMAN_MAIN_RANK9) > 1) $this->rankList[] = ['rankID' => 9, 'rankName' => GMAN_MAIN_RANK9];
+        }
+        return $this->rankList;
     }
 
+    public function getRankName($rank) {
+        $ranks = $this->getRanks();
+        $retval = 'N/A';
+        foreach ($ranks as $r) {
+            if ($r['rankID'] == $rank) {
+                $retval = $r['rankName'];
+                break;
+            }
+        }
+        return $retval;
+    }
 }

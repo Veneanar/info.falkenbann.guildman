@@ -8,6 +8,7 @@
 <header class="contentHeader">
     <div class="contentHeaderTitle">
         <h1 class="contentTitle">{lang}wcf.acp.gman.group.list{/lang}</h1>
+        <p class="contentDescription">{$guild->name}</p>
     </div>
 
     {hascontent}
@@ -70,7 +71,7 @@
                 <td class="columnDigits columnMembers">
                     <a class="jsTooltip" title="{lang}wcf.acp.group.showMembers{/lang}" href="{link controller='UserSearch'}groupID={@$group->groupID}{/link}">{#$group->members}</a>
                 </td>
-                <td class="columnDigits columnGameRank">{#$group->gameRank}</td>
+                <td class="columnDigits columnGameRank">{$guild->getRankName($group->gameRank)}</td>
 
                 {event name='columns'}
             </tr>

@@ -194,11 +194,19 @@ class GuildGroupAddForm extends AbstractForm {
         $boardList = new BoardList;
         $boardList->readObjects();
         $boards = $boardList->getObjects();
-        //echo "<pre>"; var_dump($boards); echo "</pre>"; die;
+
         $wcfGroupList = new UserGroupList();
+        $wcfGroupList->getConditionBuilder()->add("groupType > 3");
+        $wcfGroupList->getConditionBuilder()->add("groupID != 4");
+        $wcfGroupList->getConditionBuilder()->add("groupID != 5");
         $wcfGroupList->readObjects();
         $wcfGroups = $wcfGroupList->getObjects();
 
+        $excludedCategoryIDs = array_diff(CalendarCategory::getAccessibleCategoryIDs(), CalendarCategory::getAccessibleCategoryIDs(['canUseCategory']));
+		$categoryTree = new CalendarCategoryNodeTree('com.woltlab.calendar.category', 0, false, $excludedCategoryIDs);
+		$categoryList = $categoryTree->getIterator();
+
+        // echo "<pre>"; var_dump($wcfGroups); echo "</pre>"; die;
         $guild = new Guild();
         $ranks = $guild->getRanks();
 
@@ -213,9 +221,9 @@ class GuildGroupAddForm extends AbstractForm {
             'calendarTitle'     => $this->calendarTitle,
             'calendarText'      => $this->calendarText,
             'calendarQuery'     => $this->calendarQuery,
-            'categoryList'      => $this->categoryList,
+            'categoryList'      => $categoryList,
             'gameRank'          => $this->gameRank,
-            'rankList'             => $ranks,
+            'rankList'          => $ranks,
             'showRoaster'       => $this->showRoaster,
             'articleID'         => $this->articleID,
             'articleList'       => $articles,
@@ -260,7 +268,7 @@ class GuildGroupAddForm extends AbstractForm {
             if (isset($_POST['calendarTitle'])) $this->calendarTitle    = StringUtil::trim($_POST['calendarTitle']);
             if (isset($_POST['calendarText']))  $this->calendarText     = StringUtil::trim($_POST['calendarText']);
             if (isset($_POST['calendarQuery'])) $this->calendarQuery    = StringUtil::trim($_POST['calendarQuery']);
-            if (!empty($_POST['calendarCategoryID']))   $this->calendarCategoryID       = ArrayUtil::toIntegerArray($_POST['calendarCategoryID'])[0];
+            if (isset($_POST['calendarCategoryID']))   $this->calendarCategoryID       = $_POST['calendarCategoryID'];
         }
         if (isset($_POST['gameRank']))      $this->gameRank         = intval($_POST['gameRank']);
         if (isset($_POST['showRoaster']))   $this->showRoaster      = true;
@@ -318,15 +326,15 @@ class GuildGroupAddForm extends AbstractForm {
 		}
 
         if ($this->showCalender) {
-            if (empty($this->calendarCategoryID)) {
-                throw new UserInputException('categoryID');
+            if ($this->calendarCategoryID == 0) {
+                throw new UserInputException('calendarCategoryID');
             }
             $category = CalendarCategory::getCategory($this->calendarCategoryID);
             if ($category === null) {
-                throw new UserInputException('categoryID', 'invalid');
+                throw new UserInputException('calendarCategoryID', 'invalid');
             }
             if (!$category->isAccessible() || !$category->getPermission('canUseCategory')) {
-                throw new UserInputException('categoryID', 'invalid');
+                throw new UserInputException('calendarCategoryID', 'invalid');
             }
         }
 
@@ -362,7 +370,7 @@ class GuildGroupAddForm extends AbstractForm {
 		$this->objectAction = new GuildGroupAction([], 'create', [
 			'data' =>  [
 			    'groupName'         => $this->groupName,
-                'teaser'            => $this->groupTeaser,
+                'groupTeaser'            => $this->groupTeaser,
                 'wcfGroupID'        => $this->groupWcfID,
                 'showCalender'      => intval($this->showCalender),
                 'calendarTitle'     => $this->calendarTitle,

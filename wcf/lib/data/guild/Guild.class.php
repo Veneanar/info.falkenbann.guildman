@@ -243,4 +243,16 @@ class Guild extends JSONExtendedDatabaseObject {
         }
         return $this->rankList;
     }
+
+    public function getRankName($rank) {
+        $ranks = $this->getRanks();
+        $retval = 'N/A';
+        foreach ($ranks as $r) {
+            if ($r['rankID'] == $rank) {
+                $retval = $r['rankName'];
+                break;
+            }
+        }
+        return $retval;
+    }
 }

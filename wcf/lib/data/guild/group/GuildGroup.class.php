@@ -14,7 +14,7 @@ use wcf\system\request\IRouteController;
  *
  * @property integer		 $groupID			    PRIMARY KEY
  * @property string		     $groupName			    Name der Gruppe
- * @property string		     $teaser			    Kurzbeschreibung f. minibox und wowprogress
+ * @property string		     $groupTeaser			    Kurzbeschreibung f. minibox und wowprogress
  * @property integer		 $wcfGroupID			Gruppen ID vom WSC
  * @property integer		 $showCalender			zeige im Kalender
  * @property integer		 $calendarCategoryID			zeige im Kalender

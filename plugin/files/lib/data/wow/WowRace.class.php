@@ -9,7 +9,7 @@ use wcf\data\DatabaseObject;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property 		 	    PRIMARY KEY
+    
  * @property integer		$wraceID
  * @property integer		$mask
  * @property string		    $side

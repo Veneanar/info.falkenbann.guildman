@@ -1,10 +1,13 @@
 <?php
 namespace wcf\data\wow\character;
+use wcf\data\guild\Guild;
+use wcf\data\guild\group\GuildGroup;
 use wcf\data\JSONExtendedDatabaseObject;
 use wcf\system\request\IRouteController;
 use wcf\system\request\LinkHandler;
 use wcf\data\wow\WowClasses;
 use wcf\data\wow\WowRace;
+use wcf\data\user\User;
 use wcf\system\WCF;
 
 /**
@@ -79,16 +82,41 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     private $inset = null;
 
     /**
+     * saves the chars's equip.
+     *
+     * @var	WowCharacterItemSet
+     */
+    private $equip = null;
+
+    /**
      * saves the chars's class information.
      * @var WowClasses
      */
     private $classData = null;
 
     /**
+     * saves the chars's rank name information.
+     * @var string
+     */
+    private $rankName = '';
+
+    /**
      * saves the chars's race inofrmation.
      * @var WoWRace
      */
     private $raceData = null;
+
+    /**
+     * saves the chars's group IDs.
+     * @var integer[]
+     */
+    private $groupIDs = [];
+
+    /**
+     * saves the chars's groups.
+     * @var GuildGroup[]
+     */
+    private $groups = [];
 
 
     /**
@@ -122,11 +150,23 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
             } else {
                 $this->inset = new WowDefaultCharacterAvatar($this->race, $this->gender,"inset");
             }
-            if (!file_exists($this->inste->getLocation()) ) {
+            if (!file_exists($this->inset->getLocation()) ) {
                 $this->inset = new WowDefaultCharacterAvatar($this->race, $this->gender,"inset");
             }
         }
         return $this->inset;
+    }
+
+    /**
+     * Returns the user's inset.
+     *
+     * @return	WowCharacterItemSet
+     */
+	public function getEquip() {
+        if ($this->equip === null) {
+            $this->equip = new WowCharacterItemSet($this);
+        }
+        return $this->equip;
     }
 
     /**
@@ -165,6 +205,19 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     public function getRace() {
         if ($this->raceData === null)  $this->raceData = new WowRace($this->race);
         return $this->raceData;
+    }
+
+	/**
+     * Returns rank information from actual character .
+     *
+     * @return	string
+     */
+    public function getRank() {
+        if (empty($this->rankName))  {
+            $myGuild = new Guild();
+            $this->rankName = $myGuild->getRankName($this->guildRank);
+        }
+        return $this->rankName;
     }
 
 	/**
@@ -224,8 +277,9 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      *
      * @return	integer[]
      */
-	public function getGroupIDs() {
+	private function getGroupIDs() {
 		if ($this->groupIDs === null) {
+            $this->groupIDs[] = 0;
 			$sql = "SELECT	groupID
 						FROM	wcf".WCF_N."_gman_char_to_group
 						WHERE	charID = ?";
@@ -236,6 +290,23 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 		}
 		return $this->groupIDs;
 	}
+
+    /**
+     * Returns an array with all the groups in which the actual character is a member.
+     *
+     * @return	GuildGroup[]
+     */
+    public function getGroups() {
+        if (empty($this->groups)) {
+            foreach ($this->groupIDs as $groupID) {
+                if ($groupID > 0) {
+                    $this->groups[] = new GuildGroup($groupID);
+                }
+            }
+        }
+        return $this->groups;
+    }
+
 
     public function getAccountGroups() {
         $accountList = new WowCharacterList();
@@ -248,4 +319,36 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
         }
         return array_unique($groupIDs);
     }
+
+	/**
+     * Returns true if current user may delete this group.
+     *
+     * @return	boolean
+     */
+	public function isDeletable() {
+		// insufficient permissions
+		if (!WCF::getSession()->getPermission('admin.gman.canDeleteGroups')) return false;
+
+        $user = new User($this->userID);
+        if ($user->getObjectID > 0) {
+            return $user->isDeletable();
+        }
+		return true;
+	}
+
+	/**
+     * Returns true if current user may edit this group.
+     *
+     * @return	boolean
+     */
+	public function isEditable() {
+		// insufficient permissions
+		if (!WCF::getSession()->getPermission('admin.gman.canEditGroups')) return false;
+
+        $user = new User($this->userID);
+        if ($user->getObjectID > 0) {
+            return $user->isEditable();
+        }
+		return true;
+	}
 }

@@ -15,57 +15,57 @@
 
     <options>
       <option name="admin.gman.canChangeGuild">
-        <categoryname>admin.guildtool</categoryname>
+        <categoryname>admin.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="admin.gman.canAddGroups">
-        <categoryname>admin.guildtool</categoryname>
+        <categoryname>admin.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="admin.gman.canEditGroups">
-        <categoryname>admin.guildtool</categoryname>
+        <categoryname>admin.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="admin.gman.canDeleteGroups">
-        <categoryname>admin.guildtool</categoryname>
+        <categoryname>admin.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="mod.gman.canAddCharsToGroups">
-        <categoryname>mod.guildtool</categoryname>
+        <categoryname>mod.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>0</defaultvalue>
       </option>
       <option name="mod.gman.canEditCharOwner">
-        <categoryname>admin.guildtool</categoryname>
+        <categoryname>mod.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="mod.gman.canUpdateChar">
-        <categoryname>user.guildtool</categoryname>
+        <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="user.gman.canViewChar">
-        <categoryname>user.guildtool</categoryname>
+        <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="user.gman.canAddChar">
-        <categoryname>user.guildtool</categoryname>
+        <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
       <option name="user.gman.canAddCharOwner">
-        <categoryname>user.guildtool</categoryname>
+        <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>      
       <option name="user.gman.canUpdateOwnChar">
-        <categoryname>user.guildtool</categoryname>
+        <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>      

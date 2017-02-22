@@ -111,7 +111,6 @@ class GuildEditForm extends AbstractForm {
             }
             bnetAPI::updateRealms();
             $this->forceStart = true;
-
         }
         $guildLeader = $this->guild->getLeader();
         if ($guildLeader === null) {

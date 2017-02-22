@@ -26,12 +26,12 @@ class WowCharacterQueueActivationHandler extends AbstractModerationQueueHandler 
 	/**
      * @inheritDoc
      */
-	protected $definitionName = 'com.woltlab.wcf.moderation.activation';
+	protected $definitionName = 'com.woltlab.wcf.moderation.type';
 
 	/**
      * @inheritDoc
      */
-	protected $objectType = 'info.falkenbann.acp.gman.moderation.charowner';
+	protected $objectType = 'info.falkenbann.gman.moderation.charowner';
 
 	/**
      * @inheritDoc

@@ -34,7 +34,7 @@
         <dl {if $errorField=='groupName'} class="formError" {/if}>
         <dt><label for="groupName">{lang}wcf.acp.gman.group.name{/lang}</label></dt>
         <dd>
-            <input name="groupName" type="text" id="groupName" value="{$groupName}" class="medium" pattern="{literal}[a-Z0-9 _]{4,50}{/literal}" required>
+            <input name="groupName" type="text" id="groupName" value="{$groupName}" class="medium" pattern="{literal}.{4,50}{/literal}" required>
             <small>{lang}wcf.acp.gman.group.name.description{/lang}</small>
             {if $errorField == 'groupName'}
             <small class="innerError">
@@ -139,7 +139,7 @@
        <dl{if $errorField=='calendarTitle'} class="formError" {/if}>
        <dt><label for="calendarTitle">{lang}wcf.acp.gman.group.calendartitle{/lang}</label></dt>
        <dd>
-           <input name="calendarTitle" id="calendarTitle" type="text" value="{$calendarTitle}" class="medium" pattern={literal}"[a-Z0-9 _]{4,50}"{/literal}>
+           <input name="calendarTitle" id="calendarTitle" type="text" value="{$calendarTitle}" class="medium" pattern={literal}".{4,50}"{/literal}>
            <small>{lang}wcf.acp.gman.group.calendartitle.description{/lang}</small>
            {if $errorField == 'calendarTitle'}
            <small class="innerError">
@@ -173,7 +173,7 @@
        <dl{if $errorField=='calendarQuery'} class="formError" {/if}>
        <dt><label for="calendarQuery">{lang}wcf.acp.gman.calendarquery.name{/lang}</label></dt>
        <dd>
-           <input name="calendarQuery" id="calendarQuery" type="text" value="{$calendarQuery}" class="medium" pattern={literal}"[a-Z0-9 _-]{4,50}"{/literal}>
+           <input name="calendarQuery" id="calendarQuery" type="text" value="{$calendarQuery}" class="medium" pattern={literal}".{4,50}"{/literal}>
            <small>{lang}wcf.acp.gman.group.calendarquery.description{/lang}</small>
            {if $errorField == 'calendarQuery'}
            <small class="innerError">
@@ -220,30 +220,32 @@
             <h2 class="sectionTitle">{lang}wcf.acp.gman.group.appearance{/lang}</h2>
             <p class="sectionDescription">{lang}wcf.acp.gman.guild.appearance.desc{/lang}</p>
         </header>
+
         {if $__wcf->session->getPermission('admin.content.cms.canUseMedia')}
-        <dl{if $errorField=='image'} class="formError" {/if}>
-        <dt><label for="image">{lang}wcf.acp.gman.group.image{/lang}</label></dt>
-        <dd>
-            <div id="imageDisplay" class="selectedImagePreview">
-                {if $images[0]|isset}
-                {@$images[0]->getThumbnailTag('small')}
-                {/if}
-            </div>
-            <p class="button jsMediaSelectButton" data-store="imageID0" data-display="imageDisplay">{lang}wcf.media.chooseImage{/lang}</p>
-            <input type="hidden" name="imageID[0]" id="imageID0" {if $imageID[0]|isset} value="{@$imageID[0]}" {/if}>
-            {if $errorField == 'image'}
-            <small class="innerError">{lang}wcf.acp.article.image.error.{@$errorType}{/lang}</small>
-            {/if}
-        </dd>
-        </dl>
-        {elseif $action == 'edit' && $images[0]|isset}
-        <dl>
-            <dt>{lang}wcf.acp.article.image{/lang}</dt>
+            <dl{if $errorField == 'image'} class="formError" {/if}>
+            <dt><label for="image">{lang}wcf.acp.gman.guild.image{/lang}</label></dt>
             <dd>
-                <div id="imageDisplay">{@$images[0]->getThumbnailTag('small')}</div>
+                <div id="imageDisplay" class="selectedImagePreview">
+                    {if $images[0]|isset}
+                        {@$images[0]->getThumbnailTag('small')}
+                    {/if}
+                </div>
+                <p class="button jsMediaSelectButton" data-store="imageID0" data-display="imageDisplay">{lang}wcf.media.chooseImage{/lang}</p>
+                <input type="hidden" name="imageID[0]" id="imageID0" {if $imageID[0]|isset} value="{@$imageID[0]}" {/if}>
+                {if $errorField == 'image'}
+                <small class="innerError">{lang}wcf.acp.article.image.error.{@$errorType}{/lang}</small>
+                {/if}
             </dd>
-        </dl>
-        {/if}
+            </dl>
+        {elseif $action == 'edit' && $images[0]|isset}
+            <dl>
+                <dt>{lang}wcf.acp.article.image{/lang}</dt>
+                <dd>
+                    <div id="imageDisplay">{@$images[0]->getThumbnailTag('small')}</div>
+                </dd>
+            </dl>
+        {/if}   
+
         <dl{if $errorField=='articleID'} class="formError" {/if}>
         <dt><label for="articleID">{lang}wcf.acp.gman.group.article{/lang}</label></dt>
         <dd>
@@ -361,7 +363,7 @@
         <dl{if $errorField=='wclQuery'} class="formError" {/if}>
         <dt><label for="calendarQuery">{lang}wcf.acp.gman.wclquery.name{/lang}</label></dt>
         <dd>
-            <input name="wclQuery" type="text" id="wclQuery" value="{$wclQuery}" class="medium" pattern={literal}"[a-Z0-9 _-]{4,50}"{/literal}>
+            <input name="wclQuery" type="text" id="wclQuery" value="{$wclQuery}" class="medium" pattern={literal}".{4,50}"{/literal}>
             <small>{lang}wcf.acp.gman.group.wclquery.description{/lang}</small>
             {if $errorField == 'wclQuery'}
             <small class="innerError">
@@ -382,3 +384,4 @@
         {@SECURITY_TOKEN_INPUT_TAG}
     </div>
 </form>
+{include file='footer'}

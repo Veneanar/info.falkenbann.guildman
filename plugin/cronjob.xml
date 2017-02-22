@@ -4,9 +4,9 @@
     
     <cronjob name="info.falkenbann.acp.gman.updateguildchars">
       <classname>wcf\system\cronjob\GuildCharUpdateCronjob</classname>
-      <description>Updates Guild Chars information</description>
-      <description language="de">Aktualisiert Gilden Charaktäre-Informationen</description>
-      <startminute>/30</startminute>
+      <description>Updates Guild Chars only</description>
+      <description language="de">Aktualisiert nur Gilden Charaktere</description>
+      <startminute>*/30</startminute>
       <starthour>*</starthour>
       <startdom>*</startdom>
       <startmonth>*</startmonth>
@@ -14,15 +14,28 @@
       <canbeedited>1</canbeedited>
       <canbedisabled>1</canbedisabled>
       <isdisabled>1</isdisabled>
-
     </cronjob>
+
+    <cronjob name="info.falkenbann.acp.gman.updatechars">
+      <classname>wcf\system\cronjob\CharUpdateCronjob.</classname>
+      <description>Updates all chars</description>
+      <description language="de">Aktualisiert alle Charaktere</description>
+      <startminute>0</startminute>
+      <starthour>*/12</starthour>
+      <startdom>*</startdom>
+      <startmonth>*</startmonth>
+      <startdow>*</startdow>
+      <canbeedited>1</canbeedited>
+      <canbedisabled>1</canbedisabled>
+      <isdisabled>1</isdisabled>
+    </cronjob>    
     
     <cronjob name="info.falkenbann.acp.gman.updateguildinfos">
       <classname>wcf\system\cronjob\GuildUpdateCronjob</classname>
       <description>Updates Guild List</description>
       <description language="de">Aktualisiert Gilden Liste</description>
       <startminute>0</startminute>
-      <starthour>/3</starthour>
+      <starthour>*/3</starthour>
       <startdom>*</startdom>
       <startmonth>*</startmonth>
       <startdow>*</startdow>
@@ -37,7 +50,7 @@
       <description>Updates Guild Achievmnets</description>
       <description language="de">Aktualisiert Gildenerfolge</description>
       <startminute>0</startminute>
-      <starthour>/6</starthour>
+      <starthour>*/6</starthour>
       <startdom>*</startdom>
       <startmonth>*</startmonth>
       <startdow>*</startdow>

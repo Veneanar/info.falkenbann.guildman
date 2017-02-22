@@ -18,7 +18,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 	/**
 	 * @inheritDoc
 	 */
-	public $activeMenuItem = 'wcf.acp.menu.link.gman.guildgroupedit';
+	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
 
 	/**
 	 * id of the edited ad
@@ -40,7 +40,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 
 		WCF::getTPL()->assign([
 			'action' => 'edit',
-			'adObject' => $this->guildGroupObject
+			'guildGroupObject' => $this->guildGroupObject
 		]);
 	}
 
@@ -61,9 +61,9 @@ class GuildGroupEditForm extends GuildGroupAddForm {
             $this->categoryList         = $this->guildGroupObject->categoryList;
             $this->gameRank             = $this->guildGroupObject->gameRank;
             $this->showRoaster          = $this->guildGroupObject->showRoaster;
-            $this->articIeID            = $this->guildGroupObject->articIeID;
+            $this->articleID            = $this->guildGroupObject->articleID;
             $this->boardID              = $this->guildGroupObject->boardID;
-            $this->mediaID              = $this->guildGroupObject->mediaID;
+            $this->imageID              = $this->guildGroupObject->imageID;
             $this->threadID             = $this->guildGroupObject->threadID;
             $this->isRaidgruop          = $this->guildGroupObject->isRaidgruop;
             $this->fetchWCL             = $this->guildGroupObject->fetchWCL;
@@ -96,20 +96,20 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 			'data' =>  [
 			    'groupName'         => $this->groupName,
                 'groupTeaser'       => $this->groupTeaser,
-                'groupWcfID'        => $this->groupWcfID,
-                'showCalender'      => $this->showCalender,
+                'wcfGroupID'        => $this->groupWcfID,
+                'showCalender'      => intval($this->showCalender),
                 'calendarTitle'     => $this->calendarTitle,
                 'calendarText'      => $this->calendarText,
                 'calendarQuery'     => $this->calendarQuery,
                 'calendarCategoryID'=> $this->calendarCategoryID,
                 'gameRank'          => $this->gameRank,
-                'showRoaster'       => $this->showRoaster,
-                'articIeID'         => $this->articIeID,
-                'boardID'           => $this->boardID,
-                'imageID'           => $this->imageID[0],
-                'threadID'          => $this->threadID,
-                'isRaidgruop'       => $this->isRaidgruop,
-                'fetchWCL'          => $this->fetchWCL,
+                'showRoaster'       => intval($this->showRoaster),
+                'articleID'         => $this->articleID > 0 ? $this->articleID : null,
+                'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
+                'imageID'           => isset($this->imageID[0]) ? $this->imageID[0]: null,
+                'threadID'          => $this->threadID > 0 ? $this->threadID : null,
+                'isRaidgruop'       => intval($this->isRaidgruop),
+                'fetchWCL'          => intval($this->fetchWCL),
                 'wclQuery'          => $this->wclQuery,
                 'orderNo'           => $this->orderNo,
                 'lastUpdate'        => TIME_NOW

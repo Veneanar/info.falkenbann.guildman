@@ -35,7 +35,7 @@ class WowRealm extends DatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = 'name';
+	protected static $databaseTableIndexName = 'slug';
 
 	/**
      * list of connected realms
@@ -57,7 +57,7 @@ class WowRealm extends DatabaseObject {
         if ($this->realmCount < 0) {
             $this->connected_realms = JSON::decode($this->connected_realms, true);
             foreach ($this->connected_realms as $realmslug) {
-                if ($this->slug != $realmslug) $this->connectedRealms[] = WowRealm::getBySlug($realmslug);
+                if ($this->slug != $realmslug) $this->connectedRealms[] = new WowRealm($realmslug);
             }
             $this->realmCount = count($this->connectedRealms);
         }
@@ -77,12 +77,12 @@ class WowRealm extends DatabaseObject {
      * get WOWRealm by slug
      * @return	WowRealm
      */
-    public static function getBySlug($slug) {
+    public static function getByName($name) {
         $sql = "SELECT	*
 			    FROM		wcf".WCF_N."_gman_wow_realm
-			    WHERE		slug = ?";
+			    WHERE		name LIKE ?";
 		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute([$slug]);
+		$statement->execute([$name]);
 		$row = $statement->fetchArray();
 		if (!$row) $row = [];
 		return new WowRealm(null, $row);

@@ -21,15 +21,19 @@
   </requiredpackages>
 
 	<instructions type="install">
-		<instruction type="sql">install.sql</instruction>
-		<instruction type="file">files.tar</instruction>
-		<instruction type="template">template.tar</instruction>
+    <instruction type="sql">install.sql</instruction>
+    <instruction type="file">files.tar</instruction>
+    <instruction type="template">template.tar</instruction>    
     <instruction type="acpTemplate">acptemplate.tar</instruction>
-		<instruction type="language">language/*.xml</instruction>
-    <instruction type="objectType" />    
-		<instruction type="option">option.xml</instruction>
-    <instruction type="userGroupOption">userGroupOption.xml</instruction>
-    <instruction type="acpMenu">acpMenu.xml</instruction>
+    <instruction type="language">language/*.xml</instruction>
+    <instruction type="acpMenu" />
+    <instruction type="userGroupOption" />
+    <instruction type="option" />
+    <instruction type="templateListener" />
+    <instruction type="cronjob" />
+    <instruction type="clipboardAction" />
+    <instruction type="objectTypeDefinition" />
+    <instruction type="objectType" />
   </instructions>
 		
 </package>

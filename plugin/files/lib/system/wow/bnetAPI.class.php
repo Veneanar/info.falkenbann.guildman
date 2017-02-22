@@ -18,8 +18,6 @@ use wcf\system\exception\LoggedException;
 use wcf\system\exception\HTTPNotFoundException;
 use wcf\system\exception\Exception;
 use wcf\util\HTTPRequest;
-
-
 /**
  * Access to the bnetAPI
  * @author	Veneanar Falkenbann
@@ -27,17 +25,16 @@ use wcf\util\HTTPRequest;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property integer		 $wclassID      PRIMARY KEY
- * @property integer		 $mask
- * @property string		 $powerType			Ressourcentyp
- * @property string		 $name			Klassenname
- * @property string		 $color			Klassenfarbe HMLT Code
- *
  */
 
 final class bnetAPI {
+    const ACHIEVEMENT = 1;
+    const CRITERIA = 2;
+    const LOOT = 3;
+    const BOSSKILL = 4;
+    const UNDEFINED = 0;
 
-    static private function buildURL($type, $game='wow', array $data = null, array $parameters = []) {
+    static public function buildURL($type, $game='wow', array $data = null, array $parameters = []) {
         if (GMAN_BNET_KEY == '') throw new AuthenticationFailure('Missing battle.net API Key! Settings -> Gman -> battle.net');
         $querystring = (empty($parameters)) ? '' : '&fields=';
         foreach($parameters as $option) {
@@ -52,21 +49,21 @@ final class bnetAPI {
         } elseif ($type == 'image') {
             $host = '';
             if (GMAN_BNET_REGION == 'eu.api.battle.net') {
-                $host = 'http://render-api-eu.worldofwarcraft.com/static-render/eu/';
+                $host = 'http://render-eu.worldofwarcraft.com/character/';
             }
             elseif (GMAN_BNET_REGION == 'us.api.battle.net') {
-                $host = 'http://render-api-us.worldofwarcraft.com/static-render/us/';
+                $host = 'http://render-us.worldofwarcraft.com/character/';
             }
             elseif (GMAN_BNET_REGION == 'kr.api.battle.net') {
-                $host = 'http://render-api-kr.worldofwarcraft.com/static-render/kr/';
+                $host = 'http://render-kr.worldofwarcraft.com/character/';
             }
             elseif (GMAN_BNET_REGION == 'tw.api.battle.net') {
-                $host = 'http://render-api-tw.worldofwarcraft.com/static-render/tw/';
+                $host = 'http://render-tw.worldofwarcraft.com/character/';
             }
             else {
-                $host = 'http://render-api-us.worldofwarcraft.com/static-render/us/';
+                $host = 'http://render-us.worldofwarcraft.com/character/';
             }
-            return  $host .'/'.$data[0];
+            return  $host .$data[0];
         } else {
             return '';
         }
@@ -98,185 +95,84 @@ final class bnetAPI {
             ]);
     }
     // ALTER TABLE wcf1_gman_feedlist ADD PRIMARY KEY (`charID`, `type`, `feedTime`);
-    static private function  updatePictures($bnetPath) {
-        $images = ['avatar','inset','profilemain'];
-        foreach( $images as $image) {
-            $path = $image=='avatar' ? $bnetPath : StringUtil::replaceIgnoreCase('avatar',$image, $bnetPath);
-            $url = static::buildURL('image', 'wow', [$path]);
-            //echo "URL: " . $url; die;
+
+    static public function checkRealm($realm, $isSlug = false) {
+       $realmObj = null;
+       if ($isSlug) {
+           $realmObj = new WowRealm($realm);
+           if ($realmObj->getObjectID == 0) return ['status'=>0,'msg'=> 'Realm not found'];
+       }
+       else {
+           $realmObj = WowRealm::getByName($realm);
+           if ($realmObj->getObjectID == 0) return ['status'=>0,'msg'=> 'Realm not found'];
+       }
+       return ['status'=>1,'slug'=> $realmObj->slug];
+    }
+
+
+    static public function checkCharacter($name, $realm, $isSlug = false) {
+        $realmCheck = static::checkRealm($realm, $isSlug);
+        if($realmCheck['status']) {
+            $url = static::buildURL('character');
             $request = new HTTPRequest($url);
             try {
                 $request->execute();
             }
             catch (HTTPNotFoundException $e) {
-                file_put_contents(WCF_DIR . 'log/bnet.log', '*** ERROR *** '. $url . PHP_EOL, FILE_APPEND);
-                if (php_sapi_name() === 'cli') echo $image . ':failed ';
-                continue;
+                return ['status'=>0,'msg'=> 'Character not found'];
             }
-            $savePath = WCF_DIR . 'images/wow/' . $path;
-            if(!file_exists(dirname($savePath))) mkdir(dirname($savePath), 0777, true);
-            file_put_contents($savePath, $request->getReply()['body']);
-            if (php_sapi_name() === 'cli') echo $image . ':OK ';
-            if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR . 'log/bnet.log', 'Bild gespeichert: '. $savePath - PHP_EOL, FILE_APPEND);
+            return ['status'=>1,'msg'=> 'Character not found'];
         }
+        else {
+            return $realmCheck;
+        }
+
     }
 
-
-    static public function createCharacter($charID) {
-        $data = explode("-", $charID, 2);
+    static public function createCharacter($name, $realm, $isSlug = false) {
+        $realm = $isSlug ? $realm : WowRealm::getByName($realm)->slug;
         $sql = "INSERT INTO  wcf".WCF_N."_gman_wow_character
-                            (charID, isMain, inGuild, realmID, bnetData, groups, bnetUpdate, firstSeen, guildRank)
-                VALUES      (?,0,0,?,?,0,?,?,?)
+                            (charID, isMain, inGuild, realmID, bnetData, bnetUpdate, firstSeen, guildRank)
+                VALUES      (?,0,0,?,?,?,?,?,?,?,?)
                 ON DUPLICATE KEY UPDATE
                             charID = VALUES(charID)
             ";
         $statement = WCF::getDB()->prepareStatement($sql);
         $statement->execute([
-                $charID,
-                $data[1],
+                $name . '@' . $realm,
+                $realm,
                 null,
                 0,
                 TIME_NOW,
-                11
+                11,
         ]);
+        return $name . '@' . $realm;
     }
 
-    static public function updateCharacter(array $updateList) {
-        $charDataList = [];
-        foreach($updateList as $update) {
-            $char = $update['char'];
-            $data = explode("-", $char->charID, 2);
-            $url = static::buildURL('character', 'wow', ['char' => $data[0], 'realm' => $data[1]], ['guild', 'items', 'feed']);
-            $request = new HTTPRequest($url);
-            try {
-                $request->execute();
+    static public function updateCharacter(array $updateList, $wcfdir = '') {
+        if (php_sapi_name() === 'cli') {
+            $p = new \Pool(8);
+            $i = 0;
+            foreach($updateList as $charUpdate) {
+                $p->submit(new AsyncCharacterUpdate($charUpdate['charID'], isset($charUpdate['bnetUpdate']) ? $charUpdate['bnetUpdate'] : 10, isset($charUpdate['forceUpdate']) ? $charUpdate['forceUpdate'] : false, $wcfdir));
+                $i = $i + 1;
+                //if ($i == 1) break;
             }
-            catch (HTTPNotFoundException $e) {
-                if (php_sapi_name() === 'cli') echo PHP_EOL .  '*** ERROR ***  '. $char->charID . PHP_EOL;
-                file_put_contents(WCF_DIR .  'log/bnet.log', '*** ERROR *** '. $url . PHP_EOL, FILE_APPEND);
-                $charEditor = new WowCharacterEditor($char);
-                $charEditor->updateCounters(['bnetError' => 1]);
-		        $charEditor->update([
-			        'bnetUpdate' => TIME_NOW
-		        ]);
-                continue;
-            }
-            $reply = $request->getReply();
-            $charData=JSON::decode($reply['body'], true);
-            if (isset($update['forceUpdate']) || $char['bnetUpdate'] < ($charData['lastModified'] / 1000)) {
-                    $charData['charID'] = $char->charID;
-                    $charData['bnetError'] = 0;
-                    if (isset($charData['guild']['name']) && $charData['guild']['name'] == GMAN_MAIN_GUILDNAME) {
-                        $charData['inGuild'] = 1;
-                        $charData['guildRank'] = $char->guildRank;
-                    }
-                    else {
-                        if ($char->inGuild==1) {
-                            $charEditor = new WowCharacterEditor($char);
-                            $charEditor->removeFromAllGroups();
-                        }
-                        $charData['inGuild'] = 0;
-                        $charData['guildRank'] = 11;
-                    }
-                    $charDataList[] = $charData;
-                    if (php_sapi_name() === 'cli') echo PHP_EOL . 'UPDATE: '. $char->charID .' ';
-                    if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR . 'log/bnet.log', 'UPDATE: '. $char->charID . PHP_EOL, FILE_APPEND);
-                    static::updatePictures($charData['thumbnail']);
-                    static::updateFeed($char->charID, $charData['feed'], $charData['inGuild']);
-             }
-            else {
-                if (php_sapi_name() === 'cli') echo 'HINT: No update requiered for '. $char->charID . PHP_EOL;
-                if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR . 'log/bnet.log', 'HINT: No update requiered for '. $char->charID . PHP_EOL, FILE_APPEND);
+            $p->shutdown();
+
+        } else {
+            foreach($updateList as $charUpdate) {
+                $sync = new SyncCharacterUpdate($charUpdate['charID'], isset($charUpdate['bnetUpdate']) ? $charUpdate['bnetUpdate'] : 10, isset($charUpdate['forceUpdate']) ? $charUpdate['forceUpdate'] : false);
+                $sync->run();
             }
         }
-       // echo "Charlist: <pre>"; var_dump($charDataList); echo "</pre>"; die;
-        $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
-            SET     inGuild = ?,
-                    bnetData = ?,
-                    bnetUpdate = ?,
-                    averageItemLevel = ?,
-                    averageItemLevelEquipped = ?,
-                    head = ?,
-                    neck = ?,
-                    shoulder = ?,
-                    back = ?,
-                    chest = ?,
-                    shirt = ?,
-                    wrist = ?,
-                    hands = ?,
-                    waist = ?,
-                    legs = ?,
-                    feet = ?,
-                    finger1 = ?,
-                    finger2 = ?,
-                    trinket1 = ?,
-                    trinket2 = ?,
-                    mainHand = ?,
-                    offHand = ?
-            WHERE   charID = ?";
-
-    $statement = WCF::getDB()->prepareStatement($sql);
-    WCF::getDB()->beginTransaction();
-    foreach ($charDataList as $charData) {
-        $plaindata = $charData;
-        $plaindata['items'] = null;
-        $plaindata['guild'] = null;
-        $plaindata['feed'] = null;
-        $plaindata['lastModified'] = $plaindata['lastModified'] / 1000;
-        // echo "Einzel Gildenliste <pre>"; var_dump($charData); echo "</pre>"; die;
-        $statement->execute([
-            $charData['inGuild'],
-            JSON::encode($plaindata),
-            TIME_NOW,
-            $charData['items']['averageItemLevel'],
-            $charData['items']['averageItemLevelEquipped'],
-            @static::normalizeItem($charData['items']['head']),
-            @static::normalizeItem($charData['items']['neck']),
-            @static::normalizeItem($charData['items']['shoulder']),
-            @static::normalizeItem($charData['items']['back']),
-            @static::normalizeItem($charData['items']['chest']),
-            @static::normalizeItem($charData['items']['shirt']),
-            @static::normalizeItem($charData['items']['wrist']),
-            @static::normalizeItem($charData['items']['hands']),
-            @static::normalizeItem($charData['items']['waist']),
-            @static::normalizeItem($charData['items']['legs']),
-            @static::normalizeItem($charData['items']['feet']),
-            @static::normalizeItem($charData['items']['finger1']),
-            @static::normalizeItem($charData['items']['finger2']),
-            @static::normalizeItem($charData['items']['trinket1']),
-            @static::normalizeItem($charData['items']['trinket2']),
-            @static::normalizeItem($charData['items']['mainHand']),
-            @static::normalizeItem($charData['items']['offHand']),
-            $charData['charID']
-        ]);
     }
-    WCF::getDB()->commitTransaction();
-
-    }
-
-    static public function updateFeed($charID, $feedList, $inGuild) {
-        $sql = "INSERT INTO  wcf".WCF_N."_gman_feedlist
-                            (charID, type, itemID, acmID, quantity, bonusLists, context, criteria, feedTime, inGuild)
-                VALUES      (?,?,?,?,?,?,?,?,?,?)
-                ON DUPLICATE KEY UPDATE
-                            charID = VALUES(charID)
-            ";
-        $statement = WCF::getDB()->prepareStatement($sql);
-        WCF::getDB()->beginTransaction();
-        foreach ($feedList as $feed) {
-            $data = static::normalizeFeed($feed, $charID, $inGuild);
-            //echo "<pre>"; var_dump($data); echo "</pre>";
-            $statement->execute($data);
-        }
-        WCF::getDB()->commitTransaction();
-    }
-
 
     static public function normalizeFeed($feedData, $charID, $inGuild) {
         if ($feedData['type']=='ACHIEVEMENT') {
             return [
                 $charID,
-                'ACHIEVEMENT',
+                static::ACHIEVEMENT,
                 0,
                 $feedData['achievement']['id'],
                 0,
@@ -290,7 +186,7 @@ final class bnetAPI {
         elseif($feedData['type']=='CRITERIA') {
             return [
                 $charID,
-                'CRITERIA',
+                static::CRITERIA,
                 0,
                 $feedData['achievement']['id'],
                 0,
@@ -304,7 +200,7 @@ final class bnetAPI {
         elseif($feedData['type']=='LOOT') {
             return [
                 $charID,
-                'LOOT',
+                static::LOOT,
                 $feedData['itemId'],
                 0,
                 0,
@@ -319,7 +215,7 @@ final class bnetAPI {
         elseif($feedData['type']=='BOSSKILL') {
             return [
                 $charID,
-                'BOSSKILL',
+                static::BOSSKILL,
                 0,
                 $feedData['achievement']['id'],
                 $feedData['quantity'],
@@ -333,7 +229,7 @@ final class bnetAPI {
         else {
             return [
                 $charID,
-                'UNDEFINED',
+                static::UNDEFINED,
                 0,
                 0,
                 0,
@@ -346,7 +242,6 @@ final class bnetAPI {
 
         }
     }
-
     static public function normalizeItem($item = null)  {
         if ($item===null) return NULL;
         return JSON::encode([
@@ -359,6 +254,9 @@ final class bnetAPI {
             'artifactTraits'=>          isset($item['artifactTraits'])          ? $item['artifactTraits']       : null,
         ]);
     }
+    static public function removeFromGuild($charID) {
+
+    }
 
     static public function updateGuildMemberList() {
         $url = static::buildURL('guild', 'wow', null, ['members']);
@@ -370,8 +268,8 @@ final class bnetAPI {
         }
         $guildmember = JSON::decode($reply['body'], true)['members'];
         $sql = "INSERT INTO  wcf".WCF_N."_gman_wow_character
-                            (charID, isMain, inGuild, realmID, bnetData, groups, bnetUpdate, firstSeen, guildRank)
-                VALUES      (?,0,1,?,?,0,?,?,?)
+                            (charID, isMain, inGuild, realmID, bnetData, bnetUpdate, firstSeen, guildRank, c_class, c_race, c_level)
+                VALUES      (?,0,1,?,?,?,?,?,?,?,?)
                 ON DUPLICATE KEY UPDATE
                             inGuild = VALUES(inGuild),
                             bnetData = VALUES(bnetData),
@@ -385,13 +283,17 @@ final class bnetAPI {
         foreach ($guildmember as $member) {
             $member["character"]['lastModified'] = $member["character"]['lastModified'] / 1000;
             $member["character"]["guild"] = null;
+            $realm = WowRealm::getByName($member["character"]["realm"])->slug;
             $statement->execute([
-                $member["character"]["name"] . "-". $member["character"]["realm"],
-                $member["character"]["realm"],
+                $member["character"]["name"] . "@". $realm,
+                $realm,
                 JSON::encode($member["character"]),
                 TIME_NOW,
                 TIME_NOW,
-                $member["rank"]
+                $member["rank"],
+            $member["character"]['class'],
+            $member["character"]['race'],
+            $member["character"]['level'],
            ]);
         }
         WCF::getDB()->commitTransaction();

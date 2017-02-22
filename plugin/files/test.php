@@ -8,22 +8,26 @@ use wcf\system\background\BackgroundQueueHandler;
 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-//bnetAPI::updateGuild();
-//bnetAPI::updateGuildMemberList();
+bnetAPI::updateGuild();
+bnetAPI::updateGuildMemberList();
 bnetAPI::updateCharacter([
         [
-            'charID' =>'Aiox-Forscherliga',
+            'charID' =>'Aiox@forscherliga',
             'bnetUpdate' => 10
         ],
         [
-            'charID' => 'Veneanar-Forscherliga',
+            'charID' => 'Veneanar@forscherliga',
+            'bnetUpdate' => 10
+        ],
+        [
+            'charID' => 'Adire@die-nachtwache',
             'bnetUpdate' => 10
         ],
     ]);
-// WowCharacterAction::bulkUpdate();
+ // WowCharacterAction::bulkUpdate();
 //while (BackgroundQueueHandler::getInstance()->getRunnableCount() > 0)
-    BackgroundQueueHandler::getInstance()->performNextJob();
-$myChar  = new WowCharacter('Veneanar-Forscherliga');
+//    BackgroundQueueHandler::getInstance()->performNextJob();
+$myChar  = new WowCharacter('Veneanar@forscherliga');
 echo $myChar->getAvatar()->getImageTag();
 
 //$wowCharList = new WowCharacterList();

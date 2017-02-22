@@ -15,9 +15,9 @@
 
     <!-- moderation items -->
     <type>
-      <name>info.falkenbann.acp.gman.moderation.charowner</name>
+      <name>info.falkenbann.gman.moderation.charowner</name>
       <definitionname>com.woltlab.wcf.moderation.type</definitionname>
       <classname>wcf\system\moderation\queue\activation\ModerationQueueCharownerAction</classname>
-    </type>    
-    </import>
+    </type>
+  </import>
 </data>

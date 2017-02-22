@@ -6,6 +6,7 @@ use wcf\system\exception\UserInputException;
 use wcf\system\background\BackgroundQueueHandler;
 use wcf\system\background\job\WowCharacterUpdateJob;
 use wcf\system\clipboard\ClipboardHandler;
+use wcf\data\IClipboardAction;
 use wcf\system\WCF;
 use wcf\data\guild\Guild;
 use wcf\system\wow\bnetAPI;
@@ -145,6 +146,27 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
         }
    }
 
+
+
+    public function validateCreate() {
+        parent::validateCreate();
+        if (!isset($this->parameters['name'])) throw new UserInputException('charname', 'empty');
+        if (!isset($this->parameters['realm'])) throw new UserInputException('realmname', 'empty');
+    }
+    public function create() {
+        $name = $this->parameters['name'];
+        $realm = $this->parameters['realm'];
+        $isSlug = isset($this->parameters['isSlug']) ? $this->parameters['isSlug'] : false;
+        $this->parameters['groups'];
+        $charCheck = bnetAPI::checkCharacter($name, $realm, $isSlug);
+        if($charCheck['status']) {
+            $charID = bnetAPI::createCharacter($name, $realm, $isSlug);
+            bnetAPI::updateCharacter([['charID'=>$charID,'bnetUpdate'=>10]]);
+            return $charCheck;
+        }
+        return $charCheck;
+    }
+
     public function update() {
         parent::update();
 		$groupIDs = isset($this->parameters['groups']) ? $this->parameters['groups'] : [];
@@ -254,18 +276,32 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
         foreach($this->objects as $wowChar) {
             $groupIDs[] = $wowChar->getGroupIDs();
             if (!empty($groupIDs)) {
-                $this->removeWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+                $this->removeWCFUserGroups($wowChar, $this->parameters['deleteWCFGroups']);
             }
             $action = new WowCharacterAction([$wowChar], 'update', [
                 'data' => [
                     'userID'         => 0,
                     'tempUuserID'    => $wowChar->userID,
-                    'disabled'  => 1,
+                    'disabled'       => 1,
                 ]]);
             $action->executeAction();
         }
     }
 
+
+    public function removeFromGuild() {
+        foreach($this->objects as $wowChar) {
+            $this->removeWCFUserGroups($wowChar, ['deleteWCFGroups'=> true]);
+            $action = new WowCharacterAction([$wowChar], 'update', [
+                'data' => [
+                    'inGuild'         => 0,
+                    'primaryGroup'    => 0,
+                ]]);
+            $action->executeAction();
+        }
+        $action = new WowCharacterAction($this->objects, 'removeFromAllGroups');
+        $action->executeAction();
+    }
 	/**
      * function for rank changes.
      */

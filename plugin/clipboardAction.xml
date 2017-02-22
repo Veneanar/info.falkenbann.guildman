@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/vortex/clipboardAction.xsd">
+  <import>
+    <!-- info.falkenbann.gman.character -->
+    <action name="charToGroup">
+      <actionclassname>wcf\system\clipboard\action\CharClipboardAction</actionclassname>
+      <showorder>1</showorder>
+      <pages>
+        <page>wcf\acp\page\CharacterListPage</page>
+      </pages>
+    </action>
+    <action name="charDelete">
+      <actionclassname>wcf\system\clipboard\action\CharClipboardAction</actionclassname>
+      <showorder>2</showorder>
+      <pages>
+        <page>wcf\acp\page\CharacterListPage</page>
+      </pages>
+    </action>
+    <action name="charToUser">
+      <actionclassname>wcf\system\clipboard\action\CharClipboardAction</actionclassname>
+      <showorder>3</showorder>
+      <pages>
+        <page>wcf\acp\page\CharacterListPage</page>
+      </pages>
+    </action>
+    <!-- /info.falkenbann.gman.character -->
+  </import>
+</data>
