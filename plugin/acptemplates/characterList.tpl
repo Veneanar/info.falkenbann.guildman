@@ -92,6 +92,12 @@
                     <input type="text" id="ownerName" name="ownerName" value="{$ownerName}" placeholder="{lang}wcf.page.gman.wow.username{/lang}" class="long">
                 </dd>
             </dl>
+            <dl class="col-xs-12 col-md-4">
+                <dt>min. {lang}wcf.page.gman.wow.charname{/lang}</dt>
+                <dd>
+                    <input type="text" id="charName" name="charName" value="{$charName}" placeholder="{lang}wcf.page.gman.wow.charName{/lang}" class="long">
+                </dd>
+            </dl>
 
 
 
@@ -142,7 +148,7 @@
             <tr id="groupContainer{@$character->charID}" class="jsCharacterRow">
                 <td class="columnIcon">
                     {if $character->isEditable()}
-                    <a href="{link controller='CharacterEdit' id=$character->charID}{/link}" title="{lang}wcf.global.button.edit{/lang}" class="jsTooltip"><span class="icon icon16 fa-pencil"></span></a>
+                    <a href="{link controller='CharacterEdit' object=$character}{/link}" title="{lang}wcf.global.button.edit{/lang}" class="jsTooltip"><span class="icon icon16 fa-pencil"></span></a>
                     {else}
                     <span class="icon icon16 fa-pencil disabled" title="{lang}wcf.global.button.edit{/lang}"></span>
                     {/if}
@@ -196,7 +202,7 @@
         <ul>
             {content}
             {if $__wcf->getSession()->getPermission('admin.user.canAddGroup')}
-            <li><a href="{link controller='guildGroupAdd'}{/link}" class="button"><span class="icon icon16 fa-plus"></span> <span>{lang}wcf.acp.character.add{/lang}</span></a></li>
+            <li><a href="{link controller='CharacterAdd'}{/link}" class="button"><span class="icon icon16 fa-plus"></span> <span>{lang}wcf.acp.character.add{/lang}</span></a></li>
             {/if}
 
             {event name='contentFooterNavigation'}

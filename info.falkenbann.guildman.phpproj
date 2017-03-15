@@ -19,9 +19,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.php" />
+    <Compile Include="wcf\acp\templates\characterAdd.tpl" />
+    <Compile Include="wcf\lib\acp\form\CharacterEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\CharacterAddForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildGroupAddForm.class.php" />
-    <Compile Include="wcf\lib\acp\form\CharacterEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildGroupEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
     <Compile Include="wcf\lib\acp\page\CharacterListPage.class.php" />
@@ -60,6 +61,9 @@
     <Compile Include="wcf\lib\data\wow\acm\WowACMList.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowGuildACM.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowGuildACMList.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\CharacterStatistics.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\CharacterMounts.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\CharacterPets.class.php" />
     <Compile Include="wcf\lib\data\wow\character\WowDefaultCharacterAvatar.class.php" />
     <Compile Include="wcf\lib\data\wow\character\WowCharacter.class.php" />
     <Compile Include="wcf\lib\data\wow\character\WowCharacterAction.class.php" />
@@ -103,9 +107,9 @@
     <Folder Include="wcf\js\" />
     <Folder Include="wcf\js\WoltLabSuite\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\" />
-    <Folder Include="wcf\js\WoltLabSuite\GMan\UI\" />
-    <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\" />
-    <Folder Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Character\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Character\Search\" />
     <Folder Include="wcf\lib\" />
     <Folder Include="wcf\lib\acp\page\" />
     <Folder Include="wcf\lib\data\" />
@@ -131,10 +135,12 @@
     <Folder Include="wcf\lib\system\background\job\" />
     <Folder Include="wcf\lib\system\clipboard\action\" />
     <Folder Include="wcf\lib\system\cronjob\" />
+    <Folder Include="wcf\lib\system\event\listener\" />
     <Folder Include="wcf\lib\system\moderation\" />
     <Folder Include="wcf\lib\system\moderation\queue\" />
     <Folder Include="wcf\lib\system\moderation\queue\activation\" />
     <Folder Include="wcf\lib\system\clipboard\" />
+    <Folder Include="wcf\lib\system\event\" />
     <Folder Include="wcf\lib\system\wow\" />
     <Folder Include="wcf\acp\" />
     <Folder Include="wcf\lib\system\wow\exception\" />
@@ -155,6 +161,8 @@
     <Content Include="plugin\pageMenu.xml" />
     <Content Include="plugin\templateListener.xml" />
     <Content Include="plugin\userGroupOption.xml" />
+    <Content Include="wcf\acp\templates\characterEdit.tpl" />
+    <Content Include="wcf\acp\templates\charList48.tpl" />
     <Content Include="wcf\acp\templates\guildEdit.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd - Copy.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd.tpl" />
@@ -252,7 +260,7 @@
     <Content Include="wcf\images\wow\9-1-avatar.jpg" />
     <Content Include="wcf\images\wow\9-1-inset.jpg" />
     <Content Include="wcf\images\wow\9-1-profilemain.jpg" />
-    <Content Include="wcf\js\WoltLabSuite\GMan\UI\Character\Search\input.js" />
+    <Content Include="wcf\js\WoltLabSuite\GMan\Ui\Character\Search\Input.js" />
     <Content Include="wcf\templates\moderationCharEnable.tpl" />
   </ItemGroup>
   <ItemGroup>

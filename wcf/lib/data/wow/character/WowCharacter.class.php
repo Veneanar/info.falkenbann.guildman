@@ -7,6 +7,7 @@ use wcf\system\request\IRouteController;
 use wcf\system\request\LinkHandler;
 use wcf\data\wow\WowClasses;
 use wcf\data\wow\WowRace;
+use wcf\data\wow\realm\WowRealm;
 use wcf\data\user\User;
 use wcf\system\WCF;
 
@@ -17,7 +18,9 @@ use wcf\system\WCF;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property string		            $charID		                    Name des Charackters-Realm
+ * @property string		            $charname		                Name des Charackters
+ * @property string		            $realmSlug		                Realmslug
+ * @property string		            $realmName		                Realmname
  * @property integer		        $userID                         WCF UserID
  * @property integer		        $isMain			                ist Hauptchar
  * @property integer		        $inGuild		                ist in der Gilde
@@ -50,11 +53,11 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableName = 'gman_wow_character';
+	protected static $databaseTableName = 'gman_character';
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = 'charID';
+	protected static $databaseTableIndexName = 'characterID';
 	/**
      * {@inheritDoc}
      */
@@ -118,6 +121,95 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      */
     private $groups = [];
 
+    /**
+     * saves the chars's Useraccount.
+     * @var User
+     */
+    private $user = null;
+
+    /**
+     * Returns a WoWChar Object from a given char and realm name
+     *
+     * @return	WowCharacter|null
+     */
+	public static function getByCharAndRealm($name, $realm, $isSlug = true) {
+        if (!$isSlug) {
+            $realm = WowRealm::getByName($realm);
+            if ($realm===null) return null;
+        }
+        $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_character
+			    WHERE		charname LIKE ?
+                AND         realmslug LIKE ?";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute([$name, $realm]);
+		$row = $statement->fetchArray();
+		if (!$row) $row = [];
+		return new WowCharacter(null, $row);
+    }
+
+    /**
+     * checks and corrects a charinfo array
+     *  @param  $charInfo   array   Information about the character request: name, realm, id
+     *  @param  $fuzzy      boolean if set, the realm parameter is not neccesary. the code will return the first character with given name
+     *  @return	array|null
+     */
+    public static function completeCharInfo(array $charInfo, $fuzzy = false) {
+        $obj = null;
+        // keine ID?
+        if (empty($charInfo['id'])) {
+            if (empty($charInfo['name'])) return null; // ohne namen: keine chance!
+            // kein Realm gefunden
+            if (empty($charInfo['realm'])) {
+                if (!$fuzzy) return null;
+                // Such ungenau? Dann nimm den erstbesten Character den du findest, ignoriere den Realm.
+                $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_character
+			    WHERE		charname LIKE ?
+                LIMIT 1";
+                $statement = WCF::getDB()->prepareStatement($sql);
+                $statement->execute([$charInfo['name']]);
+                $row = $statement->fetchArray();
+                if (!$row) return null; // kein Char gefunden -> null!
+                $obj = new WowCharacter(null, $row);
+            }
+            else {
+                // Realm angegeben, Prüfe auf Slug
+                if (WowRealm::isSlug($charInfo['realm'])) {
+                    $ret = WowRealm::getByName($charInfo['realm']);
+                    if ($ret===null) return null;
+                    $charInfo['realm'] = $ret->slug;
+                    // ersetze den Realmnamen durch den slugnamen
+                }
+                // Realmname und char geprüft, erstelle ein Object
+                $obj = static::getByCharAndRealm($charInfo['name'], $charInfo['realm']);
+            }
+        }
+        // ID gegeben
+        else {
+            // prüfe ob einer der werte leer ist, oder realm name
+            if (empty($charInfo['name']) || empty($charInfo['realm']) ) {
+                $obj = new WowCharacter($charInfo['id']);
+            }
+            else {
+            // ID vorhanden, realm vorhanden und name vorhanden. Prüfe auf slugname.
+                if (WowRealm::isSlug($charInfo['realm'])) {
+                    $ret = WowRealm::getByName($charInfo['realm']);
+                    if ($ret===null) return null;
+                    $charInfo['realm'] = $ret->slug;
+                    // ersetze den Realmnamen durch den slugnamen
+                }
+                // Alle daten geprüft, kein Änderung notwendig.
+                return $charInfo;
+            }
+        }
+        // irgendetwas war nicht in Ordnung, korrigierte Daten werden zurückgegeben.
+        return [
+            'id'    => $obj->characterID,
+            'name'  => $obj->charname,
+            'realm' => $obj->realmSlug,
+            ];
+    }
 
     /**
      * Returns the user's avatar.
@@ -158,7 +250,7 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     }
 
     /**
-     * Returns the user's inset.
+     * Returns the char's ItemSet.
      *
      * @return	WowCharacterItemSet
      */
@@ -170,7 +262,7 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     }
 
     /**
-     * Returns the user's inset.
+     * Returns the char's profile picture.
      *
      * @return	\wcf\data\user\avatar\IUserAvatar
      */
@@ -186,6 +278,12 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
             }
         }
         return $this->profilemain;
+    }
+	/**
+     * @inheritDoc
+     */
+    public function getObjectID() {
+        return $this->characterID;
     }
 
 	/**
@@ -232,11 +330,12 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 
 	/**
      * Returns character name and details.
-     *
+     *  @param  $realm  boolean show Realm
+     *  @param  $long   boolean show all Information
      * @return	string
      */
     public function getNice($realm = false, $long = true) {
-        return $this->name . $realm ? ' ('.$this->realm.')' : ''. $long ? ' '. $this->getLevel() . ' '. $this->raceData->name . ' '. $this->classData->name : '';
+        return $this->name . $realm ? ' ('.$this->realm.')' : ''. $long ? ' '. $this->getLevel() . ' '. $this->getRace()->name  . ' '. $this->getClass()->name : '';
     }
 
 	/**
@@ -246,10 +345,10 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      */
     public function getNiceTag($realm = false, $long = true) {
         if ($long) {
-            return  $this->name . $realm ? ' ('.$this->realm.') ' : ' ' . $this->getLevel() . ' '. $this->raceData->getTag() . ' '. $this->classData->getTag();
+            return  $this->name . $realm ? ' ('.$this->realm.') ' : ' ' . $this->getLevel() . ' '. $this->getRace()->getTag() . ' '. $this->getClass()->getTag();
 
         } else {
-            return '<span color="'.$this->classData->color.'">'. $this->name . $realm ? ' ('.$this->realm.')' : '' .'</span>';
+            return '<span color="'.$this->getClass()->color.'">'. $this->name . $realm ? ' ('.$this->realm.')' : '' .'</span>';
         }
 
     }
@@ -277,18 +376,18 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      *
      * @return	integer[]
      */
-	private function getGroupIDs() {
-		if ($this->groupIDs === null) {
+	public function getGroupIDs() {
+		if (empty($this->groupIDs)) {
             $this->groupIDs[] = 0;
 			$sql = "SELECT	groupID
 						FROM	wcf".WCF_N."_gman_char_to_group
-						WHERE	charID = ?";
+						WHERE	characterID = ?";
 			$statement = WCF::getDB()->prepareStatement($sql);
-			$statement->execute([$this->charID]);
+			$statement->execute([$this->characterID]);
 			$this->groupIDs = $statement->fetchAll(\PDO::FETCH_COLUMN);
 			sort($this->groupIDs, SORT_NUMERIC);
 		}
-		return $this->groupIDs;
+		return array_filter($this->groupIDs, function($a) { return ($a !== 0); });
 	}
 
     /**
@@ -298,7 +397,8 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      */
     public function getGroups() {
         if (empty($this->groups)) {
-            foreach ($this->groupIDs as $groupID) {
+            $gids = $this->getGroupIDs();
+            foreach ($gids as $groupID) {
                 if ($groupID > 0) {
                     $this->groups[] = new GuildGroup($groupID);
                 }
@@ -307,17 +407,31 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
         return $this->groups;
     }
 
+    /**
+     * Returns the owner as User
+     *
+     * @return	User
+     */
+    public function getOwner() {
+        if ($this->user===null) $this->user = new User($this->userID);
+        return $this->user;
+    }
 
-    public function getAccountGroups() {
+    /**
+     * Returns the owners grouplist
+     *
+     * @return	Integer[]
+     */
+    public function getAccountGroupIDs() {
         $accountList = new WowCharacterList();
-        $accountList->getConditionBuilder()->add('WHERE userID = ?', [$this->userID]);
+        $accountList->getConditionBuilder()->add('userID = ?', [$this->userID]);
         $accountList->readObjects();
         $charList = $accountList->getObjects();
         $groupIDs = [];
         foreach($charList as $char) {
-            $groupIDs[] = $char->getGroupIDs();
+            $groupIDs = array_merge($groupIDs, $char->getGroupIDs());
         }
-        return array_unique($groupIDs);
+        return array_filter(array_unique($groupIDs), function($a) { return ($a !== 0); });
     }
 
 	/**
@@ -337,18 +451,21 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 	}
 
 	/**
-     * Returns true if current user may edit this group.
+     * Returns true if current user may edit this char.
      *
      * @return	boolean
      */
 	public function isEditable() {
 		// insufficient permissions
-		if (!WCF::getSession()->getPermission('admin.gman.canEditGroups')) return false;
 
         $user = new User($this->userID);
         if ($user->getObjectID > 0) {
-            return $user->isEditable();
+            return $user->canEdit();
         }
-		return true;
+        else {
+            if (WCF::getSession()->getPermission('user.gman.canAddCharOwner')) return true;
+        }
+		return false;
 	}
+
 }

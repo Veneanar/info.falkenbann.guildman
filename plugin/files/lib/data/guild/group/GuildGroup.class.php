@@ -4,6 +4,7 @@ use wcf\data\DatabaseObject;
 use wcf\system\WCF;
 use wcf\data\user\group\UserGroup;
 use wcf\system\request\IRouteController;
+use wcf\system\request\LinkHandler;
 
 /**
  * Represents a Gildenbewerbung
@@ -81,5 +82,14 @@ class GuildGroup extends DatabaseObject implements IRouteController {
     public function getTitle() {
         return $this->groupName;
     }
-
+	/**
+     * @inheritDoc
+     */
+	public function getLink() {
+		return LinkHandler::getInstance()->getLink('User', [
+			'application' => 'wcf',
+			'object' => $this,
+			'forceFrontend' => true
+		]);
+	}
 }

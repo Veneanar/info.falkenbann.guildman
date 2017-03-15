@@ -51,7 +51,15 @@ class WowDefaultCharacterAvatar implements IUserAvatar {
         $this->gender = $gender;
         //$this->size = $this->type == "avatar" ? 84 : 230;
 	}
-
+	/**
+     * Returns the physical location of this avatar.
+     *
+     * @param	integer		$type
+     * @return	string
+     */
+	public function getLocation($type = "avatar") {
+		return WCF_DIR . 'images/wow/' . $this->race ."-". $this->gender . "-". $this->type . ".jpg";
+	}
 	/**
      * @inheritDoc
      */

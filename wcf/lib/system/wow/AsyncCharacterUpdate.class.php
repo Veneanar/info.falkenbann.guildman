@@ -24,28 +24,40 @@ class AsyncCharacterUpdate extends \Thread{
      * forces an update
      * @var boolean
      */
-    public $forceUpdate = false;
+    private $forceUpdate = false;
 
     /**
      * timestamp of the local data
      * @var integer
      */
-    public $bnetUpdate = 10;
+    private $bnetUpdate = 10;
 
     /**
-     *  ID of the character
-     * @var string
+     *  Name of the character
+     * @var String
      */
-    public $charID = '';
+    private $name = '';
+    /**
+     *  Realm of the character
+     * @var String
+     */
+    private $realm = '';
+    /**
+     *  ID of the character
+     * @var integer
+     */
+    private $id = 0;
 
 	/**
      * Initialize the update process
      *
-     * @param $charID       string  ID of the character
+     * @param $name         string  Name of the character
+     * @param $realm        string  Realm of the character
+     * @param $id           integer 
      * @param $bnetUpdate   integer timestamp of the local data
      * @param $forceUpdate  boolean force an update (optinal)
      */
-    public function __construct($charID, $bnetUpdate = 10, $forceUpdate = false, $wcfdir) {
+    public function __construct($name, $realm, $id, $bnetUpdate = 10, $forceUpdate = false, $wcfdir) {
         //require_once($wcfdir . "lib/system/WCF.class.php");
         //new \wcf\system\WCF();
         if (!defined('WCF_DIR')) define('WCF_DIR', $wcfdir);
@@ -62,7 +74,9 @@ class AsyncCharacterUpdate extends \Thread{
         require_once(WCF_DIR.'lib/system/wow/AsyncImageDownload.class.php');
         $this->forceUpdate = $forceUpdate;
         $this->bnetUpdate = $bnetUpdate;
-        $this->charID = $charID;
+        $this->name = $name;
+        $this->realm = $realm;
+        $this->id = $id;
     }
 
 	/**
@@ -71,34 +85,32 @@ class AsyncCharacterUpdate extends \Thread{
      */
     public function run() {
         new \wcf\system\WCF();
-        $data = explode("@", $this->charID, 2);
-        $url = bnetAPI::buildURL('character', 'wow', ['char' => $data[0], 'realm' => $data[1]], ['guild', 'items', 'feed']);
+        $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->name, 'realm' => $this->realm], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts' ]);
         $reply = null;
         $charData['inGuild'] = 0;
         try {
             $reply = @file_get_contents($url);
             if ($reply === false) {
-                echo  "UPDATE ". $this->charID .":\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
-                $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
+                echo  "UPDATE ". $this->name . "(".$this->id."):\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
+                $sql = "UPDATE  wcf".WCF_N."_gman_character
                     SET     bnetError = bnetError + 1
-                    WHERE   charID = ? ";
+                    WHERE   characterID = ? ";
                 $statement = WCF::getDB()->prepareStatement($sql);
-                $statement->execute([$this->charID]);
+                $statement->execute([$this->id]);
                 return;
             }
         }
         catch (Exception $e) {
-            echo "UPDATE ". $this->charID .": \033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
-            $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
+            echo "UPDATE ".$this->name . "(".$this->id."): \033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
+            $sql = "UPDATE  wcf".WCF_N."_gman_character
                     SET     bnetError = bnetError + 1
-                    WHERE   charID = ? ";
+                    WHERE   characterID = ? ";
             $statement = WCF::getDB()->prepareStatement($sql);
-            $statement->execute([$this->charID]);
+            $statement->execute([$this->id]);
             return;
         }
         $charData=JSON::decode($reply, true);
         if (isset($this->forceUpdate) || $this->update['bnetUpdate'] < ($charData['lastModified'] / 1000)) {
-            $charData['charID'] = $this->charID;
             $charData['bnetError'] = 0;
             if (isset($charData['guild']['name']) && $charData['guild']['name'] == GMAN_MAIN_GUILDNAME) {
                 $charData['inGuild'] = 1;
@@ -107,123 +119,42 @@ class AsyncCharacterUpdate extends \Thread{
                 //$wowObj = new WowCharacter($this->charID);
                 //@$action = new WowCharacterAction([$wowObj], 'removeFromAllGroups');
                 //@$action->executeAction();
-                $charData['inGuild'] = 0;
-                echo $this->charID .": \033[31m removed from guild\033[0m (". $url .")". PHP_EOL;
+                $charData['inGuild'] = 2;
+                echo $this->name . "(".$this->id."): \033[31m removed from guild\033[0m (". $url .")". PHP_EOL;
             }
 
             $images = ['avatar','inset','profilemain'];
             foreach($images as $image) {
                 $path = $image=='avatar' ? $charData['thumbnail'] : StringUtil::replaceIgnoreCase('avatar',$image, $charData['thumbnail']);
-                $imageRequest = new AsyncImageDownload($path, $this->charID);
+                $imageRequest = new AsyncImageDownload($path, $this->name);
                 $imageRequest->run();
             }
             $plaindata = $charData;
             $plaindata['items'] = null;
             $plaindata['guild'] = null;
             $plaindata['feed'] = null;
+            $plaindata['pets'] = null;
+            $plaindata['statistics'] = null;
+            $plaindata['petSlots'] = null;
+            $plaindata['mounts'] = null;
             $plaindata['lastModified'] = $plaindata['lastModified'] / 1000;
-
+            $petdata = array_merge($charData['pets'], $charData['petSlots']);
+            $petstring = JSON::encode($petdata);
+            $accID = '';
+            if (strlen($petstring) > 10000)  $accID = hash('ripemd256', JSON::encode($petstring));
+            $petstring = '';
             WCF::getDB()->beginTransaction();
-            $this->updateFeed($this->charID, $charData['feed'], $charData['inGuild']);
-            $this->updateCharData($this->charID, $plaindata);
-            $this->updateEquip($this->charID, $plaindata['lastModified'], $charData['items']);
+            bnetAPI::updateFeed(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $charData['feed'], $charData['inGuild']);
+            bnetAPI::updateCharData(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata, $accID);
+            bnetAPI::updateEquip(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $charData['items']);
+            bnetAPI::updateMounts(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $charData['mounts']);
+            bnetAPI::updateStatistics(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $charData['statistics']);
+            bnetAPI::updatePets(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $petdata);
             WCF::getDB()->commitTransaction();
-            echo "UPDATE ". $this->charID .": \033[32m update done. \033[0m" . PHP_EOL;
+            echo "UPDATE ". $this->name . "(".$this->id."): \033[32m update done. \033[0m" . PHP_EOL;
         }
         else {
-            echo "UPDATE ". $this->charID .": no update requiered" . PHP_EOL;
+            echo "UPDATE ". $this->name . "(".$this->id."): no update requiered" . PHP_EOL;
         }
     }
-
-
-    private function updateCharData($charID, $charData) {
-        $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
-            SET     inGuild = ?,
-                    bnetData = ?,
-                    bnetUpdate = ?,
-                    bnetError = 0,
-                    c_class = ?,
-                    c_race = ?,
-                    c_level = ?
-            WHERE   charID = ?";
-        $statement = WCF::getDB()->prepareStatement($sql);
-
-        $statement->execute([
-            $charData['inGuild'],
-            JSON::encode($charData),
-            TIME_NOW,
-            $charData['class'],
-            $charData['race'],
-            $charData['level'],
-            $charID
-            ]);
-    }
-    private function updateEquip($charID, $updateTime, $itemData) {
-        $sql = "INSERT INTO  wcf".WCF_N."_gman_character_equip
-                (
-                    charID,
-                    averageItemLevel,
-                    averageItemLevelEquipped,
-                    head,
-                    neck,
-                    shoulder,
-                    back,
-                    chest,
-                    shirt,
-                    wrist,
-                    hands,
-                    waist,
-                    legs,
-                    feet,
-                    finger1,
-                    finger2,
-                    trinket1,
-                    trinket2,
-                    mainHand,
-                    offHand,
-                    equipTime
-                )
-           VALUES      (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-           ON DUPLICATE KEY UPDATE
-           charID = VALUES(charID)
-           ";
-        $statement = WCF::getDB()->prepareStatement($sql);
-        $statement->execute([
-            $charID,
-            $itemData['averageItemLevel'],
-            $itemData['averageItemLevelEquipped'],
-            @bnetAPI::normalizeItem($itemData['head']),
-            @bnetAPI::normalizeItem($itemData['neck']),
-            @bnetAPI::normalizeItem($itemData['shoulder']),
-            @bnetAPI::normalizeItem($itemData['back']),
-            @bnetAPI::normalizeItem($itemData['chest']),
-            @bnetAPI::normalizeItem($itemData['shirt']),
-            @bnetAPI::normalizeItem($itemData['wrist']),
-            @bnetAPI::normalizeItem($itemData['hands']),
-            @bnetAPI::normalizeItem($itemData['waist']),
-            @bnetAPI::normalizeItem($itemData['legs']),
-            @bnetAPI::normalizeItem($itemData['feet']),
-            @bnetAPI::normalizeItem($itemData['finger1']),
-            @bnetAPI::normalizeItem($itemData['finger2']),
-            @bnetAPI::normalizeItem($itemData['trinket1']),
-            @bnetAPI::normalizeItem($itemData['trinket2']),
-            @bnetAPI::normalizeItem($itemData['mainHand']),
-            @bnetAPI::normalizeItem($itemData['offHand']),
-            $updateTime,
-        ]);
-    }
-    private function updateFeed($charID, $feedList, $inGuild) {
-        $sql = "INSERT INTO  wcf".WCF_N."_gman_feedlist
-                            (charID, type, itemID, acmID, quantity, bonusLists, context, criteria, feedTime, inGuild)
-                VALUES      (?,?,?,?,?,?,?,?,?,?)
-                ON DUPLICATE KEY UPDATE
-                            charID = VALUES(charID)
-            ";
-        $statement = WCF::getDB()->prepareStatement($sql);
-        foreach ($feedList as $feed) {
-            $data = bnetAPI::normalizeFeed($feed, $charID, $inGuild);
-            $statement->execute($data);
-        }
-    }
-
 }

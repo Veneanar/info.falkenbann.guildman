@@ -1,46 +1,122 @@
 <?php
 namespace wcf\acp\form;
-use wcf\data\guild\group\GuildGroup;
-use wcf\data\guild\group\GuildGroupAction;
 use wcf\form\AbstractForm;
+use wcf\system\exception\UserInputException;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\WCF;
+use wcf\util\StringUtil;
+use wcf\util\ArrayUtil;
+use wcf\data\guild\group\GuildGroup;
+use wcf\data\guild\group\GuildGroupAction;
+use wcf\data\user\group\UserGroup;
+use wcf\data\user\group\UserGroupList;
+use wcf\data\guild\Guild;
+use wcf\data\user\User;
+use wcf\data\wow\realm\WowRealmList;
+use wcf\data\wow\character\WowCharacter;
+use wcf\data\wow\character\WowCharacterAction;
 
 /**
- * Gilden Gruppen bearbeiten
+ * Gruppen hinzufügen
  * @author	    Veneanar Falkenbann
  * @copyright	2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
  * @license	    GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	    info.falkenbann.guildman
  *
  */
-class CharacterAddForm extends GuildGroupAddForm {
+
+class CharacterEditForm extends AbstractForm {
 	/**
 	 * @inheritDoc
 	 */
 	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
 
 	/**
-	 * id of the edited ad
-	 * @var	integer
+	 * @inheritDoc
 	 */
-	public $groupID = 0;
+	public $neededPermissions = ['admin.gman.canAddGroups'];
 
 	/**
-	 * edited ad object
-     * @var	GuildGroup
+	 * @inheritDoc
 	 */
-	public $guildGroupObject = null;
+	public $neededModules = [];
+	/**
+     * name of the template for the called page
+     * @var	string
+     */
+	public $templateName = 'characterEdit';
+	/**
+	 * IDs of the GuildGroup a Characteer bvelongs
+	 * @var	integer[]
+	 */
+	public $guildGroupIDs = [];
+
+	/**
+	 * GuildGroup Objects
+     * @var	GuildGroup[]
+	 */
+	public $guildGroupObjects = [];
+
+	/**
+     * Character's owner ID
+     * @var	string
+     */
+	public $ownerName = '';
+
+	/**
+	 * Character's owner
+	 * @var	User
+	 */
+	public $ownerObject = null;
+
+	/**
+	 * Characters' state
+	 * @var	integer
+	 */
+	public $state = '';
+
+	/**
+     * Char is disabled
+     * @var	string
+     */
+	public $isDisabled = false;
+
+	/**
+	 * Char's ID to edit
+	 * @var	string
+	 */
+	public $charID = '';
+
+	/**
+     * query for calendar
+     * @var	WoWCharacter
+     */
+	public $charObject = null;
+
+	/**
+     * query for calendar
+     * @var	string
+     */
+	public $charName = '';
+
+	/**
+     * Guild
+     * @var	Guild
+     */
+	public $guild = null;
+
+
 
 	/**
 	 * @inheritDoc
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
-
 		WCF::getTPL()->assign([
-			'action' => 'edit',
-			'guildGroupObject' => $this->guildGroupObject
+			'action'            => 'add',
+			'charObject'        => $this->charObject,
+            'ownerName'         => $this->ownerName,
+            'guild'             => $this->guild,
 		]);
 	}
 
@@ -49,75 +125,60 @@ class CharacterAddForm extends GuildGroupAddForm {
 	 */
 	public function readData() {
 		parent::readData();
-		if (empty($_POST)) {
-			$this->groupName            = $this->guildGroupObject->groupName;
-            $this->groupTeaser          = $this->guildGroupObject->groupTeaser;
-            $this->groupWcfID           = $this->guildGroupObject->groupWcfID;
-            $this->showCalender         = $this->guildGroupObject->showCalender;
-            $this->calendarCategoryID   = $this->guildGroupObject->calendarCategoryID;
-            $this->calendarTitle        = $this->guildGroupObject->calendarTitle;
-            $this->calendarText         = $this->guildGroupObject->calendarText;
-            $this->calendarQuery        = $this->guildGroupObject->calendarQuery;
-            $this->categoryList         = $this->guildGroupObject->categoryList;
-            $this->gameRank             = $this->guildGroupObject->gameRank;
-            $this->showRoaster          = $this->guildGroupObject->showRoaster;
-            $this->articleID            = $this->guildGroupObject->articleID;
-            $this->boardID              = $this->guildGroupObject->boardID;
-            $this->imageID              = $this->guildGroupObject->imageID;
-            $this->threadID             = $this->guildGroupObject->threadID;
-            $this->isRaidgruop          = $this->guildGroupObject->isRaidgruop;
-            $this->fetchWCL             = $this->guildGroupObject->fetchWCL;
-            $this->wclQuery             = $this->guildGroupObject->wclQuery;
-            $this->orderNo              = $this->guildGroupObject->orderNo;
-        }
-    }
+        if (isset($_REQUEST['charID'])) $this->charID = StringUtil::trim($_REQUEST['charID']);
+		$this->charObject = new WowCharacter($this->charID);
+        if ($this->charObject===null) {
+			throw new IllegalLinkException();
+		}
 
+        $this->guild = new Guild();
+        if (empty($_POST)) {
+			$this->ownerObject  = $this->charObject->getOwner();
+            $this->ownerName     = $this->ownerObject->username;
+        }
+
+	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function readParameters() {
-		parent::readParameters();
-
-		if (isset($_REQUEST['id'])) $this->groupID = intval($_REQUEST['id']);
-		$this->guildGroupObject = new GuildGroup($this->groupID);
-		if (!$this->guildGroupObject->groupID) {
+	public function readFormParameters() {
+		parent::readFormParameters();
+        if (isset($_REQUEST['charID'])) $this->charID = StringUtil::trim($_REQUEST['charID']);
+		$this->charObject = new WowCharacter($this->charID);
+        if ($this->charObject===null) {
 			throw new IllegalLinkException();
 		}
+        if (isset($_POST['ownerName']))     $this->ownerName        = StringUtil::trim($_POST['ownerName']);
+
+	}
+
+
+	/**
+     * @inheritDoc
+     */
+	public function validate() {
+		parent::validate();
+		if (empty($this->ownerName)) {
+			throw new UserInputException('ownerName');
+		}
+        $this->ownerObject = User::getUserByUsername($this->ownerName);
+        if ($this->ownerObject->userID==0) {
+            throw new UserInputException('ownerName', 'notfound');
+        }
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function save() {
-		AbstractForm::save();
-
-		$this->objectAction = new GuildGroupAction([$this->guildGroupObject], 'update', [
-			'data' =>  [
-			    'groupName'         => $this->groupName,
-                'groupTeaser'       => $this->groupTeaser,
-                'wcfGroupID'        => $this->groupWcfID,
-                'showCalender'      => intval($this->showCalender),
-                'calendarTitle'     => $this->calendarTitle,
-                'calendarText'      => $this->calendarText,
-                'calendarQuery'     => $this->calendarQuery,
-                'calendarCategoryID'=> $this->calendarCategoryID,
-                'gameRank'          => $this->gameRank,
-                'showRoaster'       => intval($this->showRoaster),
-                'articleID'         => $this->articleID > 0 ? $this->articleID : null,
-                'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
-                'imageID'           => isset($this->imageID[0]) ? $this->imageID[0]: null,
-                'threadID'          => $this->threadID > 0 ? $this->threadID : null,
-                'isRaidgruop'       => intval($this->isRaidgruop),
-                'fetchWCL'          => intval($this->fetchWCL),
-                'wclQuery'          => $this->wclQuery,
-                'orderNo'           => $this->orderNo,
-                'lastUpdate'        => TIME_NOW
-			]
-		]);
-		$this->objectAction->executeAction();
+		parent::save();
+        $objectAction = new WowCharacterAction([$this->charObject],'setUser', ['userID' =>$this->ownerObject->userID]);
+        $objectAction->executeAction();
 
 		$this->saved();
+
+		// reset values
 
 		WCF::getTPL()->assign('success', true);
 	}

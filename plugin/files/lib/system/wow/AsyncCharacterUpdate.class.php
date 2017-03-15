@@ -72,14 +72,14 @@ class AsyncCharacterUpdate extends \Thread{
     public function run() {
         new \wcf\system\WCF();
         $data = explode("@", $this->charID, 2);
-        $url = bnetAPI::buildURL('character', 'wow', ['char' => $data[0], 'realm' => $data[1]], ['guild', 'items', 'feed']);
+        $url = bnetAPI::buildURL('character', 'wow', ['char' => $data[0], 'realm' => $data[1]], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts' ]);
         $reply = null;
         $charData['inGuild'] = 0;
         try {
             $reply = @file_get_contents($url);
             if ($reply === false) {
                 echo  "UPDATE ". $this->charID .":\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
-                $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
+                $sql = "UPDATE  wcf".WCF_N."_gman_character
                     SET     bnetError = bnetError + 1
                     WHERE   charID = ? ";
                 $statement = WCF::getDB()->prepareStatement($sql);
@@ -89,7 +89,7 @@ class AsyncCharacterUpdate extends \Thread{
         }
         catch (Exception $e) {
             echo "UPDATE ". $this->charID .": \033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
-            $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
+            $sql = "UPDATE  wcf".WCF_N."_gman_character
                     SET     bnetError = bnetError + 1
                     WHERE   charID = ? ";
             $statement = WCF::getDB()->prepareStatement($sql);
@@ -107,7 +107,7 @@ class AsyncCharacterUpdate extends \Thread{
                 //$wowObj = new WowCharacter($this->charID);
                 //@$action = new WowCharacterAction([$wowObj], 'removeFromAllGroups');
                 //@$action->executeAction();
-                $charData['inGuild'] = 0;
+                $charData['inGuild'] = 2;
                 echo $this->charID .": \033[31m removed from guild\033[0m (". $url .")". PHP_EOL;
             }
 
@@ -121,12 +121,23 @@ class AsyncCharacterUpdate extends \Thread{
             $plaindata['items'] = null;
             $plaindata['guild'] = null;
             $plaindata['feed'] = null;
+            $plaindata['pets'] = null;
+            $plaindata['statistics'] = null;
+            $plaindata['petSlots'] = null;
+            $plaindata['mounts'] = null;
             $plaindata['lastModified'] = $plaindata['lastModified'] / 1000;
-
+            $petdata = array_merge($charData['pets'], $charData['petSlots']);
+            $petstring = JSON::encode($petdata);
+            $accID = '';
+            if (strlen($petstring) > 10000)  $accID = hash('ripemd256', JSON::encode($petstring));
+            $petstring = '';
             WCF::getDB()->beginTransaction();
             $this->updateFeed($this->charID, $charData['feed'], $charData['inGuild']);
-            $this->updateCharData($this->charID, $plaindata);
+            $this->updateCharData($this->charID, $plaindata, $accID);
             $this->updateEquip($this->charID, $plaindata['lastModified'], $charData['items']);
+            $this->updateMounts($this->charID, $plaindata['lastModified'], $charData['mounts']);
+            $this->updateStatistics($this->charID, $plaindata['lastModified'], $charData['statistics']);
+            $this->updatePets($this->charID, $plaindata['lastModified'], $petdata);
             WCF::getDB()->commitTransaction();
             echo "UPDATE ". $this->charID .": \033[32m update done. \033[0m" . PHP_EOL;
         }
@@ -136,15 +147,17 @@ class AsyncCharacterUpdate extends \Thread{
     }
 
 
-    private function updateCharData($charID, $charData) {
-        $sql = "UPDATE  wcf".WCF_N."_gman_wow_character
+    private function updateCharData($charID, $charData, $accID) {
+        $sql = "UPDATE  wcf".WCF_N."_gman_character
             SET     inGuild = ?,
                     bnetData = ?,
                     bnetUpdate = ?,
                     bnetError = 0,
                     c_class = ?,
                     c_race = ?,
-                    c_level = ?
+                    c_level = ?,
+                    c_acms = ?,
+                    accountID = ?
             WHERE   charID = ?";
         $statement = WCF::getDB()->prepareStatement($sql);
 
@@ -155,6 +168,8 @@ class AsyncCharacterUpdate extends \Thread{
             $charData['class'],
             $charData['race'],
             $charData['level'],
+            $charData['achievementPoints'],
+            $accID,
             $charID
             ]);
     }
@@ -225,5 +240,46 @@ class AsyncCharacterUpdate extends \Thread{
             $statement->execute($data);
         }
     }
-
+    private function updateMounts($charID, $updateTime, $mountData) {
+        $sql = "INSERT INTO  wcf".WCF_N."_gman_character_mounts
+                            (charID, bnetData, bnetUpdate)
+                VALUES      (?,?,?)
+                ON DUPLICATE KEY UPDATE
+                            charID = VALUES(charID)
+            ";
+        $statement = WCF::getDB()->prepareStatement($sql);
+        $statement->execute([
+            $charID,
+            JSON::encode($mountData['collected']),
+            $updateTime,
+        ]);
+    }
+    private function updateStatistics($charID, $updateTime, $statistictData) {
+        $sql = "INSERT INTO  wcf".WCF_N."_gman_character_statistics
+                            (charID, bnetData, bnetUpdate)
+                VALUES      (?,?,?)
+                ON DUPLICATE KEY UPDATE
+                            charID = VALUES(charID)
+            ";
+        $statement = WCF::getDB()->prepareStatement($sql);
+        $statement->execute([
+            $charID,
+            JSON::encode($statistictData['subCategories']),
+            $updateTime,
+        ]);
+    }
+    private function updatePets($charID, $updateTime, $pettData) {
+        $sql = "INSERT INTO  wcf".WCF_N."_gman_character_pets
+                            (charID, bnetData, bnetUpdate)
+                VALUES      (?,?,?)
+                ON DUPLICATE KEY UPDATE
+                            charID = VALUES(charID)
+            ";
+        $statement = WCF::getDB()->prepareStatement($sql);
+        $statement->execute([
+            $charID,
+            JSON::encode($pettData),
+            $updateTime,
+        ]);
+    }
 }

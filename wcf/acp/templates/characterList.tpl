@@ -7,6 +7,10 @@
 	require(['WoltLabSuite/Core/Ui/User/Search/Input'], function(UiUserSearchInput) {
 	    new UiUserSearchInput(elBySel('input[name="ownerName"]'));
 	});
+
+    require(['WoltLabSuite/GMan/Ui/Character/Search/Input'], function(UiCharacterSearchInput) {
+        new UiCharacterSearchInput(elBySel('input[name="charName"]'));
+    });
 </script>
 <header class="contentHeader">
     <div class="contentHeaderTitle">
@@ -92,6 +96,12 @@
                     <input type="text" id="ownerName" name="ownerName" value="{$ownerName}" placeholder="{lang}wcf.page.gman.wow.username{/lang}" class="long">
                 </dd>
             </dl>
+            <dl class="col-xs-12 col-md-4">
+                <dt>min. {lang}wcf.page.gman.wow.charname{/lang}</dt>
+                <dd>
+                    <input type="text" id="charName" name="charName" value="{$charName}" placeholder="{lang}wcf.page.gman.wow.charName{/lang}" class="long">
+                </dd>
+            </dl>
 
 
 
@@ -142,7 +152,7 @@
             <tr id="groupContainer{@$character->charID}" class="jsCharacterRow">
                 <td class="columnIcon">
                     {if $character->isEditable()}
-                    <a href="{link controller='CharacterEdit' id=$character->charID}{/link}" title="{lang}wcf.global.button.edit{/lang}" class="jsTooltip"><span class="icon icon16 fa-pencil"></span></a>
+                    <a href="{link controller='CharacterEdit' object=$character}{/link}" title="{lang}wcf.global.button.edit{/lang}" class="jsTooltip"><span class="icon icon16 fa-pencil"></span></a>
                     {else}
                     <span class="icon icon16 fa-pencil disabled" title="{lang}wcf.global.button.edit{/lang}"></span>
                     {/if}
@@ -173,9 +183,12 @@
                     {$guild->getRankName($character->guildRank)}
                 </td>
                 <td class="columnTitle columnCharGroups">
-                    {foreach from=$character->getGroups() item=group}
-                        {$group->name},
+                    <small>
+                    {foreach from=$character->getGroups() item=group name=grouplist}
+                        {$group->groupName}
+                        {if !$tpl.foreach.grouplist.last}, {/if}
                     {/foreach}
+                    </small>
                 </td>
 
                 {event name='columns'}
@@ -196,7 +209,7 @@
         <ul>
             {content}
             {if $__wcf->getSession()->getPermission('admin.user.canAddGroup')}
-            <li><a href="{link controller='guildGroupAdd'}{/link}" class="button"><span class="icon icon16 fa-plus"></span> <span>{lang}wcf.acp.character.add{/lang}</span></a></li>
+            <li><a href="{link controller='CharacterAdd'}{/link}" class="button"><span class="icon icon16 fa-plus"></span> <span>{lang}wcf.acp.character.add{/lang}</span></a></li>
             {/if}
 
             {event name='contentFooterNavigation'}

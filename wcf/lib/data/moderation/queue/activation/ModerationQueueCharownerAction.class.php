@@ -22,7 +22,7 @@ class WowCharacterQueueActivationHandler extends AbstractModerationQueueHandler 
      * database object class name
      * @var	string
      */
-	protected $className = WowCharacter;
+	protected $className = WowCharacter::class;
 	/**
      * @inheritDoc
      */

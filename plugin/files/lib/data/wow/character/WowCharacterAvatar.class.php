@@ -81,10 +81,10 @@ class WowCharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar 
 	 */
 	public function getImageTag($size = null) {
         if ($size===null) {
-            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$this->getWidth().'px; height: '.$this->getHeight().'px" alt="unsized call" class="userAvatarImage">';
+            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$this->getWidth().'px; height: '.$this->getHeight().'px; '.$this->renderMain.'" alt="unsized call" class="userAvatarImage">';
         } else {
             $sizeWidth = $this->type == "avatar" ? $size : round($size * 1.98, 1);
-            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$sizeWidth.'px; height: '.$size.'px" alt="sized call" class="userAvatarImage">';
+            return '<img src="'.StringUtil::encodeHTML($this->getURL($this->type)).'" style="width: '.$sizeWidth.'px; height: '.$size.'px; '.$this->renderMain.'" alt="sized call" class="userAvatarImage">';
           }
     }
 
@@ -101,6 +101,10 @@ class WowCharacterAvatar extends DatabaseObjectDecorator implements IUserAvatar 
 	public function getWidth() {
 		return $this->type == "avatar" ? 84 : 230;
 	}
+
+    public function renderMain() {
+       return $this->isMain ? 'box-shadow:0 0 25px gold,0 0 75px gold, inset 0 10px 10px 20px whitesmoke, inset 15px 0 18px 25px ivory;' : '';
+    }
 
 	/**
      * @inheritDoc

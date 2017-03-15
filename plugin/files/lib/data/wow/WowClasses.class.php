@@ -29,7 +29,7 @@ class WowClasses extends DatabaseObject {
 	protected static $databaseTableIndexName = 'wclassID';
 
     public function getTag() {
-        return '<span style="color:'.$this->data['color'].'">'. $this->name .'</span>';
+        return '<span style="color:'.$this->color.'">'. $this->name .'</span>';
     }
 
 }

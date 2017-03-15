@@ -4,6 +4,9 @@ use wcf\data\DatabaseObject;
 use wcf\system\WCF;
 use wcf\data\user\group\UserGroup;
 use wcf\system\request\IRouteController;
+use wcf\system\request\LinkHandler;
+use wcf\data\wow\character\WowCharacterList;
+use wcf\data\wow\character\WowCharacter;
 
 /**
  * Represents a Gildenbewerbung
@@ -45,6 +48,10 @@ class GuildGroup extends DatabaseObject implements IRouteController {
 	 * {@inheritDoc}
 	 */
 	protected static $databaseTableIndexName = 'groupID';
+	/**
+	 * WowCharacterList
+	 */
+    private $member = null;
 
 	/**
      * Returns true if current user may delete this group.
@@ -80,6 +87,35 @@ class GuildGroup extends DatabaseObject implements IRouteController {
 
     public function getTitle() {
         return $this->groupName;
+    }
+	/**
+     * @inheritDoc
+     */
+	public function getLink() {
+		return LinkHandler::getInstance()->getLink('User', [
+			'application' => 'wcf',
+			'object' => $this,
+			'forceFrontend' => true
+		]);
+	}
+
+    public function getMemberList() {
+        if ($this->member === null) {
+            $memberList = new WowCharacterList();
+            $memberList->sqlJoins = "";
+            $memberList->getConditionBuilder()->add("char_to_group.groupID = ?", [$this->groupID]);
+            $memberList->sqlJoins .= " LEFT JOIN wcf".WCF_N."_gman_char_to_group char_to_group ON (gman_character.characterID = char_to_group.characterID)";
+            $memberList->readObjects();
+            $this->member = $memberList->getObjects();
+        }
+        return $this->member;
+    }
+
+    public function getMemberListRank($rank) {
+        $memberList = new WowCharacterList();
+        $memberList->getConditionBuilder()->add("gameRank = ?", [$rank]);
+        $memberList->readObjects();
+        return $memberList->getObjects();
     }
 
 }

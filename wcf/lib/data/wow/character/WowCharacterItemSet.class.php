@@ -34,7 +34,7 @@ class WowCharacterItemSet extends DatabaseObjectDecorator {
         // parent::__construct($object);
 			$sql = "SELECT	*
 				FROM	wcf".WCF_N."_gman_character_equip
-				WHERE	charID = ?";
+				WHERE	characterID = ?";
 			$statement = WCF::getDB()->prepareStatement($sql);
 			$statement->execute([$object->getObjectID()]);
 			$row = $statement->fetchArray();

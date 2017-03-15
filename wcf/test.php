@@ -5,29 +5,43 @@ use wcf\data\wow\character\WowCharacter;
 use wcf\data\wow\character\WowCharacterAction;
 use wcf\data\wow\character\WowCharacterList;
 use wcf\system\background\BackgroundQueueHandler;
+// Gruppenverwaltung _ Gruppenzuordnung löschen
+// Püfen warum alle Ränge gelöscht werden
+
 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-bnetAPI::updateGuild();
+//bnetAPI::updateGuild();
 bnetAPI::updateGuildMemberList();
-bnetAPI::updateCharacter([
-        [
-            'charID' =>'Aiox@forscherliga',
-            'bnetUpdate' => 10
-        ],
-        [
-            'charID' => 'Veneanar@forscherliga',
-            'bnetUpdate' => 10
-        ],
-        [
-            'charID' => 'Adire@die-nachtwache',
-            'bnetUpdate' => 10
-        ],
-    ]);
+//bnetAPI::updateCharacter([
+//        [
+//            'charInfo' => [
+//                    'name'  => 'Aiox',
+//                    'realm' => 'forscherliga',
+//                    ],
+//            'bnetUpdate' => 10
+//        ],
+//        [
+//            'charInfo' => [
+//                    'name'  =>   'Veneanar',
+//                    'realm' => 'forscherliga',
+//                    ],
+//            'bnetUpdate' => 10
+//        ],
+//        [
+//            'charInfo' => [
+//                    'name'  =>   'Goriox',
+//                    'realm' => 'die-nachtwache',
+//                    ],
+//            'bnetUpdate' => 10
+//        ],
+//    ]);
  // WowCharacterAction::bulkUpdate();
 //while (BackgroundQueueHandler::getInstance()->getRunnableCount() > 0)
 //    BackgroundQueueHandler::getInstance()->performNextJob();
-$myChar  = new WowCharacter('Veneanar@forscherliga');
+
+$myChar  = WowCharacter::getByCharAndRealm('Avenaro', 'forscherliga');
+
 echo $myChar->getAvatar()->getImageTag();
 
 //$wowCharList = new WowCharacterList();
@@ -36,6 +50,8 @@ echo $myChar->getAvatar()->getImageTag();
 //$wowCharList->readObjects();
 
 // \wcf\system\cronjob\GuildCharUpdateCronjob::directexecute();
+
+echo "<pre>"; var_dump($myChar->getGroups()); echo "</pre>";
 echo "Leider geil";
 
 

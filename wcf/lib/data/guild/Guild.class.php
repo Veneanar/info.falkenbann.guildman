@@ -116,7 +116,7 @@ class Guild extends JSONExtendedDatabaseObject {
     public function getLeader() {
         if ($this->leader===null) {
             $sql = "SELECT	*
-			    FROM		wcf".WCF_N."_gman_wow_character
+			    FROM		wcf".WCF_N."_gman_character
 			    WHERE		guildRank = 0";
             $statement = WCF::getDB()->prepareStatement($sql);
             $statement->execute();
@@ -184,7 +184,7 @@ class Guild extends JSONExtendedDatabaseObject {
             $this->GuildGroupsWoW = $guildGroups->getObjects();
             $this->GuildGroupsWoWIDs = $guildGroups->getObjectIDs();
             $guildGroups = new GuildGroupList();
-            $guildGroups->getConditionBuilder()->add("gameRank = 11");
+            $guildGroups->getConditionBuilder()->add("gameRank >= 11");
             $guildGroups->readObjects();
             $this->GuildGroupsNotWoW = $guildGroups->getObjects();
             $this->GuildGroupsNotWoWIDs = $guildGroups->getObjectIDs();
@@ -203,20 +203,20 @@ class Guild extends JSONExtendedDatabaseObject {
         if ($this->GuildGroupsWoW===null) {
             $this->getGuildGroups();
         }
-        $groupList = $this->getGuildGroups;
+        $groupList = $this->getGuildGroups();
         /**
          * @var $group  group\GuildGroup
          */
         $convert = [];
         foreach($idList as $id) {
-            foreach($groupList as $group) {
-                if ($group->groupID == $id) {
-                    $convert[] = $group->wcfGroupID;
-                    continue;
+                foreach($groupList as $group) {
+                    if ($group->groupID ==  $id) {
+                        $convert[] = $group->wcfGroupID;
+                        continue;
+                    }
                 }
-            }
         }
-        return $convert;
+        return array_filter($convert, function($a) { return ($a !== 0); }); ;
     }
 
 

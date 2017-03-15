@@ -116,7 +116,7 @@ class Guild extends JSONExtendedDatabaseObject {
     public function getLeader() {
         if ($this->leader===null) {
             $sql = "SELECT	*
-			    FROM		wcf".WCF_N."_gman_wow_character
+			    FROM		wcf".WCF_N."_gman_character
 			    WHERE		guildRank = 0";
             $statement = WCF::getDB()->prepareStatement($sql);
             $statement->execute();

@@ -125,7 +125,11 @@ class CharacterListPage extends SortablePage {
      * @var	integer
      */
     public $getGroupList = 0;
-
+    /**
+     * charName to search for
+     * @var	string
+     */
+    public $charName = '';
 
 
 
@@ -139,6 +143,7 @@ class CharacterListPage extends SortablePage {
         if ($this->guild->name == null) {
             throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.noguild'));
         }
+        if (!empty($_REQUEST['charName']))      $this->charName     = StringUtil::trim($_REQUEST['charName']);
         if (!empty($_REQUEST['raceID']))        $this->raceID       = intval($_REQUEST['raceID']);
 		if (!empty($_REQUEST['classID']))       $this->classID      = intval($_REQUEST['classID']);
 		if (isset($_REQUEST['rankID']))         $this->rankID       = intval($_REQUEST['rankID']);
@@ -178,6 +183,9 @@ class CharacterListPage extends SortablePage {
         if ($this->minAVGILVLequipped > 0) {
 			$this->conditions->add('averageItemLevelEquipped >= ?', [$this->minAVGILVLequipped]);
 		}
+        if (!empty($this->charName)) {
+			$this->conditions->add('gman_character.charID LIKE ?', ["%".$this->charName."%"]);
+		}
         //if (!empty($_REQUEST['id'])) {
         //    $this->searchID = intval($_REQUEST['id']);
         //    if ($this->searchID) $this->readSearchResult();
@@ -201,7 +209,6 @@ class CharacterListPage extends SortablePage {
 	public function readData() {
 		parent::readData();
         $this->readChars();
-
     }
 
 
@@ -220,8 +227,8 @@ class CharacterListPage extends SortablePage {
 		EventHandler::getInstance()->fireAction($this, 'countItems');
 
 		$sql = "SELECT	COUNT(*)
-			FROM	wcf".WCF_N."_gman_wow_character gman_wow_character
-            LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.charID = gman_wow_character.charID)
+			FROM	wcf".WCF_N."_gman_character gman_character
+            LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.charID = gman_character.charID)
 			".$this->conditions;
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute($this->conditions->getParameters());
@@ -234,15 +241,15 @@ class CharacterListPage extends SortablePage {
         if ($this->getGroupList > 0) {
             $sql = "SELECT		char_to_group.charID
 			FROM		wcf".WCF_N."_gman_char_to_group char_to_group
-            LEFT JOIN wcf".WCF_N."_gman_wow_character gman_wow_character ON (char_to_group.charID = gman_wow_character.charID)
-			LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.charID = gman_wow_character.charID)
+            LEFT JOIN wcf".WCF_N."_gman_character gman_character ON (char_to_group.charID = gman_character.charID)
+			LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.charID = gman_character.charID)
 			".$this->conditions."
 			ORDER BY	".($this->sortField)." ".$this->sortOrder;
         }
         else {
-            $sql = "SELECT		gman_wow_character.charID
-			FROM		wcf".WCF_N."_gman_wow_character gman_wow_character
-			LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.charID = gman_wow_character.charID)
+            $sql = "SELECT		gman_character.charID
+			FROM		wcf".WCF_N."_gman_character gman_character
+			LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.charID = gman_character.charID)
             ".$this->conditions."
 			ORDER BY	".($this->sortField)." ".$this->sortOrder;
         }
@@ -289,6 +296,7 @@ class CharacterListPage extends SortablePage {
             'ownerName' => $this->ownerID >0 ? $this->ownerObject->username : '',
             'races' => $races,
             'classes' => $classes,
+            'charName' => $this->charName,
 		]);
 	}
 }

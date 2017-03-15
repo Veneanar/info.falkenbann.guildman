@@ -34,7 +34,7 @@
         <dl {if $errorField=='groupName'} class="formError" {/if}>
         <dt><label for="groupName">{lang}wcf.acp.gman.group.name{/lang}</label></dt>
         <dd>
-            <input name="groupName" type="text" id="groupName" value="{$groupName}" class="medium" pattern="{literal}.{4,50}{/literal}" required>
+            <input name="groupName" type="text" id="groupName" value="{$groupName}" class="medium" pattern="{literal}.{2,50}{/literal}" required>
             <small>{lang}wcf.acp.gman.group.name.description{/lang}</small>
             {if $errorField == 'groupName'}
             <small class="innerError">
@@ -65,18 +65,17 @@
         </dd>
         </dl>
 
-        <dl {if $errorField=='groupWcfID'} class="formError" {/if}>
+        <dl {if $errorField=='wcfGroupID'} class="formError" {/if}>
         <dt><label for="groupWcfID">{lang}wcf.acp.gman.group.wcfgroup{/lang}</label></dt>
         <dd>
-            <select name="groupWcfID" id="groupWcfID" class="medium">
+            <select name="wcfGroupID" id="wcfGroupID" class="medium">
                 <option value="0">{lang}wcf.global.noSelection{/lang}</option>
-
                 {foreach from=$wcfGroups item=$group}
-                <option value="{$group->groupID}" {if $group->groupID == $groupWcfID} selected{/if}>{$group->getTitle()}</option>
+                <option value="{$group->groupID}"{if $group->groupID==$wcfGroupID} selected{/if}>{$group->getTitle()}</option>
                 {/foreach}
             </select>
-            <small>{lang}wcf.acp.gman.group.wcfgroup.description{/lang}</small>
-            {if $errorField == 'groupWcfID'}
+            <small>{lang}wcf.acp.gman.group.wcfgroup.description{/lang} ID: {$wcfGroupID}</small>
+            {if $errorField == 'wcfGroupID'}
             <small class="innerError">
                 {if $errorType == 'empty'}
                 {lang}wcf.global.form.error.empty{/lang}

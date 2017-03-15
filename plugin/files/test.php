@@ -8,19 +8,28 @@ use wcf\system\background\BackgroundQueueHandler;
 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-bnetAPI::updateGuild();
-bnetAPI::updateGuildMemberList();
+//bnetAPI::updateGuild();
+//bnetAPI::updateGuildMemberList();
 bnetAPI::updateCharacter([
         [
-            'charID' =>'Aiox@forscherliga',
+            'charInfo' => [
+                    'name'  => 'Aiox',
+                    'realm' => 'forscherliga',
+                    ],
             'bnetUpdate' => 10
         ],
         [
-            'charID' => 'Veneanar@forscherliga',
+            'charInfo' => [
+                    'name'  =>   'Veneanar',
+                    'realm' => 'forscherliga',
+                    ],
             'bnetUpdate' => 10
         ],
         [
-            'charID' => 'Adire@die-nachtwache',
+            'charInfo' => [
+                    'name'  =>   'Goriox',
+                    'realm' => 'die-nachtwache',
+                    ],
             'bnetUpdate' => 10
         ],
     ]);

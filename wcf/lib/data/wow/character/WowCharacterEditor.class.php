@@ -43,26 +43,26 @@ class WowCharacterEditor extends DatabaseObjectEditor {
         if ($addDefaultGroups) {
             $guild = new Guild();
             $defaultGroup = $guild->getGroupfromRank($this->guildRank);
-            $groupIDs = array_merge($groupIDs, $defaultGroup);
+            $groupIDs = array_merge($groupIDs, [$defaultGroup->groupID]);
             $groupIDs = array_unique($groupIDs);
         }
 
 		// remove old groups
 		if ($deleteOldGroups) {
 			$sql = "DELETE FROM	wcf".WCF_N."_gman_char_to_group
-				WHERE		userID = ?";
+				WHERE		characterID = ?";
 			$statement = WCF::getDB()->prepareStatement($sql);
-			$statement->execute([$this->charID]);
+			$statement->execute([$this->characterID]);
 		}
 
 		// insert new groups
 		if (!empty($groupIDs)) {
 			$sql = "INSERT IGNORE INTO	wcf".WCF_N."_gman_char_to_group
-							(userID, groupID)
+							(characterID, groupID)
 				VALUES			(?, ?)";
 			$statement = WCF::getDB()->prepareStatement($sql);
 			foreach ($groupIDs as $groupID) {
-				$statement->execute([$this->charID, $groupID]);
+				$statement->execute([$this->characterID, $groupID]);
 			}
 		}
 	}
@@ -74,10 +74,10 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      */
 	public function addToGroup($groupID) {
 		$sql = "INSERT IGNORE INTO	wcf".WCF_N."_gman_char_to_group
-						(userID, groupID)
+						(characterID, groupID)
 			VALUES			(?, ?)";
 		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute([$this->charID, $groupID]);
+		$statement->execute([$this->characterID, $groupID]);
 	}
 
 	/**
@@ -87,10 +87,10 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      */
 	public function removeFromGroup($groupID) {
 		$sql = "DELETE FROM	wcf".WCF_N."_gman_char_to_group
-			WHERE		userID = ?
+			WHERE		characterID = ?
 					AND groupID = ?";
 		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute([$this->charID, $groupID]);
+		$statement->execute([$this->characterID, $groupID]);
 	}
 
 	/**
@@ -100,12 +100,12 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      */
 	public function removeFromGroups(array $groupIDs) {
 		$sql = "DELETE FROM	wcf".WCF_N."_gman_char_to_group
-			WHERE		userID = ?
+			WHERE		characterID = ?
 					AND groupID = ?";
 		$statement = WCF::getDB()->prepareStatement($sql);
 		foreach ($groupIDs as $groupID) {
 			$statement->execute([
-				$this->charID,
+				$this->characterID,
 				$groupID
 			]);
 		}
@@ -116,9 +116,9 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      */
 	public function removeFromAllGroups() {
 		$sql = "DELETE FROM	wcf".WCF_N."_gman_char_to_group
-			    WHERE		userID = ?";
+			    WHERE		characterID = ?";
 		$statement = WCF::getDB()->prepareStatement($sql);
-		$statement->execute([$this->charID]);
+		$statement->execute([$this->characterID]);
 	}
 
 

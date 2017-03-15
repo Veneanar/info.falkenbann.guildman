@@ -74,8 +74,8 @@ class WowRealm extends DatabaseObject {
     }
 
     /**
-     * get WOWRealm by slug
-     * @return	WowRealm
+     * get WOWRealm by name
+     * @return	WowRealm|string
      */
     public static function getByName($name) {
         $sql = "SELECT	*
@@ -86,6 +86,10 @@ class WowRealm extends DatabaseObject {
 		$row = $statement->fetchArray();
 		if (!$row) $row = [];
 		return new WowRealm(null, $row);
+    }
+
+    public static function isSlug($realm) {
+        return ctype_lower($realm);
     }
 
 }

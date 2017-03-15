@@ -58,7 +58,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 	/**
      * @inheritDoc
      */
-	protected $allowGuestAccess = ['getSearchResultList'];
+	protected $allowGuestAccess = ['getSearchResultList', 'check'];
 
 
     /**
@@ -105,7 +105,11 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
     public function updateData() {
         foreach($this->objects as $wowChar) {
             bnetAPI::updateCharacter([
-                'char'        => $wowChar,
+                'charInfo' => [
+                        'name'  => $wowChar->charname,
+                        'realm' => $wowChar->realmSlug,
+                        'id'    => $wowChar->characterID,
+                    ],
                 'forceUpdate'   => true,
                 ]);
         }
@@ -147,24 +151,31 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
    }
 
 
-
+    public function validateCheck() {
+        $this->readString('name');
+		$this->readString('realm');
+        $this->readBoolean('isSlug', true);
+    }
     public function validateCreate() {
         parent::validateCreate();
-        if (!isset($this->parameters['name'])) throw new UserInputException('charname', 'empty');
-        if (!isset($this->parameters['realm'])) throw new UserInputException('realmname', 'empty');
+        $this->validateCheck();
     }
+
+    public function check() {
+        return bnetAPI::checkCharacter($this->parameters['name'], $this->parameters['realm'], $this->parameters['isSlug']);
+    }
+
     public function create() {
-        $name = $this->parameters['name'];
-        $realm = $this->parameters['realm'];
-        $isSlug = isset($this->parameters['isSlug']) ? $this->parameters['isSlug'] : false;
-        $this->parameters['groups'];
-        $charCheck = bnetAPI::checkCharacter($name, $realm, $isSlug);
-        if($charCheck['status']) {
-            $charID = bnetAPI::createCharacter($name, $realm, $isSlug);
+        $result = bnetAPI::checkCharacter($this->parameters['name'], $this->parameters['realm'], $this->parameters['isSlug']);
+        if($result['status']) {
+            $charID = $result['charID'];
+            if (empty($charID)) $charID = bnetAPI::createCharacter($this->parameters['name'], $this->parameters['realm'], $this->parameters['isSlug']);
             bnetAPI::updateCharacter([['charID'=>$charID,'bnetUpdate'=>10]]);
-            return $charCheck;
+            return ['status' => true, 'charID'=> $charID];
         }
-        return $charCheck;
+        else {
+            return $result;
+       }
     }
 
     public function update() {
@@ -188,10 +199,32 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 		}
     }
 
+	/**
+     * validation for SetMain()
+     */
+    public function validateSetMain() {
+		if (empty($this->objects)) {
+			$this->readObjects();
+
+			if (empty($this->objects)) {
+				throw new UserInputException('objectIDs');
+			}
+		}
+        foreach($this->objects as $wowChar) {
+            if ($wowChar->userID==0) {
+                // noch gegen korrekte Fehlermeldung tauschen.
+                throw new UserInputException('userID');
+            }
+            if (!$wowChar->getOwner()->canEdit()) {
+                throw new PermissionDeniedException();
+            }
+        }
+    }
+
+	/**
+     * Set current character as main character.
+     */
     public function setMain() {
-        /**
-         * @var WowCharacter $wowChar
-         */
         foreach($this->objects as $wowChar) {
             $charList = new WowCharacterList();
             $charList->getConditionBuilder->add('WHERE userID = ?', $wowChar->userID);
@@ -218,56 +251,68 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
             $groupIDs[] = $wowChar->getGroupIDs();
         }
         $this->parameters['groups'] = array_unique($groupIDs);
-        try {
-            $this->validateUpdate();
-        }
-        catch (PermissionDeniedException $e)  {
-            // set in moderated queue
-        }
+        WCF::getSession()->checkPermissions(['user.gman.canAddCharOwner']);
+        WCF::getSession()->checkPermissions(['user.gman.canAddCharOwnerWithoutModeration']);
+        $this->validateUpdate();
     }
 
+    public function validateSetUserModerated() {
+        WCF::getSession()->checkPermissions(['user.gman.canAddCharOwner']);
+    }
 
+    public function setUserModerated() {
+        foreach($this->objects as $wowChar) {
+            $action = new WowCharacterAction([$wowChar], 'update', [
+                'data' => [
+                    'tempUserID'    => $this->parameters['userID'],
+                    'isDisabled'      => 1,
+                ]]);
+            $action->executeAction();
+        }
+    }
 
     public function setUser() {
         foreach($this->objects as $wowChar) {
             $action = new WowCharacterAction([$wowChar], 'update', [
                 'data' => [
-                    'userID'    => $wowChar->tempUserID,
-                    'disabled'  => 0,
+                    'userID'    => $this->parameters['userID'],
+                    'isDisabled'  => 0,
                 ]]);
             $action->executeAction();
             $groupIDs[] = $wowChar->getGroupIDs();
             if (!empty($groupIDs)) {
-                $this->addWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+                $this->addWCFUserGroups($wowChar, $groupIDs);
             }
         }
     }
 
-
 	/**
 	 * Validates the enable action.
 	 */
-	public function validateEnable() {
+	public function validateConfirmUser() {
 		WCF::getSession()->checkPermissions(['admin.user.canEnableUser']);
 	}
 
 	/**
 	 * Enables wowchar.
 	 */
-	public function enable() {
+	public function confirmUser() {
         foreach($this->objects as $wowChar) {
             $action = new WowCharacterAction([$wowChar], 'update', [
                 'data' => [
-                    'userID'    => $this->parameters['userID'],
-                    'disabled'  => 0,
+                    'userID'    => $wowChar->tempUserID,
+                    'isDisabled'  => 0,
                 ]]);
             $action->executeAction();
             $groupIDs[] = $wowChar->getGroupIDs();
             if (!empty($groupIDs)) {
-                $this->addWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+                $this->addWCFUserGroups($wowChar, $groupIDs);
             }
         }
     }
+
+
+
 
 	/**
      * Enables wowchar ownerusers.
@@ -282,7 +327,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
                 'data' => [
                     'userID'         => 0,
                     'tempUuserID'    => $wowChar->userID,
-                    'disabled'       => 1,
+                    'isDisabled'       => 1,
                 ]]);
             $action->executeAction();
         }
@@ -413,7 +458,14 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
         $jobs = [];
         $counter = 0;
         foreach ($charList as $char) {
-            $updateList[] = ['charID' => $char->charID, 'bnetUpdate' => $char->bnetUpdate];
+            $updateList[] = [
+                'charInfo' => [
+                        'name'  => $char->charname,
+                        'realm' => $char->realmSlug,
+                        'id'    => $char->characterID,
+                    ],
+                'bnetUpdate' => $char->bnetUpdate
+            ];
             $counter++;
             if (!$isCron && $counter == GMAN_BNET_JOBSIZE) {
                 $counter = 0;

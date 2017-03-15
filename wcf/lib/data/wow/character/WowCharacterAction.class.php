@@ -18,6 +18,7 @@ use wcf\data\guild\group\GuildGroup;
 use wcf\data\guild\group\GuildGroupList;
 use wcf\system\exception\PermissionDeniedException;
 use wcf\system\exception\UserException;
+use wcf\util\StringUtil;
 
 /**
  *
@@ -58,7 +59,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 	/**
      * @inheritDoc
      */
-	protected $allowGuestAccess = ['getSearchResultList'];
+	protected $allowGuestAccess = ['getSearchResultList', 'check'];
 
 
     /**
@@ -72,20 +73,21 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
      * @inheritDoc
      */
 	public function getSearchResultList() {
-		$searchString = $this->parameters['data']['searchString'];
+		$searchString = StringUtil::firstCharToUpperCase($this->parameters['data']['searchString']);
 		$list = [];
 		$wowCharList = new WowCharacterList();
-		$wowCharList->getConditionBuilder()->add("charID LIKE ?", [$searchString.'%']);
+		$wowCharList->getConditionBuilder()->add("charname LIKE ?", [$searchString.'%']);
 		$wowCharList->sqlLimit = 10;
 		$wowCharList->readObjects();
+        $wowChars = $wowCharList->getObjects();
         /**
          * @var WowCharacter $wowChar
          */
-		foreach ($wowCharList as $wowChar) {
+		foreach ($wowChars as $wowChar) {
 			$list[] = [
 				'icon'      => $wowChar->getAvatar("avatar")->getImageTag(16),
-				'label'     => $wowChar->getNice(),
-				'objectID'  => $wowChar->charID,
+				'label'     => $wowChar->name,
+				'objectID'  => $wowChar->characterID,
 				'type'      => 'user'
 			];
 		}
@@ -105,7 +107,11 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
     public function updateData() {
         foreach($this->objects as $wowChar) {
             bnetAPI::updateCharacter([
-                'char'        => $wowChar,
+                'charInfo' => [
+                        'name'  => $wowChar->charname,
+                        'realm' => $wowChar->realmSlug,
+                        'id'    => $wowChar->characterID,
+                    ],
                 'forceUpdate'   => true,
                 ]);
         }
@@ -114,7 +120,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
     public function validateUpdate() {
         parent::validateUpdate();
         if (isset($this->parameters['removeGroups'])) $groupIDs = $this->parameters['removeGroups'];
-        if (isset($this->parameters['groups'])) $groupIDs = $this->parameters['groups'];
+        if (isset($this->parameters['addGroups'])) $groupIDs = $this->parameters['addGroups'];
         if (!empty($groupIDs)) {
             $checkModeratedGroup = false;
             $throwDenied = false;
@@ -147,126 +153,211 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
    }
 
 
-
+    public function validateCheck() {
+        $this->readString('name');
+		$this->readString('realm');
+        $this->readBoolean('isSlug', true);
+    }
     public function validateCreate() {
         parent::validateCreate();
-        if (!isset($this->parameters['name'])) throw new UserInputException('charname', 'empty');
-        if (!isset($this->parameters['realm'])) throw new UserInputException('realmname', 'empty');
+        $this->validateCheck();
     }
+
+    public function check() {
+        return bnetAPI::checkCharacter($this->parameters['name'], $this->parameters['realm'], $this->parameters['isSlug']);
+    }
+
     public function create() {
-        $name = $this->parameters['name'];
-        $realm = $this->parameters['realm'];
-        $isSlug = isset($this->parameters['isSlug']) ? $this->parameters['isSlug'] : false;
-        $this->parameters['groups'];
-        $charCheck = bnetAPI::checkCharacter($name, $realm, $isSlug);
-        if($charCheck['status']) {
-            $charID = bnetAPI::createCharacter($name, $realm, $isSlug);
-            bnetAPI::updateCharacter([['charID'=>$charID,'bnetUpdate'=>10]]);
-            return $charCheck;
+        $result = bnetAPI::checkCharacter($this->parameters['name'], $this->parameters['realm'], $this->parameters['isSlug']);
+        if($result['status']) {
+            $charID = $result['charID'];
+            if (empty($charID)) $charID = bnetAPI::createCharacter($this->parameters['name'], $this->parameters['realm'], $this->parameters['isSlug']);
+            bnetAPI::updateCharacter([['name'=> $this->parameters['name'],'realm' => $this->parameters['realm'],  'id'=>$charID,'bnetUpdate'=>10]]);
+            return ['status' => true, 'charID'=> $charID];
         }
-        return $charCheck;
+        else {
+            return $result;
+       }
     }
 
     public function update() {
         parent::update();
-		$groupIDs = isset($this->parameters['groups']) ? $this->parameters['groups'] : [];
-		$removeGroups = isset($this->parameters['removeGroups']) ? $this->parameters['removeGroups'] : [];
-		if (!empty($groupIDs)) {
-			$action = new WowCharacterAction($this->objects, 'addToGroups', [
-				'groups' => $groupIDs,
-				'addDefaultGroups' => false,
-                'addWCFGroups' => true
-			]);
-			$action->executeAction();
-		}
-		if (!empty($removeGroups)) {
-			$action = new WowCharacterAction($this->objects, 'removeFromGroups', [
-				'groups' => $removeGroups,
-                'deleteWCFGroups' => true
-			]);
-			$action->executeAction();
-		}
+
+
+        //$groupIDs = isset($this->parameters['groups']) ? $this->parameters['groups'] : [];
+        //$removeGroups = isset($this->parameters['removeGroups']) ? $this->parameters['removeGroups'] : [];
+        //if (!empty($groupIDs)) {
+        //    $action = new WowCharacterAction($this->objects, 'addToGroups', [
+        //        'groups' => $groupIDs,
+        //        'addDefaultGroups' => false,
+        //        'addWCFGroups' => true
+        //    ]);
+        //    $action->executeAction();
+        //}
+        //if (!empty($removeGroups)) {
+        //    $action = new WowCharacterAction($this->objects, 'removeFromGroups', [
+        //        'groups' => $removeGroups,
+        //        'deleteWCFGroups' => true
+        //    ]);
+        //    $action->executeAction();
+        //}
+        $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups');
+        $objectAction->executeAction();
+
     }
 
+	/**
+     * validation for SetMain()
+     */
+    public function validateSetMain() {
+		if (empty($this->objects)) {
+			$this->readObjects();
+
+			if (empty($this->objects)) {
+				throw new UserInputException('objectIDs');
+			}
+		}
+        foreach($this->objects as $wowChar) {
+            if ($wowChar->userID==0) {
+                // noch gegen korrekte Fehlermeldung tauschen.
+                throw new UserInputException('userID');
+            }
+            if (!$wowChar->getOwner()->canEdit()) {
+                throw new PermissionDeniedException();
+            }
+        }
+    }
+
+	/**
+     * Set current character as main character.
+     */
     public function setMain() {
-        /**
-         * @var WowCharacter $wowChar
-         */
         foreach($this->objects as $wowChar) {
             $charList = new WowCharacterList();
-            $charList->getConditionBuilder->add('WHERE userID = ?', $wowChar->userID);
+            $charList->getConditionBuilder()->add('userID = ?', [$wowChar->userID]);
             $charList->readObjects();
-            $action = new WowCharacterAction($charList->getObjects, 'update', [
+            $action = new WowCharacterAction($charList->getObjects(), 'update', [
                 'data' => [
                     'isMain' => 0,
                 ]]);
             $action->executeAction();
-            $action = new WowCharacterAction($this->objects, 'update', [
+        }
+        $action = new WowCharacterAction($this->objects, 'update', [
+            'data' => [
+                'isMain' => 1,
+            ]]);
+        $action->executeAction();
+        $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups');
+        $objectAction->executeAction();
+    }
+
+    public function validateSetUser() {
+		if (empty($this->objects)) {
+			$this->readObjects();
+
+			if (empty($this->objects)) {
+				throw new UserInputException('objectIDs');
+			}
+		}
+        if (empty($this->parameters['userID'])) throw new UserInputException('userid');
+        WCF::getSession()->checkPermissions(['user.gman.canAddCharOwner']);
+        WCF::getSession()->checkPermissions(['user.gman.canAddCharOwnerWithoutModeration']);
+    }
+
+    public function validateSetUserModerated() {
+		if (empty($this->objects)) {
+			$this->readObjects();
+
+			if (empty($this->objects)) {
+				throw new UserInputException('objectIDs');
+			}
+		}
+        if (empty($this->parameters['userID'])) throw new UserInputException('userid');
+        WCF::getSession()->checkPermissions(['user.gman.canAddCharOwner']);
+    }
+
+    public function setUserModerated() {
+        foreach($this->objects as $wowChar) {
+            $action = new WowCharacterAction([$wowChar], 'update', [
                 'data' => [
-                    'isMain' => 1,
+                    'tempUserID'    => $this->parameters['userID'],
+                    'isDisabled'      => 1,
                 ]]);
             $action->executeAction();
         }
     }
-
-    public function validateSetUser() {
-        /**
-         * @var WowCharacter $wowChar
-         */
-        $groupIDs = [];
-        foreach($this->objects as $wowChar) {
-            $groupIDs[] = $wowChar->getGroupIDs();
-        }
-        $this->parameters['groups'] = array_unique($groupIDs);
-        try {
-            $this->validateUpdate();
-        }
-        catch (PermissionDeniedException $e)  {
-            // set in moderated queue
-        }
-    }
-
-
 
     public function setUser() {
         foreach($this->objects as $wowChar) {
             $action = new WowCharacterAction([$wowChar], 'update', [
                 'data' => [
-                    'userID'    => $wowChar->tempUserID,
-                    'disabled'  => 0,
+                    'userID'    => $this->parameters['userID'],
+                    'isDisabled'  => 0,
                 ]]);
             $action->executeAction();
-            $groupIDs[] = $wowChar->getGroupIDs();
-            if (!empty($groupIDs)) {
-                $this->addWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
-            }
         }
+        $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups');
+        $objectAction->executeAction();
     }
-
 
 	/**
 	 * Validates the enable action.
 	 */
-	public function validateEnable() {
+	public function validateConfirmUser() {
 		WCF::getSession()->checkPermissions(['admin.user.canEnableUser']);
 	}
 
 	/**
 	 * Enables wowchar.
 	 */
-	public function enable() {
+	public function confirmUser() {
         foreach($this->objects as $wowChar) {
             $action = new WowCharacterAction([$wowChar], 'update', [
                 'data' => [
-                    'userID'    => $this->parameters['userID'],
-                    'disabled'  => 0,
+                    'userID'    => $wowChar->tempUserID,
+                    'isDisabled'  => 0,
                 ]]);
             $action->executeAction();
-            $groupIDs[] = $wowChar->getGroupIDs();
-            if (!empty($groupIDs)) {
-                $this->addWCFUserGroups($wowChar, $this->parameters['addWCFGroups']);
+        }
+        $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups');
+        $objectAction->executeAction();
+    }
+
+	/**
+     * Set the WCF Groups for the Account
+     */
+    public function setWCFGroups() {
+       $charList = [];
+       $userFilter  = [];
+       // filter non-assigned and alt chars.
+       foreach($this->objects as $wowChar) {
+            if ($wowChar->userID > 0 && !in_array($wowChar->userID, $userFilter)) {
+                $charList[] = $wowChar;
+                $userFilter[] = $wowChar->userID;
             }
         }
+        $guild = new Guild();
+        // Convert all Guild Group IDs to WCF Group IDs
+        $oldgroups = array_unique(isset($this->parameters['oldWCFGroups']) ?  $this->parameters['oldWCFGroups'] : $guild->convertToWCFGroup($guild->getGuildGroupIds()));
+        //if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR . 'log/action.log', 'Alte Gruppen die geloescht werden sollen sdsd: '. print_r($oldgroups) . PHP_EOL, FILE_APPEND);
+        foreach($charList as $wowChar) {
+            // Get the guild groups from each character of an account and convert it to a WCF Group ID
+                $userObject = new User($wowChar->userID);
+                if (!empty($oldgroups)) {
+                    $action = new UserAction([$userObject], 'removeFromGroups', [
+                        'groups' => $oldgroups
+                    ]);
+                    $action->executeAction();
+                }
+                $newgroups = $guild->convertToWCFGroup($wowChar->getAccountGroupIDs());
+                if (!empty($newgroups)) {
+                    $action = new UserAction([$userObject], 'addToGroups', [
+                        'groups' => $newgroups,
+                        'deleteOldGroups' => false
+                    ]);
+                    $action->executeAction();
+                }
+            }
     }
 
 	/**
@@ -282,12 +373,13 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
                 'data' => [
                     'userID'         => 0,
                     'tempUuserID'    => $wowChar->userID,
-                    'disabled'       => 1,
+                    'isDisabled'     => 1,
                 ]]);
             $action->executeAction();
         }
+        $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups');
+        $objectAction->executeAction();
     }
-
 
     public function removeFromGuild() {
         foreach($this->objects as $wowChar) {
@@ -299,33 +391,43 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
                 ]]);
             $action->executeAction();
         }
-        $action = new WowCharacterAction($this->objects, 'removeFromAllGroups');
-        $action->executeAction();
+        $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups');
+        $objectAction->executeAction();
     }
+
 	/**
      * function for rank changes.
      */
-    public function changeRank() {
-        $guild = new Guild();
-        $newGroup = $guild->getGroupfromRank($this->parameters['rank']);
-        $action = new WowCharacterAction($this->objects, 'removeFromGroups', [
-            'groups' => $guild->getGuildGroupIds(true),
-            'deleteWCFGroups' => true
-        ]);
-        $action->executeAction();
+    public function setRank() {
+            $guild = new Guild();
+            $oldgroups = $guild->getGuildGroupIds(true);
+            $newGroup = $guild->getGroupfromRank($this->parameters['rank']);
+            //echo "Alte Gruppen (G): <pre>"; var_dump($oldgroups); echo "</pre> Neue Gruppe: <pre>"; var_dump($newGroup); echo "</pre>";
 
-        $action = new WowCharacterAction($this->objects, 'addToGroups', [
-            'groups' => $newGroup,
-            'addDefaultGroups' => false,
-            'addWCFGroups' => true
-        ]);
-        $action->executeAction();
+            if (!empty($oldgroups)) {
+                $action = new WowCharacterAction($this->objects, 'removeFromGroups', [
+                    'groups' => $oldgroups ,
+                ]);
+                $action->executeAction();
+            }
 
-        $action = new WowCharacterAction($this->objects, 'update', [
-            'data' => [
-                'primaryGroup' => $newGroup,
-            ]]);
-        $action->executeAction();
+            if ($newGroup) {
+                $action = new WowCharacterAction($this->objects, 'addToGroups', [
+                    'groups' => [$newGroup->groupID],
+                    'deleteOldGroups' => false,
+                    ]);
+                $action->executeAction();
+                $action = new WowCharacterAction($this->objects, 'update', [
+                    'data' => [
+                        'primaryGroup' => $newGroup->groupID,
+                    ]]);
+                $action->executeAction();
+            }
+
+            $objectAction = new WowCharacterAction($this->objects, 'setWCFGroups', [
+                'oldWCFGroups' => $guild->convertToWCFGroup($oldgroups)
+                ]);
+            $objectAction->executeAction();
     }
 
 	/**
@@ -338,9 +440,6 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 		$groupIDs = $this->parameters['groups'];
 		foreach ($this->getObjects() as $charEditor) {
 			$charEditor->removeFromGroups($groupIDs);
-            if (isset($this->parameters['deleteWCFGroups']) && $this->parameters['deleteWCFGroups']==true){
-                $this->removeWCFUserGroups($charEditor);
-            }
         }
 
     }
@@ -355,65 +454,30 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 		$groupIDs = $this->parameters['groups'];
 		$deleteOldGroups = $addDefaultGroups = true;
 		if (isset($this->parameters['deleteOldGroups'])) $deleteOldGroups = $this->parameters['deleteOldGroups'];
-
 		foreach ($this->getObjects() as $charEditor) {
 			$charEditor->addToGroups($groupIDs, $deleteOldGroups, $addDefaultGroups);
-            if (isset($this->parameters['addWCFGroups']) && $this->parameters['addWCFGroups']==true){
-                $this->addWCFUserGroups($charEditor, $this->parameters['addWCFGroups']);
-            }
 		}
 	}
 
-	/**
-     * Internal function for removing WCF Groups for the account.
-     *
-     * @param $charEditor
-     */
-    private function removeWCFUserGroups($charEditor) {
-        $user = new User($charEditor->userID);
-        if ($user->getObjectID>0) {
-            $guild = new Guild();
-            $diffGroups = array_diff($guild->getGuildGroupIds(), $charEditor->getAccountGroups());
-            $diffGroups = $guild->convertToWCFGroup($diffGroups);
-            if (count($diffGroups)) {
-                $objectAction = new UserAction([$user], 'removeFromGroups', [
-                 'groups' => $diffGroups
-             ]);
-                $objectAction->executeAction();
-            }
-        }
-    }
-
-	/**
-     * Internal function for adding WCF Groups for the account.
-     *
-     * @param $userObject
-     */
-    private function addWCFUserGroups($charEditor, $groupIDs) {
-        $user = new User($charEditor->userID);
-        if ($user->getObjectID>0) {
-            $guild = new Guild();
-            $groupIDs = $guild->convertToWCFGroup($groupIDs);
-            if (count($groupIDs)) {
-                $objectAction = new UserAction([$user], 'addToGroups', [
-                    'groups' => $groupIDs,
-                    'addDefaultGroups' => false
-                ]);
-                $objectAction->executeAction();
-            }
-        }
-    }
 
     public static function bulkUpdate($isCron = false, $forceALL = false) {
-        $GMAN_UPDATE_GUILDOONLY = false;
         $charList = new WowCharacterList();
-        if ($GMAN_UPDATE_GUILDOONLY && !$forceALL)  $charList->getConditionBuilder()->add('inGuild = ?', [1]);
+        if (!$forceALL)  $charList->getConditionBuilder()->add('inGuild = ?', [1]);
+        $charList->readObjectIDs();
         $charList->readObjects();
+        $chars = $charList->getObjects();
         $updateList = [];
         $jobs = [];
         $counter = 0;
-        foreach ($charList as $char) {
-            $updateList[] = ['charID' => $char->charID, 'bnetUpdate' => $char->bnetUpdate];
+        foreach ($chars as $char) {
+            $updateList[] = [
+                'charInfo' => [
+                        'name'  => $char->charname,
+                        'realm' => $char->realmSlug,
+                        'id'    => $char->characterID,
+                    ],
+                'bnetUpdate' => $char->bnetUpdate
+            ];
             $counter++;
             if (!$isCron && $counter == GMAN_BNET_JOBSIZE) {
                 $counter = 0;
@@ -422,7 +486,6 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
             }
         }
         return ($isCron) ? $updateList : $jobs;
-        // BackgroundQueueHandler::getInstance()->enqueueIn
     }
 
 	/**

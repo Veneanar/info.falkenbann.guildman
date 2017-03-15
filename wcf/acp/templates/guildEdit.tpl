@@ -135,7 +135,6 @@
                                     <small class="separatorLeft"><span>{$glead->getLevel()}</span>, <span>{@$glead->getRace()->getTag()}</span>, {@$glead->getClass()->getTag()}</small>
                                 </p>
                             </div>
-
                         </div>
                     </div>
 				    <p>{$guild->getLeader()->charname}</p> 

@@ -19,6 +19,11 @@
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
+      <option name="admin.gman.canUpdateOwnChar">
+        <categoryname>admin.gman</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>      
       <option name="admin.gman.canAddGroups">
         <categoryname>admin.gman</categoryname>
         <optiontype>boolean</optiontype>
@@ -34,10 +39,31 @@
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
       </option>
-      <option name="mod.gman.canAddCharsToGroups">
+      <option name="admin.gman.canAddCharsToGroups">
+        <categoryname>admin.gman</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="admin.gman.canRemoveCharsFromGroups">
+        <categoryname>admin.gman</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="mod.gman.canRemoveCharsFromOwnGroup">
         <categoryname>mod.gman</categoryname>
         <optiontype>boolean</optiontype>
-        <defaultvalue>0</defaultvalue>
+        <defaultvalue>1</defaultvalue>
+      </option>
+      <option name="mod.gman.canAddCharsToOwnGroup">
+        <categoryname>mod.gman</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
+      </option>
+
+      <option name="mod.gman.canEditOwnGroup">
+        <categoryname>mod.gman</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>1</defaultvalue>
       </option>
       <option name="mod.gman.canEditCharOwner">
         <categoryname>mod.gman</categoryname>
@@ -63,12 +89,13 @@
         <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
         <defaultvalue>1</defaultvalue>
-      </option>      
-      <option name="user.gman.canUpdateOwnChar">
+      </option>
+      <option name="user.gman.canAddCharOwnerWithoutModeration">
         <categoryname>user.gman</categoryname>
         <optiontype>boolean</optiontype>
-        <defaultvalue>1</defaultvalue>
-      </option>      
+        <defaultvalue>0</defaultvalue>
+      </option>
+   
     </options>
   </import>
 </data>

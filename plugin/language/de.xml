@@ -34,7 +34,9 @@
     <item name="wcf.page.gman.application.title"><![CDATA[Bewerben]]></item>
     <item name="wcf.page.gman.application.secondTitle"><![CDATA[Stell dich uns kurz vor]]></item>
     <item name="wcf.page.gman.application.content"><![CDATA[Wir möchten neue Mitglieder vorher kennenlernen!]]></item>
-    
+
+    <item name="wcf.page.gman.twinklist"><![CDATA[Bewerben]]></item>
+    <item name="wcf.page.gman.twinklist.description"><![CDATA[Bewerben]]></item>
 
   </category>
 	<category name="wcf.acp.option">
@@ -57,7 +59,7 @@
     <item name="wcf.acp.option.gman_app_labelid_deney"><![CDATA[Label ID: Abgelehnt]]></item>
 
     <item name="wcf.acp.option.gman_main_guildname"><![CDATA[Name der Gilde]]></item>
-    <item name="wcf.acp.option.gman_main_homerealm"><![CDATA[Realm]]></item>
+    <item name="wcf.acp.option.gman_main_homerealm"><![CDATA[Realm der Gilde]]></item>
 
     <item name="wcf.acp.option.gman_calendar_active"><![CDATA[Kalendersynchronisation aktivieren]]></item>
     <item name="wcf.acp.option.gman_calendar_readholidays"><![CDATA[Feiertage eintragen]]></item>
@@ -121,26 +123,36 @@
     <item name="wcf.acp.group.option.admin.gman.canAddGroups"><![CDATA[Kann WoW Gruppen hinzufügen]]></item>
     <item name="wcf.acp.group.option.admin.gman.canEditGroups"><![CDATA[Kann WoW Gruppen bearbeiten]]></item>
     <item name="wcf.acp.group.option.admin.gman.canDeleteGroups"><![CDATA[Kann WoW Gruppen löschen]]></item>
-    <item name="wcf.acp.group.option.mod.gman.canAddCharsToGroups"><![CDATA[Kann Charaktere zu Gruppen hinzufügen]]></item>
+    <item name="wcf.acp.group.option.admin.gman.canAddCharsToGroups"><![CDATA[Kann Charaktere zu allen Gruppen hinzufügen]]></item>
+    <item name="wcf.acp.group.option.admin.gman.canRemoveCharsFromGroups"><![CDATA[Kann Charaktere von allen Gruppen entfernen]]></item>
+    <item name="wcf.acp.group.option.mod.gman.canRemoveCharsFromOwnGroup"><![CDATA[Kann Charaktere von eigenen Gruppen entfernen]]></item>
+    <item name="wcf.acp.group.option.mod.gman.canAddCharsToOwnGroup"><![CDATA[Kann Charaktere zu eignen Gruppen hinzufügen]]></item>
     <item name="wcf.acp.group.option.mod.gman.canEditCharOwner"><![CDATA[Kann die Charakterzuordnung ändern]]></item>
     <item name="wcf.acp.group.option.mod.gman.canUpdateChar"><![CDATA[Kann die Charaktere aktualisieren]]></item>
     <item name="wcf.acp.group.option.user.gman.canAddChar"><![CDATA[Kann bisher unbekannte Charaktere zum eigenem Profil hinzufügen]]></item>
     <item name="wcf.acp.group.option.user.gman.canAddCharOwner"><![CDATA[Kann bekannte Charaktere, die bisher nicht zugeordnet sind, zum eigenem Profil hinzufügen]]></item>
     <item name="wcf.acp.group.option.user.gman.canViewChar"><![CDATA[Kann Charaktere sehen]]></item>
-    <item name="wcf.acp.group.option.user.gman.canUpdateOwnChar"><![CDATA[Kann eigene Charaktere aktualisieren]]></item>
-	<item name="wcf.acp.group.calendar.description"><![CDATA[Optionen für den Kalender]]></item>
+    <item name="wcf.acp.group.option.admin.gman.canUpdateOwnChar"><![CDATA[Kann Charakteren einem Account zuordnen]]></item>
+    <item name="wcf.acp.group.option.user.gman.canAddCharOwnerWithoutModeration"><![CDATA[Kann Charaktere ohne Moderation einem Account zuordnen]]></item>
+    <item name="wcf.acp.group.calendar.description"><![CDATA[Optionen für den Kalender]]></item>
 
   </category> 
   <category name="wcf.acp">
+    
     <item name="wcf.acp.gman.guild.bnetupdate"><![CDATA[Zeitpunkt der letzten Aktualisierung im Battle.net / auf dieser Seite]]></item>
     <item name="wcf.acp.gman.guild.bnetdata"><![CDATA[Battle.net Daten]]></item>
     <item name="wcf.acp.gman.guild.bnetdata.desc"><![CDATA[Daten aus dem Battle.net]]></item>
     <item name="wcf.acp.gman.guild.name"><![CDATA[Gildenname & Fraktion]]></item>
     <item name="wcf.acp.gman.guild.name.desc"><![CDATA[Name der Gilde und die Fraktion]]></item>
-    <item name="wcf.acp.gman.guild.realm"><![CDATA[Realm]]></item>
-    <item name="wcf.acp.gman.guild.realm.desc"><![CDATA[Realm und verbundene Realms]]></item>
+    <item name="wcf.acp.gman.guild.charname"><![CDATA[Characktername]]></item>
+    <item name="wcf.acp.gman.guild.charname.desc"><![CDATA[Name des Charakters]]></item>
+    <item name="wcf.acp.gman.guild.charadd"><![CDATA[Charakter manuell hinzufügen]]></item>
+    <item name="wcf.acp.gman.guild.charadd.desc"><![CDATA[Charakter aus dem battle.net manuell hinzufügen. Funktioniert <b>nicht</b> mit Charakteren unter Stufe 10. ]]></item>
 
-	<item name="wcf.acp.gman.guild.guildinfo"><![CDATA[Gildeninformationen]]></item>
+    <item name="wcf.acp.gman.guild.realm"><![CDATA[Realm]]></item>
+    <item name="wcf.acp.gman.guild.realm.desc"><![CDATA[Realm des Characters]]></item>
+    <item name="wcf.acp.gman.guild.realm.conneted"><![CDATA[Realm und verbundene Realms]]></item>
+    <item name="wcf.acp.gman.guild.guildinfo"><![CDATA[Gildeninformationen]]></item>
 	<item name="wcf.acp.gman.guild.guildinfo.desc"><![CDATA[Weitere Gildeninfos]]></item>
 	<item name="wcf.acp.gman.guild.image"><![CDATA[Gildenlogo]]></item>
 	<item name="wcf.acp.gman.guild.birthdate"><![CDATA[Gründungsdatum der Gilde]]></item>

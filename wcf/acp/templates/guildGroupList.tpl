@@ -63,9 +63,9 @@
                 <td class="columnID columnGroupID">{@$group->groupID}</td>
                 <td class="columnTitle columnGroupName">
                     {if $group->isEditable()}
-                    <a title="{lang}wcf.acp.group.edit{/lang}" href="{link controller='GuildGroupEdit' id=$group->groupID}{/link}">{lang}{$group->groupName}{/lang}</a>
+                    <a title="{lang}wcf.acp.group.edit{/lang}" href="{link controller='GuildGroupEdit' id=$group->groupID}{/link}">{$group->groupName}</a>
                     {else}
-                    {lang}{$group->groupName}{/lang}
+                    {$group->groupName}
                     {/if}
                 </td>
                 <td class="columnDigits columnMembers">
@@ -91,7 +91,7 @@
         <ul>
             {content}
             {if $__wcf->getSession()->getPermission('admin.user.canAddGroup')}
-            <li><a href="{link controller='guildGroupAdd'}{/link}" class="button"><span class="icon icon16 fa-plus"></span> <span>{lang}wcf.acp.group.add{/lang}</span></a></li>
+            <li><a href="{link controller='GuildGroupAdd'}{/link}" class="button"><span class="icon icon16 fa-plus"></span> <span>{lang}wcf.acp.group.add{/lang}</span></a></li>
             {/if}
 
             {event name='contentFooterNavigation'}
