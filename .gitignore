@@ -3,8 +3,18 @@
 ################################################################################
 
 /lua/gman
-/plugin/*.sql
-/plugin/*.xml
+/plugin
+/plugin/*
 /sh
 /wcf/images/*
 /arsenal HTML.txt
+/DBFilesClient
+/DBFilesClient/*
+.gitignore
+_config.yml
+index.php
+info.falkenbann.guildman.phpproj
+info.falkenbann.guildman.sln
+info.falkenbann.guildman.tar.gz
+plugin.bat
+wowicon.zip
