@@ -10,18 +10,13 @@ use wcf\data\JSONExtendedDatabaseObject;
  * @copyright	2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
- *
- * @property array
+
+ * @property integer        $id        Spell ID to summon Mount
  * @property string		    $name           Name of the Mount
- * @property integer        $spellID        Spell ID to summon Mount
- * @property integer        $itemID         Item to learn Mount
- * @property integer        $creatureId     creature ID
- * @property integer        $qualityId      quality 0: poor, 1: common 2: uncommon 3: rare, 4: epic 5: legendary
- * @property string         $icon           icon name
- * @property boolean        $isGround       ground mount
- * @property boolean        $isFlying       ground mount
- * @property boolean        $isAquatic      ground mount
- * @property boolean        $isJumping      ground mount
+ * @property integer        $statistics         Item to learn Mount
+ * @property integer        $bnetUpdate          creature ID
+ * @property array          $subCategories      quality 0: poor, 1: common 2: uncommon 3: rare, 4: epic 5: legendary
+
  *
  *
  */
@@ -36,7 +31,11 @@ class CharacterStatistics extends JSONExtendedDatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = 'charID';
+	protected static $databaseTableIndexName = 'characterID';
+
+    public function getMaincategories() {
+        return $this->data;
+    }
 
 
 }

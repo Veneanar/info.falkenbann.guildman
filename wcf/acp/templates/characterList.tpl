@@ -11,6 +11,13 @@
     require(['WoltLabSuite/GMan/Ui/Character/Search/Input'], function(UiCharacterSearchInput) {
         new UiCharacterSearchInput(elBySel('input[name="charName"]'));
     });
+
+    require(['WoltLabSuite/GMan/Ui/GuildGroup/Search/Input'], function (UiGuildGroupSearchInput) {
+        new UiGuildGroupSearchInput(elBySel('input[name="groupName"]'));
+    });
+    require(['WoltLabSuite/GMan/Character/Update'], function (UpdateData) {
+        new UpdateData(elByClass('jsUpdateButton'));
+    });
 </script>
 <header class="contentHeader">
     <div class="contentHeaderTitle">
@@ -47,7 +54,7 @@
                     <select name="classID" id="classID">
                         <option value="0">{lang}wcf.page.gman.wow.class{/lang}</option>
                         {foreach from=$classes item=$class}
-                        <option value="{$class->wclassID}" {if $class->wclassID==$classID} selected{/if}>{$class->name}</option>
+                        <option value="{$class->wclassID}" {if $class->wclassID==$classID} selected{/if}>{$class->getName()}</option>
                         {/foreach}
                     </select>
                 </dd>
@@ -58,7 +65,7 @@
                     <select name="raceID" id="raceID">
                         <option value="0">{lang}wcf.page.gman.wow.race{/lang}</option>
                         {foreach from=$races item=$race}
-                        <option value="{$race->wraceID}" {if $race->wraceID==$raceID} selected{/if}>{$race->name}</option>
+                        <option value="{$race->wraceID}" {if $race->wraceID==$raceID} selected{/if}>{$race->getName()}</option>
                         {/foreach}
 
                     </select>
@@ -77,32 +84,37 @@
             </dl>
 
             <dl class="col-xs-12 col-md-4">
-                <dt>min. {lang}wcf.page.gman.wow.level{/lang}</dt>
+                <dt>{lang}wcf.page.gman.wow.minlevel{/lang}</dt>
                 <dd>
-                    <input type="text" id="minLevel" name="minLevel" value="{$minLevel}" placeholder="min. {lang}wcf.page.gman.wow.level{/lang}" class="long" pattern="[0-9]+">
+                    <input type="text" id="minLevel" name="minLevel" value="{$minLevel}" placeholder="{lang}wcf.page.gman.wow.minlevel{/lang}" class="long" pattern="[0-9]+">
                 </dd>
             </dl>
 
             <dl class="col-xs-12 col-md-4">
-                <dt>min. {lang}wcf.page.gman.wow.averageItemLevel{/lang}</dt>
+                <dt>{lang}wcf.page.gman.wow.minAverageItemLevel{/lang}</dt>
                 <dd>
-                    <input type="text" id="minAVGILVL" name="minAVGILVL" value="{$minAVGILVL}" placeholder="min. {lang}wcf.page.gman.wow.averageItemLevel{/lang}" class="long" pattern="[0-9]+">
+                    <input type="text" id="minAVGILVL" name="minAVGILVL" value="{$minAVGILVL}" placeholder="{lang}wcf.page.gman.wow.minAverageItemLevel{/lang}" class="long" pattern="[0-9]+">
                 </dd>
             </dl>
 
             <dl class="col-xs-12 col-md-4">
-                <dt>min. {lang}wcf.page.gman.wow.username{/lang}</dt>
+                <dt>{lang}wcf.page.gman.wow.username{/lang}</dt>
                 <dd>
                     <input type="text" id="ownerName" name="ownerName" value="{$ownerName}" placeholder="{lang}wcf.page.gman.wow.username{/lang}" class="long">
                 </dd>
             </dl>
             <dl class="col-xs-12 col-md-4">
-                <dt>min. {lang}wcf.page.gman.wow.charname{/lang}</dt>
+                <dt>{lang}wcf.page.gman.wow.charname{/lang}</dt>
                 <dd>
-                    <input type="text" id="charName" name="charName" value="{$charName}" placeholder="{lang}wcf.page.gman.wow.charName{/lang}" class="long">
+                    <input type="text" id="charName" name="charName" value="{$charName}" placeholder="{lang}wcf.page.gman.wow.charname{/lang}" class="long">
                 </dd>
             </dl>
-
+            <dl class="col-xs-12 col-md-4">
+                <dt>{lang}wcf.page.gman.wow.groupname{/lang}</dt>
+                <dd>
+                    <input type="text" id="groupName" name="groupName" value="{$groupName}" placeholder="{lang}wcf.page.gman.wow.groupname{/lang}" class="long">
+                </dd>
+            </dl>
 
 
 
@@ -125,6 +137,7 @@
     {if $rankID != -1}{capture append=linkParameters}&rankID={@$rankID}{/capture}{/if}
     {if $minLevel}{capture append=linkParameters}&minLevel={@$minLevel}{/capture}{/if}
     {if $minAVGILVL}{capture append=linkParameters}&minAVGILVL={@$minAVGILVL|rawurlencode}{/capture}{/if}    
+    {if $groupName}{capture append=linkParameters}&groupName={@$groupName|rawurlencode}{/capture}{/if}
     {pages print=true assign=pagesLinks controller="CharacterList" link="pageNo=%d&sortField=$sortField&sortOrder=$sortOrder$linkParameters"}
     
     {/content}
@@ -156,11 +169,7 @@
                     {else}
                     <span class="icon icon16 fa-pencil disabled" title="{lang}wcf.global.button.edit{/lang}"></span>
                     {/if}
-                    {if $character->isDeletable()}
-                    <span class="icon icon16 fa-times jsDeleteButton jsTooltip pointer" title="{lang}wcf.global.button.delete{/lang}" data-object-id="{@$character->charID}" data-confirm-message-html="{lang __encode=true}wcf.acp.character.delete.sure{/lang}"></span>
-                    {else}
-                    <span class="icon icon16 fa-times disabled" title="{lang}wcf.global.button.delete{/lang}"></span>
-                    {/if}
+                    <span class="icon icon16 fa-refresh jsUpdateButton jsTooltip pointer" title="{lang}wcf.global.button.refresh{/lang}" data-character-id="{$character->characterID}"></span>
                     {event name='rowButtons'}
                 </td>
                 <td class="columnIcon">{@$character->getAvatar()->getImageTag(24)}</td>
@@ -203,7 +212,6 @@
         {content}{@$pagesLinks}{/content}
     </div>
     {/hascontent}
-
     {hascontent}
     <nav class="contentFooterNavigation">
         <ul>

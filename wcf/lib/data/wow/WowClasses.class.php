@@ -28,8 +28,25 @@ class WowClasses extends DatabaseObject {
 	 */
 	protected static $databaseTableIndexName = 'wclassID';
 
+    /**
+     * full local Name of the Class
+     * @var string
+     */
+    private $fullName = '';
+
+    /**
+     * returns the locaized classname
+     * @return string
+     */
+    public function getName() {
+        if (empty($this->fullName)) {
+            $this->fullName = WCF::getLanguage()->get($this->name);
+        }
+        return $this->fullName;
+    }
+
     public function getTag() {
-        return '<span style="color:'.$this->color.'">'. $this->name .'</span>';
+        return '<span class="color-c'.$this->wclassID.'">'. $this->getName() .'</span>';
     }
 
 }

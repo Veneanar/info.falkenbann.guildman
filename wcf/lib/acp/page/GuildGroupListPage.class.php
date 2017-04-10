@@ -6,6 +6,7 @@ use wcf\data\guild\Guild;
 use wcf\data\guild\group\GuildGroupList;
 use wcf\page\SortablePage;
 use wcf\system\WCF;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * Shows a list of all WoW Groups
@@ -60,8 +61,8 @@ class GuildGroupListPage extends SortablePage {
      */
 	public function readParameters() {
 		parent::readParameters();
-        // check guild 
-        $this->guild = new Guild();
+        // check guild
+        $this->guild = GuildRuntimeChache::getInstance()->getCachedObject();
         if ($this->guild->name == null) {
             throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.noguild'));
         }

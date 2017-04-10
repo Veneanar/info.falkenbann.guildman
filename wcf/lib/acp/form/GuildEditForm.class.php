@@ -1,8 +1,8 @@
 <?php
 namespace wcf\acp\form;
 use wcf\form\AbstractForm;
-use wcf\data\guild\Guild;
 use wcf\data\wow\character\WowCharacter;
+use wcf\data\guild\Guild;
 use wcf\data\guild\GuildAction;
 use wcf\data\article\Article;
 use wcf\data\page\PageList;
@@ -17,8 +17,9 @@ use wcf\util\ArrayUtil;
 use wcf\util\StringUtil;
 use wcf\util\DateUtil;
 use wcf\system\request\RouteHandler;
-use wcf\system\wow\bnetAPI;
+use wcf\system\wow\bnetUpdate;
 use wcf\system\exception\NamedUserException;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * ACP Gildenverwaltung
@@ -98,7 +99,7 @@ class GuildEditForm extends AbstractForm {
 	 */
 	public function readParameters() {
 		parent::readParameters();
-        $this->guild = new Guild();
+        $this->guild = GuildRuntimeChache::getInstance()->getCachedObject();
         if ($this->guild->name == null) {
             if (GMAN_MAIN_GUILDNAME == '') {
                 throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.noguild'));
@@ -109,7 +110,7 @@ class GuildEditForm extends AbstractForm {
             if (GMAN_BNET_KEY == '') {
                 throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.nokey'));
             }
-            bnetAPI::updateRealms();
+            bnetUpdate::updateRealms();
             $this->forceStart = true;
         }
         $guildLeader = $this->guild->getLeader();

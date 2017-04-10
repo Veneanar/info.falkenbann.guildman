@@ -16,8 +16,23 @@
     <!-- moderation items -->
     <type>
       <name>info.falkenbann.gman.moderation.charowner</name>
-      <definitionname>com.woltlab.wcf.moderation.type</definitionname>
-      <classname>wcf\system\moderation\queue\activation\ModerationQueueCharownerAction</classname>
+      <definitionname>com.woltlab.wcf.moderation.activation</definitionname>
+      <classname>wcf\system\moderation\queue\activation\WowCharacterQueueActivationHandler</classname>
     </type>
+    
+    <!-- rebuild data workers -->
+    <type>
+      <name>info.falkenbann.gman.CharacterUpdateWorker</name>
+      <definitionname>com.woltlab.wcf.rebuildData</definitionname>
+      <classname>wcf\system\worker\CharacterUpdateWorker</classname>
+      <nicevalue>-500</nicevalue>
+    </type>
+    <!-- rebuild data workers -->
+    <type>
+      <name>info.falkenbann.gman.SpellUpdateWorker</name>
+      <definitionname>com.woltlab.wcf.rebuildData</definitionname>
+      <classname>wcf\system\worker\SpellUpdateWorker</classname>
+      <nicevalue>500</nicevalue>
+    </type>    
   </import>
 </data>

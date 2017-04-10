@@ -116,9 +116,11 @@ class CharacterAddForm extends AbstractForm {
 	public function save() {
 		parent::save();
         $objectAction = new WowCharacterAction([], 'create', [
-                'realm' => $this->realmID,
-                'name'  => $this->charName,
-                'isSlug'=> true,
+               'data' => [
+                    'realmSlug' => $this->realmID,
+                    'characterName'  => $this->charName,
+                    'isSlug'=> true,
+               ]
         ]);
         $resultValues = $objectAction->executeAction();
 		$this->saved();

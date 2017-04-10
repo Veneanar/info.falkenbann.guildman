@@ -1,14 +1,28 @@
 <?php
 namespace wcf\system\wow;
 use wcf\system\exception\HTTPNotFoundException;
-// use wcf\system\exception\Exception;
+use wcf\system\exception\HTTPServerErrorException;
+use wcf\system\exception\Exception;
+use wcf\system\exception\SystemException;
+use wcf\system\database\exception\DatabaseQueryException;
 use wcf\util\HTTPRequest;
 use wcf\util\StringUtil;
 use wcf\util\JSON;
 use wcf\system\WCF;
+use wcf\data\guild\Guild;
 use wcf\data\wow\character\WowCharacter;
+use wcf\data\wow\character\WowCharacterEditor;
 use wcf\data\wow\character\WowCharacterAction;
+use wcf\system\cache\runtime\GuildRuntimeChache;
+use wcf\data\wow\item\WowItem;
+use wcf\data\wow\item\ViewableWowItem;
+use wcf\system\io\RemoteFile;
+use wcf\system\Regex;
 use Zend\Loader\StandardAutoloader;
+use wcf\data\user\User;
+use wcf\data\user\UserEditor;
+use wcf\data\user\avatar\UserAvatarAction;
+
 
 /**
  * Updates a given WoW Character
@@ -28,55 +42,85 @@ class AsyncCharacterUpdate extends \Thread{
 
     /**
      * timestamp of the local data
-     * @var integer
+     * @var WowCharacterEditor
      */
-    private $bnetUpdate = 10;
-
-    /**
-     *  Name of the character
-     * @var String
-     */
-    private $name = '';
-    /**
-     *  Realm of the character
-     * @var String
-     */
-    private $realm = '';
-    /**
-     *  ID of the character
-     * @var integer
-     */
-    private $id = 0;
+    private $char = null;
 
 	/**
      * Initialize the update process
      *
-     * @param $name         string  Name of the character
-     * @param $realm        string  Realm of the character
-     * @param $id           integer 
-     * @param $bnetUpdate   integer timestamp of the local data
+     * @param $char         WowCharacter  ID of the character
      * @param $forceUpdate  boolean force an update (optinal)
      */
-    public function __construct($name, $realm, $id, $bnetUpdate = 10, $forceUpdate = false, $wcfdir) {
+    public function __construct($char, $forceUpdate = false, $wcfdir) {
         //require_once($wcfdir . "lib/system/WCF.class.php");
         //new \wcf\system\WCF();
         if (!defined('WCF_DIR')) define('WCF_DIR', $wcfdir);
-        require_once($wcfdir.'lib/system/WCF.class.php');
+        require_once(WCF_DIR.'lib/system/WCF.class.php');
 		require_once(WCF_DIR.'lib/system/api/zend/Loader/StandardAutoloader.php');
 		$zendLoader = new StandardAutoloader([StandardAutoloader::AUTOREGISTER_ZF => true]);
 		$zendLoader->register();
-		require_once(WCF_DIR.'lib/util/HTTPRequest.class.php');
+        // wcf\system\database\exception\DatabaseQueryExecutionException
+
+        require_once(WCF_DIR.'lib/system/database/exception/DatabaseQueryException.class.php');
+        require_once(WCF_DIR.'lib/system/exception/SystemException.class.php');
+        require_once(WCF_DIR.'lib/system/exception/HTTPNotFoundException.class.php');
+        require_once(WCF_DIR.'lib/system/exception/HTTPServerErrorException.class.php');
+        require_once(WCF_DIR.'lib/system/io/RemoteFile.class.php');
+        require_once(WCF_DIR.'lib/system/Regex.class.php');
+        require_once(WCF_DIR.'lib/system/wow/bnetIcon.class.php');
+        require_once(WCF_DIR.'lib/system/wow/bnetUpdate.class.php');
+        require_once(WCF_DIR.'lib/system/wow/bnetAPI.class.php');
+        require_once(WCF_DIR.'lib/util/HTTPRequest.class.php');
+        require_once(WCF_DIR.'lib/util/exception/HTTPException.class.php');
 		require_once(WCF_DIR.'lib/util/StringUtil.class.php');
 		require_once(WCF_DIR.'lib/util/JSON.class.php');
+        require_once(WCF_DIR.'lib/data/guild/Guild.class.php');
 		require_once(WCF_DIR.'lib/data/wow/character/WowCharacter.class.php');
+		require_once(WCF_DIR.'lib/data/wow/item/WowItem.class.php');
+        require_once(WCF_DIR.'lib/data/wow/item/ViewableWowItem.class.php');
+        require_once(WCF_DIR.'lib/data/wow/item/WowItemIcon.class.php');
 		require_once(WCF_DIR.'lib/data/wow/character/WowCharacterEditor.class.php');
         require_once(WCF_DIR.'lib/data/wow/character/WowCharacterAction.class.php');
         require_once(WCF_DIR.'lib/system/wow/AsyncImageDownload.class.php');
+        require_once(WCF_DIR.'lib/system/wow/exception/AuthenticationFailure.class.php');
+        require_once(WCF_DIR.'lib/system/cache/runtime/GuildRuntimeChache.class.php');
+        require_once(WCF_DIR.'lib/data/user/User.class.php');
+        require_once(WCF_DIR.'lib/data/user/UserEditor.class.php');
+        require_once(WCF_DIR.'lib/data/user/avatar/UserAvatarAction.class.php');
+
         $this->forceUpdate = $forceUpdate;
-        $this->bnetUpdate = $bnetUpdate;
-        $this->name = $name;
-        $this->realm = $realm;
-        $this->id = $id;
+        if (is_a($char, 'WowCharacterEditor')) {
+            $this->char = $char;
+
+        }
+        else {
+            $this->char = new WowCharacterEditor($char);
+        }
+    }
+
+    private function getData($url) {
+        $reply = '';
+        $request = new HTTPRequest($url, ['timeout' => 25]);
+        try {
+            $request->execute();
+        }
+        catch (HTTPNotFoundException $e) {
+            $this->char->updateCounters(['bnetError' => 1]);
+            echo  "UPDATE ". $this->char->charname . "(".$this->char->characterID."):\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
+            if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR .  'log/bnet.log', '*** ERROR *** '. $url . PHP_EOL, FILE_APPEND);
+            return null;
+        }
+        catch (HTTPServerErrorException $e) {
+            echo  "UPDATE ". $this->char->charname . "(".$this->char->characterID."):\033[31m battle.net returns a 500er!\033[0m  (". $url .")". PHP_EOL;
+            return null;
+        }
+        catch (SystemException $e) {
+            echo  "UPDATE ". $this->char->charname . "(".$this->char->characterID."):\033[31m battle.net not reachable!\033[0m  (". $url .")". PHP_EOL;
+            return null;
+        }
+        $reply = $request->getReply();
+        return JSON::decode($reply['body'], true);
     }
 
 	/**
@@ -85,76 +129,73 @@ class AsyncCharacterUpdate extends \Thread{
      */
     public function run() {
         new \wcf\system\WCF();
-        $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->name, 'realm' => $this->realm], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts' ]);
-        $reply = null;
-        $charData['inGuild'] = 0;
-        try {
-            $reply = @file_get_contents($url);
-            if ($reply === false) {
-                echo  "UPDATE ". $this->name . "(".$this->id."):\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
-                $sql = "UPDATE  wcf".WCF_N."_gman_character
-                    SET     bnetError = bnetError + 1
-                    WHERE   characterID = ? ";
-                $statement = WCF::getDB()->prepareStatement($sql);
-                $statement->execute([$this->id]);
+        $charData = [];
+        $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->char->charname, 'realm' => $this->char->realmSlug], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts' ]);
+        // Rufe Daten ab.
+        // sollte der request fehlschalgen, warte 500ms bis 1,5 und Verscuhe erneut.
+        // notwendig um nicht gegen das key LIMIT zu stoßen.
+        $data=$this->getData($url);
+        if (!is_null($data)) {
+            $charData=$data;
+        }
+        else {
+            usleep(rand(500000,1500000));
+            $charData=$this->getData($url);
+            if (is_null($charData)) {
                 return;
             }
         }
-        catch (Exception $e) {
-            echo "UPDATE ".$this->name . "(".$this->id."): \033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
-            $sql = "UPDATE  wcf".WCF_N."_gman_character
-                    SET     bnetError = bnetError + 1
-                    WHERE   characterID = ? ";
-            $statement = WCF::getDB()->prepareStatement($sql);
-            $statement->execute([$this->id]);
+        if (!isset($charData['lastModified'])) {
+            $this->char->updateCounters(['bnetError' => 1]);
+            echo  "UPDATE ". $this->char->charname . "(".$this->char->characterID."):\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
+            if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR .  'log/bnet.log', '*** ERROR *** '. $url . PHP_EOL, FILE_APPEND);
             return;
         }
-        $charData=JSON::decode($reply, true);
-        if (isset($this->forceUpdate) || $this->update['bnetUpdate'] < ($charData['lastModified'] / 1000)) {
-            $charData['bnetError'] = 0;
-            if (isset($charData['guild']['name']) && $charData['guild']['name'] == GMAN_MAIN_GUILDNAME) {
-                $charData['inGuild'] = 1;
-            }
-            else {
-                //$wowObj = new WowCharacter($this->charID);
-                //@$action = new WowCharacterAction([$wowObj], 'removeFromAllGroups');
-                //@$action->executeAction();
-                $charData['inGuild'] = 2;
-                echo $this->name . "(".$this->id."): \033[31m removed from guild\033[0m (". $url .")". PHP_EOL;
-            }
-
+        if ($this->forceUpdate || $this->bnetUpdate < ($charData['lastModified'] / 1000)) {
+            // download images
             $images = ['avatar','inset','profilemain'];
             foreach($images as $image) {
                 $path = $image=='avatar' ? $charData['thumbnail'] : StringUtil::replaceIgnoreCase('avatar',$image, $charData['thumbnail']);
-                $imageRequest = new AsyncImageDownload($path, $this->name);
+                $imageRequest = new AsyncImageDownload($path, $this->char->charname);
                 $imageRequest->run();
             }
-            $plaindata = $charData;
-            $plaindata['items'] = null;
-            $plaindata['guild'] = null;
-            $plaindata['feed'] = null;
-            $plaindata['pets'] = null;
-            $plaindata['statistics'] = null;
-            $plaindata['petSlots'] = null;
-            $plaindata['mounts'] = null;
-            $plaindata['lastModified'] = $plaindata['lastModified'] / 1000;
-            $petdata = array_merge($charData['pets'], $charData['petSlots']);
-            $petstring = JSON::encode($petdata);
-            $accID = '';
-            if (strlen($petstring) > 10000)  $accID = hash('ripemd256', JSON::encode($petstring));
-            $petstring = '';
-            WCF::getDB()->beginTransaction();
-            bnetAPI::updateFeed(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $charData['feed'], $charData['inGuild']);
-            bnetAPI::updateCharData(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata, $accID);
-            bnetAPI::updateEquip(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $charData['items']);
-            bnetAPI::updateMounts(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $charData['mounts']);
-            bnetAPI::updateStatistics(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $charData['statistics']);
-            bnetAPI::updatePets(['name' => $this->name, 'realm' => $this->realm, 'id' => $this->id], $plaindata['lastModified'], $petdata);
-            WCF::getDB()->commitTransaction();
-            echo "UPDATE ". $this->name . "(".$this->id."): \033[32m update done. \033[0m" . PHP_EOL;
+            // update char
+            $idlist = bnetUpdate::runCharacterUpdate($this->char, $charData);
+            // echo "UPDATE ". $this->name . ": anzhal items: ". count($idlist) . PHP_EOL;
+            foreach ($idlist as $item) {
+                $nullvar = new WowItem($item['id']);
+                if($nullvar->itemID > 0 && (!empty($item['context']) || !empty($item['bonusList']))) {
+                    $nullvar = new ViewableWowItem($nullvar, $item['context'], $item['bonusList']);
+                    $nullvar = null;
+                }
+            }
+            echo "UPDATE ". $this->char->charname . "(".$this->char->characterID."): \033[32m update done. \033[0m" . PHP_EOL;
         }
         else {
-            echo "UPDATE ". $this->name . "(".$this->id."): no update requiered" . PHP_EOL;
+            echo "UPDATE ". $this->char->charname . "(".$this->char->characterID."): no update requiered" . PHP_EOL;
         }
     }
 }
+
+//try {
+//    $reply = @file_get_contents($url);
+//    if ($reply === false) {
+//        echo  "UPDATE ". $this->name . "(".$this->id."):\033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
+//        $sql = "UPDATE  wcf".WCF_N."_gman_character
+//            SET     bnetError = bnetError + 1
+//            WHERE   characterID = ? ";
+//        $statement = WCF::getDB()->prepareStatement($sql);
+//        $statement->execute([$this->id]);
+//        return;
+//    }
+//}
+//catch (Exception $e) {
+//    echo "UPDATE ".$this->name . "(".$this->id."): \033[31m ERROR Url not found \033[0m (". $url .")". PHP_EOL;
+//    $sql = "UPDATE  wcf".WCF_N."_gman_character
+//            SET     bnetError = bnetError + 1
+//            WHERE   characterID = ? ";
+//    $statement = WCF::getDB()->prepareStatement($sql);
+//    $statement->execute([$this->id]);
+//    return;
+//}
+//$charData=JSON::decode($reply, true);

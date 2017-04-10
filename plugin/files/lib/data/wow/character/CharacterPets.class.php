@@ -35,7 +35,7 @@ class CharacterPets extends JSONExtendedDatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = 'charID';
+	protected static $databaseTableIndexName = 'characterID';
 
 
 }

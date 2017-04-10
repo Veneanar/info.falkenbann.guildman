@@ -16,7 +16,7 @@ abstract class JSONExtendedDatabaseObject extends DatabaseObject {
      * name of the JSON field
      * @var	string
      */
-    protected static $JSONfield = '';
+    protected static $JSONfield = 'bnetData';
 
     /**
      * Creates a new instance of the DatabaseObject class.
@@ -26,10 +26,27 @@ abstract class JSONExtendedDatabaseObject extends DatabaseObject {
      * @param	DatabaseObject		$object
      */
 	public function __construct($id, array $row = null, DatabaseObject $object = null) {
-        parent::__construct($id, $row, $object);
-		if (isset($this->data[static::$JSONfield])) {
-            $bnetData = json_decode($this->data[static::$JSONfield], true);
-            $this->data = array_merge($bnetData, $this->data);
+		if ($id !== null) {
+			$sql = "SELECT	*
+				FROM	".static::getDatabaseTableName()."
+				WHERE	".static::getDatabaseTableIndexName()." = ?";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			$statement->execute([$id]);
+			$row = $statement->fetchArray();
+
+			// enforce data type 'array'
+			if ($row === false) $row = [];
 		}
+		else if ($object !== null) {
+			$row = $object->data;
+		}
+
+		if (isset($row[static::$JSONfield])) {
+            $bnetData = empty($row[static::$JSONfield]) ? [] : json_decode($row[static::$JSONfield], true);
+            $row[static::$JSONfield] = '';
+            $row = array_merge($bnetData, $row);
+		}
+		$this->handleData($row);
+
 	}
 }

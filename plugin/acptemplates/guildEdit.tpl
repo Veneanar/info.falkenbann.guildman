@@ -20,7 +20,6 @@
         GuildUpdate.prototype = {
             setup: function() {
                 var buttons = document.getElementsByClassName('jsSyncGuild');
-                console.log("Hallo!");
                 for (var i = 0, length = buttons.length; i < length; i++) {
                     buttons[i].addEventListener('click', this._click.bind(this));
                 }
@@ -66,6 +65,35 @@
 
 
 {if $action=='new'}
+<script>
+    require(['WoltLabSuite/Core/Ajax'], function(Ajax) {
+        "use strict";
+        function WowInstantUpdate() {};
+        WowInstantUpdate.prototype = {
+            setup: function() {
+                Ajax.api(this, {
+                    objectIDs: [ 0 ],
+                    parameters: {
+                        updateType: event.currentTarget.getAttribute('data-sync-type')
+                    }
+                });
+            },
+            _ajaxSetup: function() {
+                return {
+                    data: {
+                        actionName: 'updateWowData',
+                        className: 'wcf\\data\\guild\\GuildAction'
+                    }
+                };
+            },
+            _ajaxSuccess: function(data) {
+
+            }
+        };
+        return new WowInstantUpdate().setup();
+    });
+
+</script>
 <div class="section">
     <header class="sectionHeader">
         <h2 class="sectionTitle">{lang}wcf.acp.gman.guild.data{/lang}</h2>

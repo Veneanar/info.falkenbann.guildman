@@ -1,6 +1,6 @@
 <?php
 namespace wcf\system\cronjob;
-use wcf\system\wow\bnetAPI;
+use wcf\system\wow\bnetUpdate;
 use wcf\data\cronjob\Cronjob;
 use wcf\system\exception\SystemException;
 /**
@@ -16,7 +16,7 @@ use wcf\system\exception\SystemException;
  */
 class GuildUpdateCronjob extends AbstractCronjob {
     private static function doaction() {
-        bnetAPI::updateGuild();
+        bnetUpdate::updateGuild();
     }
     /**
      * @see wcf\system\cronjob\ICronjob::execute()

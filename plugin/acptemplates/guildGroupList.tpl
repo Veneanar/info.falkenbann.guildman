@@ -63,13 +63,13 @@
                 <td class="columnID columnGroupID">{@$group->groupID}</td>
                 <td class="columnTitle columnGroupName">
                     {if $group->isEditable()}
-                    <a title="{lang}wcf.acp.group.edit{/lang}" href="{link controller='GuildGroupEdit' id=$group->groupID}{/link}">{lang}{$group->groupName}{/lang}</a>
+                    <a title="{lang}wcf.acp.group.edit{/lang}" href="{link controller='GuildGroupEdit' id=$group->groupID}{/link}">{$group->groupName}</a>
                     {else}
-                    {lang}{$group->groupName}{/lang}
+                    {$group->groupName}
                     {/if}
                 </td>
                 <td class="columnDigits columnMembers">
-                    <a class="jsTooltip" title="{lang}wcf.acp.group.showMembers{/lang}" href="{link controller='UserSearch'}groupID={@$group->groupID}{/link}">{#$group->members}</a>
+                    <a class="jsTooltip" title="{lang}wcf.acp.group.showMembers{/lang}" href="{link controller='CharacterList'}groupID={@$group->groupID}{/link}">{#$group->members}</a>
                 </td>
                 <td class="columnDigits columnGameRank">{$guild->getRankName($group->gameRank)}</td>
 

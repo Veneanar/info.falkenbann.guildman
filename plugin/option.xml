@@ -67,12 +67,12 @@
        <option name="gman_main_guildname">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Sylvanas Garde</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option> 
        <option name="gman_main_homerealm">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Forscherliga</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       
       <option name="gman_main_rank0">
@@ -83,47 +83,47 @@
       <option name="gman_main_rank1">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Hochexekutor</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank2">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Exekutor</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank3">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Dunkelläufer</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank4">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Mentor</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank5">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Todespirscher</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank6">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Soldat</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank7">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Reservist</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank8">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Verwarnt</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>
       <option name="gman_main_rank9">
         <categoryname>gman.main</categoryname>
         <optiontype>text</optiontype>
-        <defaultvalue>Rekrut</defaultvalue>
+        <defaultvalue></defaultvalue>
       </option>     
       
       <option name="gman_calendar_active">

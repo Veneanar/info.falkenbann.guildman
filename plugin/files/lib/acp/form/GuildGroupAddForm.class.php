@@ -13,6 +13,7 @@ use wcf\data\guild\group\GuildGroupAction;
 use wcf\data\user\group\UserGroup;
 use wcf\data\article\Article;
 use wcf\data\article\ArticleList;
+use wcf\data\media\ViewableMedia;
 use wcf\data\media\Media;
 use wcf\data\media\ViewableMediaList;
 use wbb\data\thread\Thread;
@@ -20,6 +21,8 @@ use wbb\data\board\Board;
 use wbb\data\board\BoardList;
 use wcf\data\user\group\UserGroupList;
 use wcf\data\guild\Guild;
+use wcf\data\wow\character\WowCharacterAction;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * Gruppen hinzufügen
@@ -63,7 +66,7 @@ class GuildGroupAddForm extends AbstractForm {
 	 * group ID assigned to WCF group
 	 * @var	integer
 	 */
-	public $groupWcfID = 0;
+	public $wcfGroupID = 0;
 
 	/**
      * group assigned to WCF group
@@ -133,15 +136,15 @@ class GuildGroupAddForm extends AbstractForm {
 
     /**
      * Logo Media ID
-     * @var	integer[]
+     * @var	integer
      */
-    private $imageID = [];
+    public $iconID = 0;
 
-	/**
-     * images
-     * @var	Media[]
+    /**
+     * Logo Media ID
+     * @var	integer
      */
-    private $images = [];
+    public $imageID = 0;
 
 	/**
      * is raidgroup
@@ -207,14 +210,13 @@ class GuildGroupAddForm extends AbstractForm {
 		$categoryList = $categoryTree->getIterator();
 
         // echo "<pre>"; var_dump($wcfGroups); echo "</pre>"; die;
-        $guild = new Guild();
+        $guild = GuildRuntimeChache::getInstance()->getCachedObject();
         $ranks = $guild->getRanks();
-
 		WCF::getTPL()->assign([
 			'action'            => 'add',
 			'groupName'         => $this->groupName,
             'groupTeaser'       => $this->groupTeaser,
-            'groupWcfID'        => $this->groupWcfID,
+            'wcfGroupID'        => $this->wcfGroupID,
             'wcfGroups'         => $wcfGroups,
             'showCalender'      => $this->showCalender,
             'calendarCategoryID'=> $this->calendarCategoryID,
@@ -230,12 +232,16 @@ class GuildGroupAddForm extends AbstractForm {
             'boardID'           => $this->boardID,
             'boardList'         => $boards,
             'imageID'           => $this->imageID,
+            'iconID'            => $this->iconID,
+            'image'             => $this->imageID ? new ViewableMedia(new Media($this->imageID)) : null,
+            'icon'              => $this->iconID ? new ViewableMedia(new Media($this->iconID)) : null,
             'threadID'          => $this->threadID,
             'isRaidgruop'       => $this->isRaidgruop,
             'fetchWCL'          => $this->fetchWCL,
             'wclQuery'          => $this->wclQuery,
             'orderNo'           => $this->orderNo,
 		]);
+        //echo "assign Vars: <pre>"; var_dump($this->wcfGroupID); echo "</pre>"; die();
 	}
 
 	/**
@@ -258,13 +264,13 @@ class GuildGroupAddForm extends AbstractForm {
 		parent::readFormParameters();
 		if (isset($_POST['groupName']))     $this->groupName        = StringUtil::trim($_POST['groupName']);
         if (isset($_POST['groupTeaser']))   $this->groupTeaser      = StringUtil::trim($_POST['groupTeaser']);
-        if (isset($_POST['groupWcfID']))    $this->groupWcfID       = intval($_POST['groupWcfID']);
-        if (isset($_POST['showCalender']))  {
+        if (isset($_POST['wcfGroupID']))    $this->wcfGroupID       = intval($_POST['wcfGroupID']);
         if (WCF::getSession()->getPermission('admin.content.cms.canUseMedia')) {
-                if (isset($_POST['imageID']) && is_array($_POST['imageID'])) $this->imageID = ArrayUtil::toIntegerArray($_POST['imageID']);
-                $this->readImages();
-            }
-        $this->showCalender     = true;
+            if (isset($_POST['imageID']))   $this->imageID  = intval($_POST['imageID']);
+            if (isset($_POST['iconID']))    $this->iconID   = intval($_POST['iconID']);
+        }
+        if (isset($_POST['showCalender']))  {
+            $this->showCalender     = true;
             if (isset($_POST['calendarTitle'])) $this->calendarTitle    = StringUtil::trim($_POST['calendarTitle']);
             if (isset($_POST['calendarText']))  $this->calendarText     = StringUtil::trim($_POST['calendarText']);
             if (isset($_POST['calendarQuery'])) $this->calendarQuery    = StringUtil::trim($_POST['calendarQuery']);
@@ -285,22 +291,9 @@ class GuildGroupAddForm extends AbstractForm {
 
 
     /**
-     * Reads the box images.
+     * Reads the gopup icons.
      */
-	protected function readImages() {
-		if (!empty($this->imageID)) {
-			$mediaList = new ViewableMediaList();
-			$mediaList->setObjectIDs($this->imageID);
-			$mediaList->readObjects();
 
-			foreach ($this->imageID as $languageID => $imageID) {
-				$image = $mediaList->search($imageID);
-				if ($image !== null && $image->isImage) {
-					$this->images[$languageID] = $image;
-				}
-			}
-		}
-	}
 
 	/**
      * @inheritDoc
@@ -314,15 +307,15 @@ class GuildGroupAddForm extends AbstractForm {
         if (strlen($this->groupName) > 50) {
             throw new UserInputException('groupName', 'toolong');
         }
-        if (strlen($this->groupName) < 5) {
+        if (strlen($this->groupName) < 3) {
             throw new UserInputException('groupName', 'tooshort');
         }
         if (strlen($this->groupTeaser) > 250) {
             throw new UserInputException('groupTeaser', 'toolong');
         }
-		if ($this->groupWcfID > 0) {
-            $this->groupWcf = new UserGroup($this->groupWcfID);
-            if ($this->groupWcf->getObjectID()==0) throw new UserInputException('groupWcfID');
+		if ($this->wcfGroupID > 0) {
+            $this->groupWcf = new UserGroup($this->wcfGroupID);
+            if ($this->groupWcf->getObjectID()==0) throw new UserInputException('wcfGroupID');
 		}
 
         if ($this->showCalender) {
@@ -358,6 +351,18 @@ class GuildGroupAddForm extends AbstractForm {
                 throw new UserInputException('boardID', 'notFound');
             }
         }
+        if ($this->imageID > 0) {
+            $board = new Media($this->imageID);
+            if ($board===null) {
+                throw new UserInputException('imageID', 'notFound');
+            }
+        }
+        if ($this->iconID > 0) {
+            $board = new Media($this->iconID);
+            if ($board===null) {
+                throw new UserInputException('iconID', 'notFound');
+            }
+        }
 
 	}
 
@@ -366,12 +371,13 @@ class GuildGroupAddForm extends AbstractForm {
 	 */
 	public function save() {
 		parent::save();
-
 		$this->objectAction = new GuildGroupAction([], 'create', [
+            'changeWCFGroup'    => $this->wcfGroupID > 0 ? true : false,
+            'changeRank'        => $this->gameRank < 11 ? true : false,
 			'data' =>  [
 			    'groupName'         => $this->groupName,
-                'groupTeaser'            => $this->groupTeaser,
-                'wcfGroupID'        => $this->groupWcfID,
+                'groupTeaser'       => $this->groupTeaser,
+                'wcfGroupID'        => $this->wcfGroupID,
                 'showCalender'      => intval($this->showCalender),
                 'calendarTitle'     => $this->calendarTitle,
                 'calendarText'      => $this->calendarText,
@@ -381,7 +387,8 @@ class GuildGroupAddForm extends AbstractForm {
                 'showRoaster'       => intval($this->showRoaster),
                 'articleID'         => $this->articleID > 0 ? $this->articleID : null,
                 'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
-                'imageID'           => isset($this->imageID[0]) ? $this->imageID[0]: null,
+                'imageID'           => $this->imageID > 0 ? $this->imageID: null,
+                'iconID'           => $this->iconID > 0 ? $this->iconID: null,
                 'threadID'          => $this->threadID > 0 ? $this->threadID : null,
                 'isRaidgruop'       => intval($this->isRaidgruop),
                 'fetchWCL'          => intval($this->fetchWCL),
@@ -397,7 +404,7 @@ class GuildGroupAddForm extends AbstractForm {
 		// reset values
 		$this->groupName = '';
         $this->groupTeaser = '';
-        $this->groupWcfID = 0;
+        $this->wcfGroupID = 0;
         $this->showCalender = false;
         $this->calendarTitle = '';
         $this->calendarText = '';
@@ -407,7 +414,8 @@ class GuildGroupAddForm extends AbstractForm {
         $this->showRoaster = false;
         $this->articleID = 0;
         $this->boardID = 0;
-        $this->imageID = [];
+        $this->imageID = 0;
+        $this->iconID = 0;
         $this->threadID = 0;
         $this->isRaidgruop = false;
         $this->fetchWCL = false;

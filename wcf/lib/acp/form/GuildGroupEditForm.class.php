@@ -67,6 +67,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
             $this->articleID            = $this->guildGroupObject->articleID;
             $this->boardID              = $this->guildGroupObject->boardID;
             $this->imageID              = $this->guildGroupObject->imageID;
+            $this->iconID               = $this->guildGroupObject->iconID;
             $this->threadID             = $this->guildGroupObject->threadID;
             $this->isRaidgruop          = $this->guildGroupObject->isRaidgruop;
             $this->fetchWCL             = $this->guildGroupObject->fetchWCL;
@@ -112,7 +113,8 @@ class GuildGroupEditForm extends GuildGroupAddForm {
                 'showRoaster'       => intval($this->showRoaster),
                 'articleID'         => $this->articleID > 0 ? $this->articleID : null,
                 'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
-                'imageID'           => isset($this->imageID[0]) ? $this->imageID[0]: null,
+                'imageID'           => $this->imageID > 0 ? $this->imageID: null,
+                'iconID'            => $this->iconID > 0 ? $this->iconID : null,
                 'threadID'          => $this->threadID > 0 ? $this->threadID : null,
                 'isRaidgruop'       => intval($this->isRaidgruop),
                 'fetchWCL'          => intval($this->fetchWCL),

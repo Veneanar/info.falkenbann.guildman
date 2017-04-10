@@ -5,8 +5,8 @@
 		<packagename language="de">Gildenmanager für World of Warcraft</packagename>
 		<packagedescription>Gildenmanager</packagedescription>
 		<packagedescription language="de">Gildenmanager</packagedescription>
-		<version>0.3.2 dev 1</version>
-		<date>2017-02-28</date>
+		<version>0.9.0 dev 2</version>
+		<date>2017-04-10</date>
 	</packageinformation>
 
 	<authorinformation>
@@ -15,9 +15,9 @@
 	</authorinformation>
 
 	<requiredpackages>
-		<requiredpackage minversion="2.1.0">com.woltlab.wcf</requiredpackage>
-    <requiredpackage minversion="4.1.0">com.woltlab.wbb</requiredpackage>
-
+		<requiredpackage minversion="3.0.2">com.woltlab.wcf</requiredpackage>
+    <requiredpackage minversion="5.0.2">com.woltlab.wbb</requiredpackage>
+    <requiredpackage minversion="3.0.2">com.woltlab.calendar</requiredpackage>
   </requiredpackages>
 
 	<instructions type="install">
@@ -28,12 +28,19 @@
     <instruction type="language">language/*.xml</instruction>
     <instruction type="acpMenu" />
     <instruction type="userGroupOption" />
+    <instruction type="userOption" />
     <instruction type="option" />
+    <instruction type="page" />
+    <instruction type="userMenu" />
+    <instruction type="userProfileMenu" />    
     <instruction type="templateListener" />
     <instruction type="cronjob" />
     <instruction type="clipboardAction" />
-    <instruction type="objectTypeDefinition" />
     <instruction type="objectType" />
   </instructions>
-		
+
+  <instructions type="update" fromversion="0.8.0 dev 2">
+    <instruction type="userOption" />
+  </instructions> 
+  
 </package>

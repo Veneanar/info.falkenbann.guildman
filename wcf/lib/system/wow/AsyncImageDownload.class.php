@@ -7,12 +7,12 @@ use wcf\util\StringUtil;
 use wcf\util\JSON;
 
 /**
- * bnetImage short summary.
+ * downloads a battle.net image Async (pthreads needed)
+ * @author	Veneanar Falkenbann
+ * @copyright	2017  Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
+ * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
+ * @package	info.falkenbann.guildman
  *
- * bnetImage description.
- *
- * @version 1.0
- * @author jarau
  */
 
 class AsyncImageDownload extends \Thread{

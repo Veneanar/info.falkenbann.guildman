@@ -2,6 +2,7 @@
 namespace wcf\acp\page;
 use wcf\data\wow\character\WowCharacter;
 use wcf\data\guild\Guild;
+use wcf\data\guild\group\GuildGroup;
 use wcf\data\wow\character\WowCharacterList;
 use wcf\system\event\EventHandler;
 use wcf\system\clipboard\ClipboardHandler;
@@ -13,6 +14,7 @@ use wcf\data\wow\WowRaceList;
 use wcf\system\WCF;
 use wcf\data\user\User;
 use wcf\util\StringUtil;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * Shows a list of all WoW Groups
@@ -43,7 +45,7 @@ class CharacterListPage extends SortablePage {
 	/**
      * @inheritDoc
      */
-	public $validSortFields = ['characterID', 'charname', 'realmSlug', 'guildRank', 'c_level', 'c_race', 'c_class', 'averageItemLevel','averageItemLevelEquipped'];
+	public $validSortFields = ['groupName', 'characterID', 'charname', 'realmSlug', 'guildRank', 'c_level', 'c_race', 'c_class', 'averageItemLevel','averageItemLevelEquipped'];
 
 	/**
      * indicates if a group has just been deleted
@@ -74,12 +76,6 @@ class CharacterListPage extends SortablePage {
      * @var	Guild
      */
     public $guild = null;
-
-    /**
-     * groupID
-     * @var	integer
-     */
-	public $groupID = 0;
 
     /**
      * classID
@@ -131,7 +127,17 @@ class CharacterListPage extends SortablePage {
      */
     public $charName = '';
 
+    /**
+     * groupName to search for
+     * @var	string
+     */
+    public $groupName = '';
 
+    /**
+     * groupID to search for
+     * @var	integer
+     */
+    public $groupID = 0;
 
 	/**
      * @inheritDoc
@@ -139,11 +145,13 @@ class CharacterListPage extends SortablePage {
 	public function readParameters() {
 		parent::readParameters();
         // check guild
-        $this->guild = new Guild();
+        $this->guild = GuildRuntimeChache::getInstance()->getCachedObject();
         if ($this->guild->name == null) {
             throw new NamedUserException(WCF::getLanguage()->get('wcf.acp.notice.gman.noguild'));
         }
+        if (!empty($_REQUEST['groupName']))     $this->groupName    = StringUtil::trim($_REQUEST['groupName']);
         if (!empty($_REQUEST['charName']))      $this->charName     = StringUtil::trim($_REQUEST['charName']);
+        if (!empty($_REQUEST['groupID']))       $this->groupID      = intval($_REQUEST['groupID']);
         if (!empty($_REQUEST['raceID']))        $this->raceID       = intval($_REQUEST['raceID']);
 		if (!empty($_REQUEST['classID']))       $this->classID      = intval($_REQUEST['classID']);
 		if (isset($_REQUEST['rankID']))         $this->rankID       = intval($_REQUEST['rankID']);
@@ -154,9 +162,7 @@ class CharacterListPage extends SortablePage {
             if ($this->ownerObject->userID > 0) $this->ownerID = $this->ownerObject->userID;
         }
 
-
-
-		// detect group deletion
+		// detect char deletion
 		if (isset($_REQUEST['deletedChars'])) {
 			$this->deletedChars = intval($_REQUEST['deletedChars']);
 		}
@@ -186,6 +192,17 @@ class CharacterListPage extends SortablePage {
         if (!empty($this->charName)) {
 			$this->conditions->add('gman_character.charname LIKE ?', ["%".$this->charName."%"]);
 		}
+        if (!empty($this->groupName)) {
+            $this->groupID = GuildGroup::getbyName($this->groupName)->groupID;
+        }
+        if ($this->groupID > 0) {
+            $this->conditions->add('char_to_group.groupID = ?', [$this->groupID]);
+            if (empty($this->groupName)) {
+                $guildGroup = new GuildGroup($this->groupID);
+                $this->groupName = $guildGroup->groupName;
+            }
+        }
+
         //if (!empty($_REQUEST['id'])) {
         //    $this->searchID = intval($_REQUEST['id']);
         //    if ($this->searchID) $this->readSearchResult();
@@ -225,11 +242,20 @@ class CharacterListPage extends SortablePage {
 	public function countItems() {
 		// call countItems event
 		EventHandler::getInstance()->fireAction($this, 'countItems');
-
-		$sql = "SELECT	COUNT(*)
+        $sql = '';
+        if ($this->groupID > 0) {
+            $sql = "SELECT	COUNT(*)
+			FROM		wcf".WCF_N."_gman_char_to_group char_to_group
+            LEFT JOIN wcf".WCF_N."_gman_character gman_character ON (char_to_group.characterID = gman_character.characterID)
+			LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.characterID = gman_character.characterID)
+			".$this->conditions;
+        }
+        else {
+            $sql = "SELECT	COUNT(*)
 			FROM	wcf".WCF_N."_gman_character gman_character
             LEFT JOIN wcf".WCF_N."_gman_character_equip gman_character_equip ON (gman_character_equip.characterID = gman_character.characterID)
 			".$this->conditions;
+        }
 		$statement = WCF::getDB()->prepareStatement($sql);
 		$statement->execute($this->conditions->getParameters());
 
@@ -238,7 +264,7 @@ class CharacterListPage extends SortablePage {
 
     protected function readChars() {
         $sql = '';
-        if ($this->getGroupList > 0) {
+        if ($this->groupID > 0) {
             $sql = "SELECT		char_to_group.characterID
 			FROM		wcf".WCF_N."_gman_char_to_group char_to_group
             LEFT JOIN wcf".WCF_N."_gman_character gman_character ON (char_to_group.characterID = gman_character.characterID)
@@ -297,6 +323,7 @@ class CharacterListPage extends SortablePage {
             'races' => $races,
             'classes' => $classes,
             'charName' => $this->charName,
+            'groupName' => $this->groupName,
 		]);
 	}
 }

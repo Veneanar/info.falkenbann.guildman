@@ -3,6 +3,7 @@ namespace wcf\data\wow\character;
 use wcf\data\DatabaseObjectEditor;
 use wcf\data\guild\Guild;
 use wcf\system\WCF;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * Provides functions to edit WoW Charackters.
@@ -27,7 +28,7 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      * @param	integer		$groupIDs
      */
     public function changeRank($newRank) {
-        $guild = new Guild();
+        $guild = GuildRuntimeChache::getInstance()->getCachedObject();
         $this->removeFromGroups($guild->getGuildGroupIds(true));
         $this->addToGroup($guild->getGroupfromRank($newRank));
     }
@@ -41,10 +42,12 @@ class WowCharacterEditor extends DatabaseObjectEditor {
      */
 	public function addToGroups(array $groupIDs, $deleteOldGroups = true, $addDefaultGroups = true) {
         if ($addDefaultGroups) {
-            $guild = new Guild();
+            $guild = GuildRuntimeChache::getInstance()->getCachedObject();
             $defaultGroup = $guild->getGroupfromRank($this->guildRank);
-            $groupIDs = array_merge($groupIDs, [$defaultGroup->groupID]);
-            $groupIDs = array_unique($groupIDs);
+            if (!empty($defaultGroup)) {
+                $groupIDs = array_merge($groupIDs, [$defaultGroup->groupID]);
+                $groupIDs = array_unique($groupIDs);
+            }
         }
 
 		// remove old groups
@@ -110,6 +113,7 @@ class WowCharacterEditor extends DatabaseObjectEditor {
 			]);
 		}
 	}
+
 	/**
      * Removes a user from multiple user groups.
      *

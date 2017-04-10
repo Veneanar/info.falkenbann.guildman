@@ -99,14 +99,31 @@ class Guild extends JSONExtendedDatabaseObject {
      *
      * @var integer[]
      */
-    private $GuildGroupsNotWoWIDs;
+    private $GuildGroupsNotWoWIDs = [];
 
     /**
      * List of Group IDs related to a wow rank
      *
      * @var integer[]
      */
-    private $GuildGroupsWoWIDs;
+    private $GuildGroupsWoWIDs = [];
+
+    /**
+     * which satistic category IDs should tracked?
+     * @var integer[]
+     */
+    private $trackStatisticCategoryIDs = [];
+    /**
+     * which satistic IDs should tracked?
+     * @var integer[]
+     */
+    private $trackStatisticIDs = [];
+
+    /**
+     * which satistic zone IDs should tracked?
+     * @var integer[]
+     */
+    private $trackStatisticZoneIDs = [];
 
     /**
      * Returns the Guildleader
@@ -161,6 +178,42 @@ class Guild extends JSONExtendedDatabaseObject {
         parent::__construct(null, $row, null);
 	}
 
+    public function getStatisticCategorys() {
+        if (empty($this->trackStatisticCategoryIDs)) {
+            $sql = "SELECT DISTINCT statCatID FROM wcf".WCF_N."_gman_bosskills WHERE 1";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute();
+            while ($row = $statement->fetchArray()) {
+                $this->trackStatisticCategoryIDs[] = $row["statCatID"];
+            }
+        }
+        return $this->trackStatisticCategoryIDs;
+    }
+
+    public function getStatisticZoneIDs() {
+        if (empty($this->trackStatisticZoneIDs)) {
+            $sql = "SELECT DISTINCT zoneID FROM wcf".WCF_N."_gman_bosskills WHERE 1";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute();
+            while ($row = $statement->fetchArray()) {
+                $this->trackStatisticZoneIDs[] = $row["zoneID"];
+            }
+        }
+        return $this->trackStatisticZoneIDs;
+    }
+
+    public function getStatisticIDs() {
+        if (empty($this->trackStatisticIDs)) {
+            $sql = "SELECT statID FROM wcf".WCF_N."_gman_bosskills WHERE 1";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute();
+            while ($row = $statement->fetchArray()) {
+                $this->trackStatisticIDs[] = $row["statID"];
+            }
+       }
+       return $this->trackStatisticIDs;
+    }
+
     public function getFaction() {
         $factext = WCF::getLanguage()->get('wcf.page.gman.wow.horde');
         if ($this->side==0) {
@@ -182,12 +235,12 @@ class Guild extends JSONExtendedDatabaseObject {
             $guildGroups->getConditionBuilder()->add("gameRank < 11");
             $guildGroups->readObjects();
             $this->GuildGroupsWoW = $guildGroups->getObjects();
-            $this->GuildGroupsWoWIDs = $guildGroups->getObjectIDs();
+            $this->GuildGroupsWoWIDs = $guildGroups->getObjectIDs() ?: [];
             $guildGroups = new GuildGroupList();
             $guildGroups->getConditionBuilder()->add("gameRank >= 11");
             $guildGroups->readObjects();
             $this->GuildGroupsNotWoW = $guildGroups->getObjects();
-            $this->GuildGroupsNotWoWIDs = $guildGroups->getObjectIDs();
+            $this->GuildGroupsNotWoWIDs = $guildGroups->getObjectIDs() ?: [];
         }
         return $onlyWow ? $this->GuildGroupsWoW : array_merge($this->GuildGroupsWoW, $this->GuildGroupsNotWoW);
     }

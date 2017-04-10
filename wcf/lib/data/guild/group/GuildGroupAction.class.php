@@ -7,6 +7,9 @@ use wcf\data\guild\group\GuildGroupList;
 use wcf\data\guild\Guild;
 use wcf\system\clipboard\ClipboardHandler;
 use wcf\data\IClipboardAction;
+use wcf\util\StringUtil;
+use wcf\data\ISearchAction;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * Executes Gildenbewerbung-related actions.
@@ -17,7 +20,7 @@ use wcf\data\IClipboardAction;
  *
  */
 
-class GuildGroupAction extends AbstractDatabaseObjectAction implements IClipboardAction{
+class GuildGroupAction extends AbstractDatabaseObjectAction implements ISearchAction, IClipboardAction{
 	/**
 	 * {@inheritDoc}
 	 */
@@ -43,6 +46,35 @@ class GuildGroupAction extends AbstractDatabaseObjectAction implements IClipboar
 	 */
 	protected $allowGuestAccess = array();
 
+    /**
+     * @inheritDoc
+     */
+	public function validateGetSearchResultList() {
+		$this->readString('searchString', false, 'data');
+	}
+
+	/**
+     * @inheritDoc
+     */
+	public function getSearchResultList() {
+        $searchString = $this->parameters['data']['searchString'];
+		$list = [];
+		$guildGroupList = new GuildGroupList();
+		$guildGroupList->getConditionBuilder()->add("groupName LIKE ?", [$searchString.'%']);
+		$guildGroupList->sqlLimit = 10;
+		$guildGroupList->readObjects();
+        $guildGroups= $guildGroupList->getObjects();
+		foreach ($guildGroups as $guildGroup) {
+			$list[] = [
+				'icon'      => $guildGroup->iconID >  0 ? '<img src="' . StringUtil::encodeHTML($guildGroup->getIcon()->getThumbnailLink('tiny')) . '" style="width:24px; height:24px;">' : '<span class="icon icon16 fa-users"></span>',
+				'label'     => $guildGroup->groupName,
+				'objectID'  => $guildGroup->groupID,
+				'type'      => 'user'
+			];
+		}
+		return $list;
+	}
+
     public function create() {
         $guildGroup = parent::create();
            // 'changeWCFGroup'    => $this->wcfGroupID > 0 ? true : false,
@@ -67,7 +99,7 @@ class GuildGroupAction extends AbstractDatabaseObjectAction implements IClipboar
     }
 
     public function update() {
-        $guild = new Guild();
+        $guild = GuildRuntimeChache::getInstance()->getCachedObject();
         $oldWCFGroups = !empty($this->parameters['oldWCFGroups']) ? $this->parameters['oldWCFGroups'] : $guild->convertToWCFGroup($guild->getGuildGroupIds());
         parent::update();
         foreach($this->objects as $guildGroup) {

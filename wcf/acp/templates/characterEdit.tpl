@@ -16,37 +16,14 @@
     require(['WoltLabSuite/Core/Ui/User/Search/Input'], function(UiUserSearchInput) {
         new UiUserSearchInput(elBySel('input[name="ownerName"]'));
     });
-    require(['WoltLabSuite/Core/Ajax'], function(Ajax) {
-            "use strict";
-            function PromoteMain() {};
-            PromoteMain.prototype = {
-                setup: function() {
-                    var buttons = document.getElementsByClassName('jsPromoteMain');
-                    for (var i = 0, length = buttons.length; i < length; i++) {
-                        buttons[i].addEventListener('click', this._click.bind(this));
-                    }
-                },
-                _click: function(event) {
-                    Ajax.api(this, {
-                        objectIDs: [event.currentTarget.getAttribute('data-char-id')],
-                    });
-                },
-                _ajaxSetup: function() {
-                    return {
-                        data: {
-                            actionName: 'setMain',
-                            className: 'wcf\\data\\wow\\character\\WowCharacterAction'
-                        }
-                    };
-                },
-                _ajaxSuccess: function(data) {
-                    location.reload();
-                }
-            };
-            return new PromoteMain().setup();
-        });
-
+    require(['WoltLabSuite/GMan/Character/SetMain'], function (SetMain) {
+        new SetMain(document.getElementsByClassName('jsPromoteMain'));
+    });
+    require(['WoltLabSuite/GMan/Character/SetUser'], function (SetCharToUser) {
+        new SetCharToUser(document.getElementsByClassName('jsConfirmButton'));
+    });
 </script>
+
 <form id="guildEditForm" method="post" action="{link controller='characterEdit' object=$charObject}{/link}" enctype="multipart/form-data">
 
     <div class="section">
@@ -73,7 +50,7 @@
                         </div>
                     </div>
                 </div>
-                <small>$charObject->primaryGroupID</small>
+                <small><b>{$charObject->getRank()}</b></small>
             </dd>
         </dl>  
         {if $charObject->userID>0 && $charObject->isMain==0}
@@ -92,41 +69,40 @@
             <small>{lang}wcf.acp.gman.guild.username.desc{/lang}</small>
             {if $errorField == 'charName'}
             <small class="innerError">
-                {if $errorType == 'empty'}
+                {if $errorType =='empty'}
                 {lang}wcf.global.form.error.empty{/lang}
                 {else}
-                {lang}wcf.acp.gman.charadd.error.{@$errorType}{/lang}
+                {lang}wcf.acp.gman.owneradd.error.{@$errorType}{/lang}
                 {/if}
             </small>
             {/if}
         </dd>
         </dl>
 
-        {if $charObject->userID>0}
+        {if $guildGroups|count}
         <dl {if $errorField=='groupField'} class="formError" {/if}>
         <dt><label for="realmID">{lang}wcf.acp.gman.guild.groups{/lang}</label></dt>
         <dd>
             <fieldset>
                 <ul>
+                {foreach from=$guildGroups item=$groups}
                     <li>
                         <label>
-                            <input type="checkbox" name="groupField" value="salami">
-                            Salami
+                            <input type="checkbox" name="groupField[]" value="{$groups->groupID}" {if $groups->groupID|in_array:$charObject->getGroupIDs()} checked{/if}>
+                            {$groups->groupName}
                         </label>
                     </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" name="groupField" value="schinken">
-                            Schinken
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="checkbox" name="groupField" value="sardellen">
-                            Sardellen
-                        </label>
-                    </li>
+                {/foreach}
                 </ul>
+                {if $errorField == 'groupField'}
+                <small class="innerError">
+                    {if $errorType =='empty'}
+                    {lang}wcf.global.form.error.empty{/lang}
+                    {else}
+                    {lang}wcf.acp.gman.groupfield.error.{@$errorType}{/lang}
+                    {/if}
+                </small>
+                {/if}
             </fieldset> 
            <small>{lang}wcf.acp.gman.guild.primarygroup.desc{/lang}</small>
             {if $errorField == 'primaryGroupID'}

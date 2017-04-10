@@ -1,15 +1,21 @@
 <?php
 namespace wcf\data\wow\character;
+use wcf\system\WCF;
+use wcf\system\WCFACP;
+use wcf\system\request\LinkHandler;
+use wcf\system\request\IRouteController;
+use wcf\system\cache\runtime\GuildRuntimeChache;
+use wcf\data\IUserContent;
+use wcf\data\user\User;
+use wcf\data\user\UserProfile;
 use wcf\data\guild\Guild;
 use wcf\data\guild\group\GuildGroup;
-use wcf\data\JSONExtendedDatabaseObject;
-use wcf\system\request\IRouteController;
-use wcf\system\request\LinkHandler;
-use wcf\data\wow\WowClasses;
 use wcf\data\wow\WowRace;
+use wcf\data\wow\WowClasses;
 use wcf\data\wow\realm\WowRealm;
-use wcf\data\user\User;
-use wcf\system\WCF;
+use wcf\data\JSONExtendedDatabaseObject;
+use wbb\data\thread\Thread;
+use wbb\data\post\Post;
 
 /**
  * Represents a WoW Charackter
@@ -18,9 +24,15 @@ use wcf\system\WCF;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property string		            $charname		                Name des Charackters
+ * @property integer                $characterID                    Char ID
+ * @property string		            $charname		                Name des Chars
  * @property string		            $realmSlug		                Realmslug
  * @property string		            $realmName		                Realmname
+ * @property string                 $accountID                      account identifier
+ * @property integer                $c_level                        chached level
+ * @property integer                $c_acms                         chached acms amount
+ * @property integer                $c_race                         chached race
+ * @property integer                $c_class                        chached class
  * @property integer		        $userID                         WCF UserID
  * @property integer		        $isMain			                ist Hauptchar
  * @property integer		        $inGuild		                ist in der Gilde
@@ -48,16 +60,18 @@ use wcf\system\WCF;
  * @property integer                $tempUserID                     save groupinfos.
  *
  */
+class WowCharacter extends JSONExtendedDatabaseObject implements IRouteController, IUserContent {
 
-class WowCharacter extends JSONExtendedDatabaseObject implements IRouteController {
 	/**
 	 * {@inheritDoc}
 	 */
 	protected static $databaseTableName = 'gman_character';
+
 	/**
 	 * {@inheritDoc}
 	 */
 	protected static $databaseTableIndexName = 'characterID';
+
 	/**
      * {@inheritDoc}
      */
@@ -83,6 +97,12 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      * @var	\wcf\data\user\avatar\IUserAvatar
      */
     private $inset = null;
+
+    /**
+     * Character Statistics
+     * @var CharacterStatistics
+     */
+    private $charStatistics = null;
 
     /**
      * saves the chars's equip.
@@ -128,6 +148,18 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     private $user = null;
 
     /**
+     * tracked bosskills
+     * @var mixed
+     */
+    private $trackedBosskills = [];
+
+    /**
+     * internal benchmark
+     * @var float
+     */
+    private $lastcall = 0;
+
+    /**
      * Returns a WoWChar Object from a given char and realm name
      *
      * @return	WowCharacter|null
@@ -146,6 +178,34 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 		$row = $statement->fetchArray();
 		if (!$row) $row = [];
 		return new WowCharacter(null, $row);
+    }
+
+    /**
+     * returns the main Charcter from a User
+     * @param mixed $userID
+     * @return WowCharacter
+     */
+    public static function getMainCharacterFromUser($userID) {
+        $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_character
+			    WHERE		userID = ?
+                AND         isMain = 1";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute([$userID]);
+		$row = $statement->fetchArray();
+		if (!$row) $row = [];
+		return new WowCharacter(null, $row);
+    }
+
+    /**
+     * returns the mainchar from a given WOwChar either ID or Bject
+     * @param integer $characterID
+     * @param WowCharacter $wowChar
+     * @return null|WowCharacter
+     */
+    public static function getMainCharacterFromCharacter($characterID = null, WowCharacter $wowChar = null) {
+        $charObj = new WowCharacter($characterID, null, $wowChar);
+		return $charObj->userID > 0 ? static::getMainCharacterFromUser($charObj->userID) : null;
     }
 
     /**
@@ -250,13 +310,25 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     }
 
     /**
+     * returns Character Statistics
+     *
+     * @return CharacterStatistics
+     */
+    public function getCharacterStatistics() {
+        if ($this->charStatistics === null) {
+            $this->charStatistics = new CharacterStatistics($this->characterID);
+        }
+        return $this->charStatistics;
+    }
+
+    /**
      * Returns the char's ItemSet.
      *
      * @return	WowCharacterItemSet
      */
-	public function getEquip() {
+	public function getEquip($slotID = 0) {
         if ($this->equip === null) {
-            $this->equip = new WowCharacterItemSet($this);
+            $this->equip = new WowCharacterItemSet($this->characterID);
         }
         return $this->equip;
     }
@@ -273,12 +345,13 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
             } else {
                 $this->profilemain = new WowDefaultCharacterAvatar($this->race, $this->gender,"profilemain");
             }
-            if (!file_exists($this->avatar->getLocation()) ) {
+            if (!file_exists($this->profilemain->getLocation()) ) {
                 $this->profilemain = new WowDefaultCharacterAvatar($this->race, $this->gender,"profilemain");
             }
         }
         return $this->profilemain;
     }
+
 	/**
      * @inheritDoc
      */
@@ -301,7 +374,9 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      * @return	WowRace
      */
     public function getRace() {
+
         if ($this->raceData === null)  $this->raceData = new WowRace($this->race);
+
         return $this->raceData;
     }
 
@@ -312,7 +387,7 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      */
     public function getRank() {
         if (empty($this->rankName))  {
-            $myGuild = new Guild();
+            $myGuild = GuildRuntimeChache::getInstance()->getCachedObject();
             $this->rankName = $myGuild->getRankName($this->guildRank);
         }
         return $this->rankName;
@@ -353,24 +428,6 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 
     }
 
-	/**
-     * @inheritDoc
-     */
-	public function getTitle() {
-		return $this->name;
-	}
-
-	/**
-     * @inheritDoc
-     */
-	public function getLink() {
-		return LinkHandler::getInstance()->getLink('User', [
-			'application' => 'wcf',
-			'object' => $this,
-			'forceFrontend' => true
-		]);
-	}
-
     /**
      * Returns an array with all the groups in which the actual character is a member.
      *
@@ -389,6 +446,10 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 		}
 		return array_filter($this->groupIDs, function($a) { return ($a !== 0); });
 	}
+
+    public function getTrackedStatistics() {
+
+    }
 
     /**
      * Returns an array with all the groups in which the actual character is a member.
@@ -415,6 +476,16 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
     public function getOwner() {
         if ($this->user===null) $this->user = new User($this->userID);
         return $this->user;
+    }
+
+    /**
+     * Returns the owner as User
+     *
+     * @return	User
+     */
+    public function getQueuedOwner($profile = false) {
+        if ($this->getOwner()->userID == 0) $this->user = new User($this->tempUserID);
+        return $profile ? new UserProfile($this->user) : $this->user;
     }
 
     /**
@@ -468,4 +539,121 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 		return false;
 	}
 
+    /**
+     * @inheritDoc
+     */
+	public function getLink() {
+		return (class_exists(WCFACP::class, false) || !PACKAGE_ID) ?
+            LinkHandler::getInstance()->getLink('CharacterEdit', [
+			'application'   => 'wcf',
+			'object'        => $this,
+            'isACP'         => true,
+		    ]):
+            LinkHandler::getInstance()->getLink('ArmoryChar', [
+			'application'   => 'wcf',
+			'object'        => $this,
+		    ]);
+
+	}
+
+	/**
+     * @inheritDoc
+     */
+	public function getTitle() {
+		return $this->name;
+	}
+	/**
+     * Returns message creation timestamp.
+     *
+     * @return	integer
+     */
+
+	public function getTime() {
+        return $this->bnetUpdate;
+    }
+
+	/**
+     * Returns author's user id.
+     *
+     * @return	integer
+     */
+	public function getUserID() {
+        return $this->getQueuedOwner()->userID;
+    }
+
+	/**
+     * Returns author's username.
+     *
+     * @return	string
+     */
+	public function getUsername() {
+        return $this->getQueuedOwner()->username;
+    }
+
+    /**
+     * internal benchmarktool
+     * @return double|int
+     */
+    public function getRuntime() {
+        if ($this->lastcall==0) {
+            $this->lastcall = microtime(true);
+        }
+        $retval = microtime(true) - $this->lastcall;
+        $this->lastcall = microtime(true);
+        return round($retval,4);
+    }
+    /**
+     * Summary of getChartext
+     * @return string
+     */
+    public function getChartext() {
+        if (empty($this->charText)) {
+            return WCF::getLanguage()->get("wcf.page.gman.armory.char.nostory");
+        }
+        return $this->charText;
+    }
+
+    public function getWowArsenalLink() {
+            $host = '';
+            if (GMAN_BNET_REGION == 'eu.api.battle.net') {
+                $host = 'http://eu.battle.net/wow/de/character/';
+            }
+            elseif (GMAN_BNET_REGION == 'us.api.battle.net') {
+                $host = 'http://us.battle.net/wow/de/character/';
+            }
+            elseif (GMAN_BNET_REGION == 'kr.api.battle.net') {
+                $host = 'http://kr.battle.net/wow/de/character/';
+            }
+            elseif (GMAN_BNET_REGION == 'tw.api.battle.net') {
+                $host = 'http://tw.battle.net/wow/de/character/';
+            }
+            else {
+                $host = 'http://us.battle.net/wow/de/character/';
+            }
+            return $host . $this->realmSlug .'/'.urlencode($this->name);
+    }
+
+    public function getWowProgressLink() {
+        $host = '';
+        if (GMAN_BNET_REGION == 'eu.api.battle.net') {
+            $host = 'https://www.wowprogress.com/character/eu/';
+        }
+        elseif (GMAN_BNET_REGION == 'us.api.battle.net') {
+            $host = 'https://www.wowprogress.com/character/us/';
+        }
+        elseif (GMAN_BNET_REGION == 'kr.api.battle.net') {
+            $host = 'https://www.wowprogress.com/character/kr/';
+        }
+        elseif (GMAN_BNET_REGION == 'tw.api.battle.net') {
+            $host = 'https://www.wowprogress.com/character/tw/';
+        }
+        else {
+            $host = 'https://www.wowprogress.com/character/us/';
+        }
+        return $host . $this->realmSlug .'/'.$this->name;
+    }
+
+    public function getWarcraftlogsLink() {
+        return 'https://www.warcraftlogs.com/';
+    }
 }

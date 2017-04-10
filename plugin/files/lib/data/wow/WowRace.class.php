@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\wow;
 use wcf\data\DatabaseObject;
+use wcf\system\WCF;
 
 /**
  * Represents a WoW Rassen
@@ -9,7 +10,7 @@ use wcf\data\DatabaseObject;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
-    
+
  * @property integer		$wraceID
  * @property integer		$mask
  * @property string		    $side
@@ -32,8 +33,25 @@ class WowRace extends DatabaseObject {
 
     private $hordeColor = '';
 
+    /**
+     * full local Name of the Slot
+     * @var string
+     */
+    private $fullName = '';
+
+    /**
+     * returns the locaized slotname
+     * @return string
+     */
+    public function getName() {
+        if (empty($this->fullName)) {
+            $this->fullName = WCF::getLanguage()->get($this->name);
+        }
+        return $this->fullName;
+    }
+
     public function getTag() {
-        $color =  $this->sideID==0 ? '#144587' : '#AA0000';
-        return '<span style="color:'.$color.'">'. $this->name .'</span>';
+        $color =  $this->sideID==0 ? 'color-alliance' : 'color-horde';
+        return '<span class="'.$color.'">'. $this->getName() .'</span>';
     }
 }

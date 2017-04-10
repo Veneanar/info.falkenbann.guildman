@@ -1,5 +1,13 @@
 <?php
 namespace wcf\data\wow\item;
+use wcf\system\WCF;
+use wcf\system\wow\bnetAPI;
+use wcf\system\wow\bnetIcon;
+use wcf\system\request\LinkHandler;
+use wcf\system\request\IRouteController;
+use wcf\util\JSON;
+use wcf\data\DatabaseObject;
+use wcf\data\wow\spell\WowSpell;
 use wcf\data\JSONExtendedDatabaseObject;
 
 /**
@@ -70,5 +78,174 @@ class WowItem extends JSONExtendedDatabaseObject {
      * {@inheritDoc}
      */
     protected static $JSONfield = 'bnetData';
+
+    /**
+     * Icon of the Item
+     * @var WowItemIcon
+     */
+    protected $iconimage = null;
+
+    const SMALL = 18;
+    const MEDIUM = 36;
+    const LARGE = 56;
+
+
+
+    /**
+	 * Summary of __construct
+	 * @param integer $id
+	 * @param string $context
+	 * @param integer $bonusList
+	 * @param integer $gems
+	 * @param integer $enchant
+	 * @param integer $transmog
+	 * @param integer $set
+	 */
+	public function __construct($id) {
+        $row = [];
+        if (is_string($id)) {
+            $row = $this->constructEmpty($id);
+        }
+        else {
+            if ($this->isAvaible($id) < 1) {
+                bnetAPI::getItem($id);
+            }
+			$sql = "SELECT	*
+				FROM	".static::getDatabaseTableName()."
+				WHERE	".static::getDatabaseTableIndexName()." = ?";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			$statement->execute([$id]);
+			$row = $statement->fetchArray();
+            if ($row === false) {
+                $row = [];
+            }
+        }
+		if (isset($row[static::$JSONfield])) {
+            $bnetData = empty($row[static::$JSONfield]) ? [] : json_decode($row[static::$JSONfield], true);
+            $row[static::$JSONfield] = '';
+            $row = array_merge($bnetData, $row);
+		}
+		$this->handleData($row);
+    }
+
+    private static function isAvaible($id) {
+        $sql = "SELECT	COUNT(*)
+			    FROM		wcf".WCF_N."_gman_wow_items
+			    WHERE		itemID = ?";
+        $statement = WCF::getDB()->prepareStatement($sql);
+        $statement->execute([$id]);
+        return $statement->fetchColumn();
+    }
+
+    /**
+     * checks item context
+     * @param string        $context
+     * @return boolean
+     */
+    public function checkContext($context) {
+        if (isset($this->availableContexts)) return in_array($context, $this->availableContexts);
+        return false;
+    }
+
+    /**
+     * constructs an empty slotitem
+     * @param mixed $name
+     * @return mixed
+     */
+    private function constructEmpty($name) {
+	    $sql = "SELECT	*
+				FROM	".static::getDatabaseTableName()."
+				WHERE	itemName LIKE ? LIMIT 1";
+	    $statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute([$name]);
+		return  $statement->fetchArray();
+    }
+
+    /**
+     * Returns the item's icon
+     *
+     * @return	\wcf\data\user\avatar\IUserAvatar
+     */
+	public function getIcon() {
+        if ($this->iconimage === null) {
+            if (isset($this->icon)) $this->iconimage = new WowItemIcon($this);
+        }
+        return $this->iconimage;
+    }
+
+    /**
+     * !returns a simplified tooltip info
+     * @return string
+     */
+    public function getSimpleTooltip() {
+        return $this->name;
+    }
+
+
+    /**
+     * Returns the Itemname
+     * @return string
+     */
+    public function getName() {
+        if ($this->itemID < 50) return WCF::getLanguage()->get('wcf.global.gman.notequiped');
+        return $this->name;
+    }
+
+    /**
+     * Returns the Name as HTML tag
+     * @return string
+     */
+    public function getNameTag() {
+        return '<span class="color-q'.$this->quality.'">'. $this->getName().'</span>';
+    }
+
+
+    /**
+     * get the requirements of an item as string array
+     * @return string[]
+     */
+    public function getRequierments() {
+        $rq = [];
+        if ($this->requiredLevel) $rq[] = WCF::getLanguage()->getDynamicVariable('wcf.page.gman.item.levelrequierd',['level' => $this->requiredLevel]);
+        if ($this->requiredSkill) $rq[] = WCF::getLanguage()->getDynamicVariable('wcf.page.gman.item.skillrequired.', ['skill' => $this->requiredSkill,'level' =>  $this->requiredLevel]);
+        if ($this->minReputation) $rq[] = WCF::getLanguage()->getDynamicVariable('wcf.page.gman.item.reprequired', ['rep' => $this->minReputation, 'faction' =>  WCF::getLanguage()->get('wcf.global.faction.' . $this->minFactionId)]);
+        return $rq;
+    }
+
+    /**
+     * returns the name of the slot type
+     * @return string
+     */
+    public function getInventoryType() {
+        return WCF::getLanguage()->get('wcf.global.gman.slottype'. $this->inventoryType);
+    }
+
+    /**
+     * Returns the binding type as string
+     * @return string|\wcf\data\language\string
+     */
+    public function getItemBind() {
+        return $this->itemBind==1 ? WCF::getLanguage()->get('wcf.page.gman.item.bop') : WCF::getLanguage()->get('wcf.page.gman.item.boe');
+    }
+
+    /**
+     * returns how often a item is equipable
+     * @return null|string|\wcf\data\language\string
+     */
+    public function getMaxCount() {
+        return $this->maxCount ? WCF::getLanguage()->get('wcf.page.gman.item.maxcount') : null;
+    }
+
+    /**
+     * returns the price as gold, silver, copper arry
+     * @return array
+     */
+    public function getPrice() {
+        $money = intval($this->sellPrice);
+        $copper = $money % 100;
+        $silver = floor( ( $money % 10000 ) / 100 );
+        $gold = floor( $money / 10000 );
+        return [$gold, $silver, $copper];
+    }
 
 }

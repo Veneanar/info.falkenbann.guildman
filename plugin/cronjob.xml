@@ -3,7 +3,7 @@
 	<import>
     
     <cronjob name="info.falkenbann.acp.gman.updateguildchars">
-      <classname>wcf\system\cronjob\GuildCharUpdateCronjob</classname>
+      <classname>wcf\system\cronjob\GuildCharactersUpdateCronjob</classname>
       <description>Updates Guild Chars only</description>
       <description language="de">Aktualisiert nur Gilden Charaktere</description>
       <startminute>*/30</startminute>
@@ -17,7 +17,7 @@
     </cronjob>
 
     <cronjob name="info.falkenbann.acp.gman.updatechars">
-      <classname>wcf\system\cronjob\CharUpdateCronjob.</classname>
+      <classname>wcf\system\cronjob\AllCharactersUpdateCronjob</classname>
       <description>Updates all chars</description>
       <description language="de">Aktualisiert alle Charaktere</description>
       <startminute>0</startminute>
@@ -30,7 +30,7 @@
       <isdisabled>1</isdisabled>
     </cronjob>    
     
-    <cronjob name="info.falkenbann.acp.gman.updateguildinfos">
+    <cronjob name="info.falkenbann.acp.gman.GuildUpdateCronjob">
       <classname>wcf\system\cronjob\GuildUpdateCronjob</classname>
       <description>Updates Guild List</description>
       <description language="de">Aktualisiert Gilden Liste</description>
@@ -42,8 +42,21 @@
       <canbeedited>1</canbeedited>
       <canbedisabled>1</canbedisabled>
       <isdisabled>1</isdisabled>
-
     </cronjob>
+
+    <cronjob name="info.falkenbann.acp.gman.BossesUpdateCronjob">
+      <classname>wcf\system\cronjob\BossesUpdateCronjob</classname>
+      <description>Updates Boss List</description>
+      <description language="de">Aktualisiert Boss Liste</description>
+      <startminute>0</startminute>
+      <starthour>2</starthour>
+      <startdom>*</startdom>
+      <startmonth>*</startmonth>
+      <startdow>2</startdow>
+      <canbeedited>1</canbeedited>
+      <canbedisabled>1</canbedisabled>
+      <isdisabled>1</isdisabled>
+    </cronjob>    
     
     <cronjob name="info.falkenbann.acp.gman.updateguildacms">
       <classname>wcf\system\cronjob\GuildUpdateACMCronjob</classname>
@@ -57,7 +70,6 @@
       <canbeedited>1</canbeedited>
       <canbedisabled>1</canbedisabled>
       <isdisabled>1</isdisabled>
-
     </cronjob>
     
   </import>

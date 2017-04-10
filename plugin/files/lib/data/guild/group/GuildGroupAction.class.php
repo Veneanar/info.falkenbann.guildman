@@ -2,9 +2,14 @@
 namespace wcf\data\guild\group;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\data\wow\character\WowCharacterAction;
+use wcf\data\wow\character\WowCharacterList;
 use wcf\data\guild\group\GuildGroupList;
+use wcf\data\guild\Guild;
 use wcf\system\clipboard\ClipboardHandler;
 use wcf\data\IClipboardAction;
+use wcf\util\StringUtil;
+use wcf\data\ISearchAction;
+use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
  * Executes Gildenbewerbung-related actions.
@@ -15,7 +20,7 @@ use wcf\data\IClipboardAction;
  *
  */
 
-class GuildGroupAction extends AbstractDatabaseObjectAction implements IClipboardAction{
+class GuildGroupAction extends AbstractDatabaseObjectAction implements ISearchAction, IClipboardAction{
 	/**
 	 * {@inheritDoc}
 	 */
@@ -41,32 +46,74 @@ class GuildGroupAction extends AbstractDatabaseObjectAction implements IClipboar
 	 */
 	protected $allowGuestAccess = array();
 
-    public function update() {
-        parent::update();
-        if (isset($this->parameters['rankChange'])) {
-            $charList = GuildGroupList::getMemberListRank($this->parameters['oldRank']);
-            $action = new WowCharacterAction($charList, 'changeRank', [
-                'rank' => $this->parameters['data']['gameRank'],
-            ]);
-            $action->executeAction();
-        }
-        if (isset($this->parameters['groupChange'])) {
-            $charList = GuildGroupList::getMemberList($this->parameters['oldGroup']);
+    /**
+     * @inheritDoc
+     */
+	public function validateGetSearchResultList() {
+		$this->readString('searchString', false, 'data');
+	}
 
-            if ($this->parameters['data']['groupWcfID']>0) {
- 			    $action = new WowCharacterAction($charList, 'addToGroups', [
-				    'groups' => [$this->parameters['data']['groupWcfID']],
-				    'addDefaultGroups' => false,
-                    'addWCFGroups' => true
-			    ]);
-			    $action->executeAction();
+	/**
+     * @inheritDoc
+     */
+	public function getSearchResultList() {
+        $searchString = $this->parameters['data']['searchString'];
+		$list = [];
+		$guildGroupList = new GuildGroupList();
+		$guildGroupList->getConditionBuilder()->add("groupName LIKE ?", [$searchString.'%']);
+		$guildGroupList->sqlLimit = 10;
+		$guildGroupList->readObjects();
+        $guildGroups= $guildGroupList->getObjects();
+		foreach ($guildGroups as $guildGroup) {
+			$list[] = [
+				'icon'      => $guildGroup->iconID >  0 ? '<img src="' . StringUtil::encodeHTML($guildGroup->getIcon()->getThumbnailLink('tiny')) . '" style="width:24px; height:24px;">' : '<span class="icon icon16 fa-users"></span>',
+				'label'     => $guildGroup->groupName,
+				'objectID'  => $guildGroup->groupID,
+				'type'      => 'user'
+			];
+		}
+		return $list;
+	}
+
+    public function create() {
+        $guildGroup = parent::create();
+           // 'changeWCFGroup'    => $this->wcfGroupID > 0 ? true : false,
+          //  'changeRank'        => $this->gameRank < 11 ? true : false,
+        if ($this->parameters['changeRank']) {
+            $charList = new WowCharacterList();
+            $charList->getConditionBuilder()->add("guildRank = ?", [$this->parameters['data']['gameRank']]);
+            $charList->readObjects();
+            $objectAction = new WowCharacterAction($charList->getObjects(), 'setRank', [
+                'rank'      => $this->parameters['data']['gameRank'],
+            ]);
+            $objectAction->executeAction();
+        }
+        if ($this->parameters['changeWCFGroup']) {
+            $charList = $guildGroup->getMemberList();
+            $objectAction = new WowCharacterAction($charList, 'setWCFGroups', ['oldWCFGroups' => []]);
+            $objectAction->executeAction();
+        }
+
+
+
+    }
+
+    public function update() {
+        $guild = GuildRuntimeChache::getInstance()->getCachedObject();
+        $oldWCFGroups = !empty($this->parameters['oldWCFGroups']) ? $this->parameters['oldWCFGroups'] : $guild->convertToWCFGroup($guild->getGuildGroupIds());
+        parent::update();
+        foreach($this->objects as $guildGroup) {
+            if (isset($this->parameters['changeRank']) && $this->parameters['changeRank']) {
+                $charList = $guildGroup->getMemberList();
+                $objectAction = new WowCharacterAction($charList, 'setRank', [
+                    'rank'      => $this->parameters['data']['gameRank'],
+                ]);
+                $objectAction->executeAction();
             }
-            if ($this->parameters['oldGroup']>0) {
-			    $action = new WowCharacterAction($charList, 'removeFromGroups', [
-				    'groups' => [$this->parameters['oldGroup']],
-                    'deleteWCFGroups' => true
-			    ]);
-			    $action->executeAction();
+            if ((isset($this->parameters['changeWCFGroup']) && $this->parameters['changeWCFGroup'])) {
+                $charList = $guildGroup->getMemberList();
+                $objectAction = new WowCharacterAction($charList, 'setWCFGroups', ['oldWCFGroups' => $oldWCFGroups]);
+                $objectAction->executeAction();
             }
         }
     }
@@ -76,20 +123,14 @@ class GuildGroupAction extends AbstractDatabaseObjectAction implements IClipboar
     }
 
     public function delete() {
-        parent::delete();
-        /**
-         * @var $guildGroup GuildGroup
-         */
         foreach($this->objects as $guildGroup) {
-            if ($guildGroup->wcfGroupID>0) {
-                $charList = GuildGroupList::getMemberList($guildGroup->wcfGroupID);
-			    $action = new WowCharacterAction($charList, 'removeFromGroups', [
-				    'groups' => [$guildGroup->wcfGroupID],
-                    'deleteWCFGroups' => true
-			    ]);
-			    $action->executeAction();
+            if ($guildGroup->wcfGroupID > 0) {
+                $charList = $this->guildGroupObject->getMemberList();
+                $objectAction = new WowCharacterAction($charList, 'setWCFGroups');
+                $objectAction->executeAction();
             }
         }
+        parent::delete();
         $this->unmarkAll();
     }
 

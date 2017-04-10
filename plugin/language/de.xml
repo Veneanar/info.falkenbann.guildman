@@ -1,6 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <language xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/language.xsd" languagecode="de">
-	<category name="wcf.page">
+
+  <category name="wcf.global">
+    <item name="wcf.global.gman.notequiped"><![CDATA[Nicht angezogen]]></item>
+    <item name="wcf.global.gman.slot1"><![CDATA[Kopf]]></item>
+		<item name="wcf.global.gman.slot2"><![CDATA[Hals]]></item>
+		<item name="wcf.global.gman.slot3"><![CDATA[Schulter]]></item>
+		<item name="wcf.global.gman.slot4"><![CDATA[Hemd]]></item>
+		<item name="wcf.global.gman.slot5"><![CDATA[Brust]]></item>
+		<item name="wcf.global.gman.slot6"><![CDATA[Gürtel]]></item>
+		<item name="wcf.global.gman.slot7"><![CDATA[Beine]]></item>
+		<item name="wcf.global.gman.slot8"><![CDATA[Füße]]></item>
+		<item name="wcf.global.gman.slot9"><![CDATA[Handgelenke]]></item>
+		<item name="wcf.global.gman.slot10"><![CDATA[Hände]]></item>
+		<item name="wcf.global.gman.slot11"><![CDATA[Ring 1]]></item>
+		<item name="wcf.global.gman.slot12"><![CDATA[Ring 2]]></item>
+		<item name="wcf.global.gman.slot13"><![CDATA[Schmuck 1]]></item>
+		<item name="wcf.global.gman.slot14"><![CDATA[Schmuck 2]]></item>
+		<item name="wcf.global.gman.slot16"><![CDATA[Rücken]]></item>
+		<item name="wcf.global.gman.slot19"><![CDATA[Wappenrock]]></item>
+		<item name="wcf.global.gman.slot21"><![CDATA[Waffe]]></item>
+		<item name="wcf.global.gman.slot22"><![CDATA[Nebenhand]]></item>
+    <item name="wcf.global.gman.slottype1"><![CDATA[Kopf]]></item>
+    <item name="wcf.global.gman.slottype2"><![CDATA[Hals]]></item>
+    <item name="wcf.global.gman.slottype3"><![CDATA[Schulter]]></item>
+    <item name="wcf.global.gman.slottype4"><![CDATA[Hemd]]></item>
+    <item name="wcf.global.gman.slottype5"><![CDATA[Brust]]></item>
+    <item name="wcf.global.gman.slottype6"><![CDATA[Gürtel]]></item>
+    <item name="wcf.global.gman.slottype7"><![CDATA[Beine]]></item>
+    <item name="wcf.global.gman.slottype8"><![CDATA[Füße]]></item>
+    <item name="wcf.global.gman.slottype9"><![CDATA[Handgelenke]]></item>
+    <item name="wcf.global.gman.slottype10"><![CDATA[Hände]]></item>
+    <item name="wcf.global.gman.slottype11"><![CDATA[Ring]]></item>
+    <item name="wcf.global.gman.slottype12"><![CDATA[Schmuck]]></item>
+    <item name="wcf.global.gman.slottype16"><![CDATA[Rücken]]></item>
+    <item name="wcf.global.gman.slottype19"><![CDATA[Wappenrock]]></item>
+    <item name="wcf.global.gman.slottype21"><![CDATA[Waffe]]></item>
+    <item name="wcf.global.gman.slottype22"><![CDATA[Nebenhand]]></item>
+    <item name="wcf.global.gman.race1"><![CDATA[Mensch]]></item>
+		<item name="wcf.global.gman.race2"><![CDATA[Orc]]></item>
+		<item name="wcf.global.gman.race3"><![CDATA[Zwerg]]></item>
+		<item name="wcf.global.gman.race4"><![CDATA[Nachtelf]]></item>
+		<item name="wcf.global.gman.race5"><![CDATA[Untoter]]></item>
+		<item name="wcf.global.gman.race6"><![CDATA[Tauren]]></item>
+		<item name="wcf.global.gman.race7"><![CDATA[Gnom]]></item>
+		<item name="wcf.global.gman.race8"><![CDATA[Troll]]></item>
+		<item name="wcf.global.gman.race9"><![CDATA[Goblin]]></item>
+		<item name="wcf.global.gman.race10"><![CDATA[Blutelf]]></item>
+		<item name="wcf.global.gman.race11"><![CDATA[Draenei]]></item>
+		<item name="wcf.global.gman.race22"><![CDATA[Worgen]]></item>
+		<item name="wcf.global.gman.race24"><![CDATA[Pandaren]]></item>
+		<item name="wcf.global.gman.race25"><![CDATA[Pandaren]]></item>
+		<item name="wcf.global.gman.race26"><![CDATA[Pandaren]]></item>
+		<item name="wcf.global.gman.class1"><![CDATA[Krieger]]></item>
+		<item name="wcf.global.gman.class2"><![CDATA[Paladin]]></item>
+		<item name="wcf.global.gman.class3"><![CDATA[Jäger]]></item>
+		<item name="wcf.global.gman.class4"><![CDATA[Schurke]]></item>
+		<item name="wcf.global.gman.class5"><![CDATA[Priester]]></item>
+		<item name="wcf.global.gman.class6"><![CDATA[Todesritter]]></item>
+		<item name="wcf.global.gman.class7"><![CDATA[Schamane]]></item>
+		<item name="wcf.global.gman.class8"><![CDATA[Magier]]></item>
+		<item name="wcf.global.gman.class9"><![CDATA[Hexenmeister]]></item>
+		<item name="wcf.global.gman.class10"><![CDATA[Mönch]]></item>
+		<item name="wcf.global.gman.class11"><![CDATA[Druide]]></item> 
+		<item name="wcf.global.gman.class12"><![CDATA[Dämonenjäger]]></item>
+    <item name="wcf.global.gman.item.stat.armor"><![CDATA[Rüstung]]></item>
+    <item name="wcf.global.gman.item.stat.damage"><![CDATA[Schaden]]></item>
+    <item name="wcf.global.gman.item.stat.attackspeed"><![CDATA[Angriffsgeschwindigkeit]]></item>
+    <item name="wcf.global.gman.item.stat.absoluevalue"><![CDATA[Absoluter Wert]]></item>
+    <item name="wcf.global.gman.item.stat.0"><![CDATA[Mana]]></item>    
+		<item name="wcf.global.gman.item.stat.1"><![CDATA[Leben]]></item>    
+		<item name="wcf.global.gman.item.stat.3"><![CDATA[Beweglichkeit]]></item>    
+		<item name="wcf.global.gman.item.stat.4"><![CDATA[Stärke]]></item>    
+		<item name="wcf.global.gman.item.stat.5"><![CDATA[Intelligenz]]></item>   
+		<item name="wcf.global.gman.item.stat.6"><![CDATA[Willenskraft]]></item>    
+		<item name="wcf.global.gman.item.stat.7"><![CDATA[Ausdauer]]></item>    
+		<item name="wcf.global.gman.item.stat.12"><![CDATA[Verteidigungswertung]]></item>    
+		<item name="wcf.global.gman.item.stat.13"><![CDATA[Ausweichen]]></item>    
+		<item name="wcf.global.gman.item.stat.14"><![CDATA[Parrieren]]></item>    
+		<item name="wcf.global.gman.item.stat.15"><![CDATA[Blocken]]></item>    
+		<item name="wcf.global.gman.item.stat.31"><![CDATA[Trefferwertung]]></item>    
+		<item name="wcf.global.gman.item.stat.32"><![CDATA[kritische Trefferchance]]></item>    
+		<item name="wcf.global.gman.item.stat.35"><![CDATA[Abhärtung]]></item>    
+		<item name="wcf.global.gman.item.stat.36"><![CDATA[Tempowertung]]></item>    
+		<item name="wcf.global.gman.item.stat.37"><![CDATA[Waffenkunde]]></item>    
+		<item name="wcf.global.gman.item.stat.38"><![CDATA[Angriffskarft]]></item>    
+		<item name="wcf.global.gman.item.stat.39"><![CDATA[Angriffskarft (Fernkampf)]]></item>    
+		<item name="wcf.global.gman.item.stat.40"><![CDATA[Vielseitigkeit]]></item>    
+		<item name="wcf.global.gman.item.stat.43"><![CDATA[Manaregeneration]]></item>    
+		<item name="wcf.global.gman.item.stat.44"><![CDATA[Rüstungsdurchschlag]]></item>    
+		<item name="wcf.global.gman.item.stat.45"><![CDATA[Zaubermacht]]></item>    
+		<item name="wcf.global.gman.item.stat.46"><![CDATA[Lebensregeneration]]></item>    
+		<item name="wcf.global.gman.item.stat.47"><![CDATA[Zauberdurchschlag]]></item>    
+		<item name="wcf.global.gman.item.stat.48"><![CDATA[Blockwertung]]></item>    
+		<item name="wcf.global.gman.item.stat.49"><![CDATA[Meisterschaftswertung]]></item>    
+		<item name="wcf.global.gman.item.stat.50"><![CDATA[Bonusrüstung]]></item>    
+		<item name="wcf.global.gman.item.stat.57"><![CDATA[PvP Macht]]></item>    
+		<item name="wcf.global.gman.item.stat.58"><![CDATA[Verstärkung]]></item>    
+		<item name="wcf.global.gman.item.stat.59"><![CDATA[Mehrfachschlag]]></item>    
+		<item name="wcf.global.gman.item.stat.60"><![CDATA[Kampfbereitschaft]]></item>    
+		<item name="wcf.global.gman.item.stat.61"><![CDATA[Geschwindigkeit]]></item>    
+		<item name="wcf.global.gman.item.stat.62"><![CDATA[Lebensraub]]></item>    
+		<item name="wcf.global.gman.item.stat.63"><![CDATA[Vermeidung]]></item>    
+		<item name="wcf.global.gman.item.stat.64"><![CDATA[Unzerstörbar]]></item>    
+		<item name="wcf.global.gman.item.stat.65"><![CDATA[WOD_5]]></item>    
+		<item name="wcf.global.gman.item.stat.71"><![CDATA[Beweglichkeit oder Stärke oder Intelligenz]]></item>    
+		<item name="wcf.global.gman.item.stat.72"><![CDATA[Beweglichkeit oder Stärk]]></item>    
+		<item name="wcf.global.gman.item.stat.73"><![CDATA[Beweglichkeit oder Intelligenz]]></item>    
+		<item name="wcf.global.gman.item.stat.74"><![CDATA[Stärke oder Intelligenz]]></item>
+    <item name="wcf.global.gman.zone.8440"><![CDATA[Prüfung der Tapferkeit]]></item>
+    <item name="wcf.global.gman.zone.8026"><![CDATA[Der Smaragdgrüne Alptraum]]></item>
+    <item name="wcf.global.gman.zone.8025"><![CDATA[Die Nachtfestung]]></item>
+  </category>
+
+  <category name="wcf.moderation">
+    <item name="wcf.moderation.type.info.falkenbann.gman.moderation.charowner"><![CDATA[Characterzuordnung]]></item>
+  </category>   
+
+  <category name="wcf.page">
+    <item name="wcf.page.gman.arsenal.char.nostory"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.arsenal.menu.start"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.arsenal.menu.start.description"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.arsenal.name"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.arsenal.info"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.arsenal.story"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.arsenal.kills"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.dialog.addchar.title"><![CDATA[Charakter hinzufügen]]></item>
+    <item name="wcf.page.gman.dialog.addchar.success"><![CDATA[Der Charakter wurde gespeichert.]]></item>
+    <item name="wcf.page.gman.dialog.addchar.moderated"><![CDATA[Ein Moderator muss deine Characterzuordnung überprüfen.]]></item>
+    <item name="wcf.page.gman.dialog.addchar.success"><![CDATA[Der Charakter wurde gespeichert.]]></item>
+    <item name="wcf.page.gman.dialog.addchar.failed"><![CDATA[Der Charakter konnte nicht hinzugefügt werden.]]></item>
+    <item name="wcf.page.gman.dialog.addchar.linktitle"><![CDATA[Charakter ansehen]]></item>
+    <item name="wcf.page.gman.arsenal.amplification"><![CDATA[Verstärkungen]]></item>
+    <item name="wcf.page.gman.arsenal.deffence"><![CDATA[Verteidigung]]></item>
+    <item name="wcf.page.gman.arsenal.attack"><![CDATA[Angreifen]]></item>
+    <item name="wcf.page.gman.arsenal.attributes"><![CDATA[Attribute]]></item>
+    <item name="wcf.page.gman.arsenal.casts"><![CDATA[Zauber]]></item>
+    <item name="wcf.page.gman.tooltip.onequip"><![CDATA[Anlegen:]]></item>
+    <item name="wcf.page.gman.tooltip.onuse"><![CDATA[Benutzen:]]></item>
+    <item name="wcf.page.gman.tooltip.noenchant"><![CDATA[fehlt]]></item>
+    <item name="wcf.page.gman.armory.item.slot"><![CDATA[Slot]]></item>
+    <item name="wcf.page.gman.armory.char.nostory"><![CDATA[Keine Charaktergeschichte vorhanden]]></item>
+    <item name="wcf.page.gman.armory.item.name"><![CDATA[Name]]></item>
+    <item name="wcf.page.gman.armory.item.ilvl"><![CDATA[Level]]></item>    
+    <item name="wcf.page.gman.armory.item.enchanted"><![CDATA[VZ/Sockel]]></item>
+    <item name="wcf.page.gman.arsenal.menu.equip"><![CDATA[Ausrüstung]]></item>
+    <item name="wcf.page.gman.arsenal.menu.talents"><![CDATA[Talente]]></item>
+    <item name="wcf.page.gman.arsenal.menu.stats"><![CDATA[Statistiken]]></item>
+    <item name="wcf.page.gman.arsenal.menu.equip.description"><![CDATA[Ausrüstung, Verzauberungen und Werte]]></item>
+    <item name="wcf.page.gman.arsenal.menu.talents.description"><![CDATA[gewählte Talente und Artefaktwaffe]]></item>
+    <item name="wcf.page.gman.arsenal.menu.stats.description"><![CDATA[Charakterstatistiken]]></item>
+    <item name="wcf.page.gman.arsenal.menu.start"><![CDATA[Infos]]></item>
+    <item name="wcf.page.gman.arsenal.menu.start.description"><![CDATA[Charackterinformationen und Hintergrundgeschichte]]></item>
+    <item name="wcf.page.gman.owner"><![CDATA[Forenaccount]]></item>
+    <item name="wcf.page.gman.arsenal.links"><![CDATA[Links]]></item>
+    <item name="wcf.page.gman.arsenal.links.refresh"><![CDATA[Aktualisieren]]></item>
+    <item name="wcf.page.gman.arsenal.links.armory"><![CDATA[im Arsenal]]></item>
+    <item name="wcf.page.gman.arsenal.links.wowprogress"><![CDATA[Wow Progress]]></item>
+    <item name="wcf.page.gman.arsenal.links.logs"><![CDATA[Warcraftlogs]]></item>
 		<item name="wcf.page.gman.guild"><![CDATA[Unsere Gilde]]></item>
 		<item name="wcf.page.gman.guild.title"><![CDATA[Unsere Gilde]]></item>
 		<item name="wcf.page.gman.guild.secondTitle"><![CDATA[Was unsere Gilde ausmacht.]]></item>
@@ -10,44 +167,75 @@
     <item name="wcf.page.gman.roatser.title"><![CDATA[Unsere Gildenübersicht]]></item>
     <item name="wcf.page.gman.roatser.secondTitle"><![CDATA[Hier findet man alle Offiziere und Mitglieder]]></item>
     <item name="wcf.page.gman.roatser.content"><![CDATA[Hier hast du den Überblick wer wir alles sind]]></item>
-
+    <item name="wcf.page.gman.wow.minlevel"><![CDATA[mind. Level]]></item>
+    <item name="wcf.page.gman.wow.charname"><![CDATA[Charaktername]]></item>
+    <item name="wcf.page.gman.wow.groupname"><![CDATA[Gruppenname]]></item>
+    <item name="wcf.page.gman.wow.username"><![CDATA[Benutzername]]></item>
+    <item name="wcf.page.gman.char.group"><![CDATA[Gruppen]]></item>
+    <item name="wcf.page.gman.tooltip.sellprice"><![CDATA[Verkaufspreis: ]]></item>
+    <item name="wcf.page.gman.item.levelrequierd"><![CDATA[Benötigt Stufe {$level}]]></item>
+    <item name="wcf.page.gman.item.skillrequired"><![CDATA[Benötigt {$skill} auf Stufe {$level}]]></item>
+    <item name="wcf.page.gman.item.reprequired"><![CDATA[Benötigt {$rep} Ruf bei {$faction}]]></item>
+    <item name="wcf.page.gman.item.maxcount"><![CDATA[Einzigartig anlegbar]]></item>
+    <item name="wcf.page.gman.item.bop"><![CDATA[Beim Aufheben gebunden]]></item>
+    <item name="wcf.page.gman.item.boe"><![CDATA[Beim Anlegen gebunden]]></item>
+    <item name="wcf.page.gman.twinklist.unconfirmed"><![CDATA[Unbestätigter Twink]]></item>
+    <item name="wcf.page.gman.twinklist.group"><![CDATA[Gildengruppen]]></item>
+    <item name="wcf.page.gman.charedit.chartoedit"><![CDATA[Folgender Character wird bearbeitet:]]></item>
+    <item name="wcf.page.gman.wow.level"><![CDATA[Level]]></item>
     <item name="wcf.page.gman.wow.level"><![CDATA[Level]]></item>
     <item name="wcf.page.gman.wow.race"><![CDATA[Rasse]]></item>
     <item name="wcf.page.gman.wow.class"><![CDATA[Klasse]]></item>
     <item name="wcf.page.gman.wow.horde"><![CDATA[Horde]]></item>
     <item name="wcf.page.gman.wow.alliance"><![CDATA[Allianz]]></item>
+    <item name="wcf.page.gman.wow.minAverageItemLevel"><![CDATA[mind. iLvl]]></item>
     <item name="wcf.page.gman.wow.averageItemLevel"><![CDATA[iLvl]]></item>
     <item name="wcf.page.gman.wow.averageItemLevelEquipped"><![CDATA[iLvl (Angezogen)]]></item>
     <item name="wcf.page.gman.wow.rank"><![CDATA[Rang]]></item>
     <item name="wcf.page.gman.wow.groups"><![CDATA[Gruppen]]></item>
-
-
     <item name="wcf.page.gman.guildAchievementPoints"><![CDATA[Erfolgspunkte]]></item>
     <item name="wcf.page.gman.guildAchievementPoints.desc"><![CDATA[Erfolgspunkte der Gilde]]></item>
     <item name="wcf.page.gman.guildleader"><![CDATA[Gildenleiter]]></item>
     <item name="wcf.page.gman.guildleader.desc"><![CDATA[Mädchen für alles]]></item>
     <item name="wcf.page.gman.guildmember"><![CDATA[Gildenmitglieder]]></item>
     <item name="wcf.page.gman.guildacm"><![CDATA[Gildenerfolge]]></item>
-
-
+    <item name="wcf.page.gman.wow.groupname"><![CDATA[Gruppenname]]></item>
     <item name="wcf.page.gman.application"><![CDATA[Bewerben]]></item>
     <item name="wcf.page.gman.application.title"><![CDATA[Bewerben]]></item>
     <item name="wcf.page.gman.application.secondTitle"><![CDATA[Stell dich uns kurz vor]]></item>
     <item name="wcf.page.gman.application.content"><![CDATA[Wir möchten neue Mitglieder vorher kennenlernen!]]></item>
+    <item name="wcf.page.gman.twinklist"><![CDATA[Liste der Twinks]]></item>
+    <item name="wcf.page.gman.twinklist.description"><![CDATA[Liste der bestätigten und/ oder vermuteten Zweitcharaktere]]></item>
+    <item name="wcf.page.gman.twinklist.confirmed"><![CDATA[Liste der bestätigten Twinks]]></item>
+    <item name="wcf.page.gman.twinklist.unfonfirmed"><![CDATA[Liste der unbestätigten Twinks]]></item>
+    <item name="wcf.page.gman.twinklist.group"><![CDATA[Gruppe des Twinks]]></item>
+  </category>
 
-    <item name="wcf.page.gman.twinklist"><![CDATA[Bewerben]]></item>
-    <item name="wcf.page.gman.twinklist.description"><![CDATA[Bewerben]]></item>
+  <category name="wcf.user">
+    <item name="wcf.user.menu.gman.settings"><![CDATA[World of Warcraft]]></item>
+    <item name="wcf.user.menu.gman.mychars"><![CDATA[Meine Charaktere]]></item>
+    <item name="wcf.user.menu.gman.mygroups"><![CDATA[Meine Gruppen]]></item>
+    <item name="wcf.user.profile.menu.gmanWowCharList"><![CDATA[WoW Charaktere]]></item>
+    <item name="wcf.user.profile.content.gman.charlist.title"><![CDATA[WoW Charaktere]]></item>
+    <item name="wcf.user.profile.content.gman.charlist.nochar"><![CDATA[Der Benutzer hat keine Charaktere zugeordnet]]></item>
+    <item name="wcf.user.gman.char.main"><![CDATA[Hauptcharakter]]></item>
+    <item name="wcf.user.gman.char.main.description"><![CDATA[Dieser Charkter wird hauptsächlich gespielt.]]></item>
+
+    <item name="wcf.user.char.text.new"><![CDATA[Neuer Text]]></item>
+    <item name="wcf.user.char.text.head"><![CDATA[Charaktergeschichte]]></item>
+    <item name="wcf.user.char.text.head.description"><![CDATA[Hier kann eine Charaktergeschichte eingetragen werden.]]></item>
+    <item name="wcf.user.char.text.current"><![CDATA[Aktueller Text]]></item>
+
 
   </category>
+  
 	<category name="wcf.acp.option">
-    
     <item name="wcf.acp.option.gman"><![CDATA[Gilden Manager]]></item>
     <item name="wcf.acp.option.category.gman"><![CDATA[GMan Optionen]]></item>
 		<item name="wcf.acp.option.category.gman.main"><![CDATA[Einstellungen]]></item>
     <item name="wcf.acp.option.category.gman.app"><![CDATA[Bewerbungen]]></item>
     <item name="wcf.acp.option.category.gman.bnet"><![CDATA[Battle.net API]]></item>
     <item name="wcf.acp.option.category.gman.calendar"><![CDATA[Kalender]]></item>
-
     <item name="wcf.acp.option.gman_app_openrecruitment"><![CDATA[Rekrutierung geöffnet]]></item>
     <item name="wcf.acp.option.gman_app_forumid"><![CDATA[Rekrutierungsforum]]></item>
     <item name="wcf.acp.option.gman_app_articleid"><![CDATA[Artikel, welcher angezeigt wird.]]></item>
@@ -57,10 +245,8 @@
     <item name="wcf.acp.option.gman_app_labelid_done"><![CDATA[Label ID: Spieler wurde aufgenommen]]></item>
     <item name="wcf.acp.option.gman_app_labelid_issue"><![CDATA[Label ID: An die Gildenleitung weitergeleitet]]></item>
     <item name="wcf.acp.option.gman_app_labelid_deney"><![CDATA[Label ID: Abgelehnt]]></item>
-
     <item name="wcf.acp.option.gman_main_guildname"><![CDATA[Name der Gilde]]></item>
     <item name="wcf.acp.option.gman_main_homerealm"><![CDATA[Realm der Gilde]]></item>
-
     <item name="wcf.acp.option.gman_calendar_active"><![CDATA[Kalendersynchronisation aktivieren]]></item>
     <item name="wcf.acp.option.gman_calendar_readholidays"><![CDATA[Feiertage eintragen]]></item>
     <item name="wcf.acp.option.gman_calendar_readbonus"><![CDATA[Bonusevent eintragen]]></item>
@@ -68,16 +254,12 @@
     <item name="wcf.acp.option.gman_calendar_cockie"><![CDATA[Cookie kopieren]]></item>
     <item name="wcf.acp.option.gman_calendar_useapi"><![CDATA[Benutze GMan API]]></item>
     <item name="wcf.acp.option.gman_calendar_apikey"><![CDATA[GMan API Key]]></item>
-
     <item name="wcf.acp.option.gman_bnet_usejobs"><![CDATA[Benutze Hintergrundjobs für Updates]]></item>
     <item name="wcf.acp.option.gman_bnet_usejobs.description"><![CDATA[Die Hintergrundjobs eignen sich für kleine Gilden, vor allem wenn kein Zugriff auf die Shell möglich ist. Die Jobs werden in Gruppen gestartet. Alle 30 min. wird geprüft, ob ein neue Jobs gestartet werden können. Dieses Verhalten kannst du im ACP unter Cronjobs ändern. Beachte bitte, dass du den Cronjob GuildCharUpdate das erste Mal manuell starten musst!]]></item>
     <item name="wcf.acp.option.gman_bnet_useexterncron"><![CDATA[Externen Cronjob verwenden (Hast du beide Optionen aktiviert wird dein System direkt zur Hölle fahren!)]]></item>
     <item name="wcf.acp.option.gman_bnet_useexterncron.description"><![CDATA[Für größere Gilden dringend zu emfpehlen. Benötigt shell Zugang. Erklärung hier: LINK Beachte bitte, dass du den Cronjob GuildCharUpdate im ACP deaktivieren musst!]]></item>
     <item name="wcf.acp.option.gman_bnet_jobsize"><![CDATA[Gruppengröße für Hintergrundjobs]]></item>
     <item name="wcf.acp.option.gman_bnet_jobsize.description"><![CDATA[Dieser Wert sollte in Abhängigkeit des Servers und der Gildengröße gewählt werden. Empfohlen wird 5 Chars auf einmal zu updaten. ]]></item>
-
-
-
     <item name="wcf.acp.option.gman_bnet_key"><![CDATA[Battle.net API Key]]></item>
     <item name="wcf.acp.option.gman_bnet_secret"><![CDATA[Battle.net API Secret]]></item>
     <item name="wcf.acp.option.gman_bnet_region"><![CDATA[Battle.net region.]]></item>
@@ -93,13 +275,11 @@
     <item name="wcf.acp.option.gman_main_rank7"><![CDATA[Gildenrang 8]]></item>
     <item name="wcf.acp.option.gman_main_rank8"><![CDATA[Gildenrang 9]]></item>
     <item name="wcf.acp.option.gman_main_rank9"><![CDATA[Gildenrang 10]]></item>
-
   </category>
   <category name="wcf.acp.notice">
     <item name="wcf.acp.notice.gman.nokey"><![CDATA[Das Battle.net API wurde nicht eingetragen. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Battle.net" die Keydaten eingeben.]]></item>
     <item name="wcf.acp.notice.gman.noguild"><![CDATA[Der Gildenname wurde nicht eingetragen. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Gilde" die Gilde und den Realmnamen angeben.]]></item>
     <item name="wcf.acp.notice.gman.norealm"><![CDATA[Der Heimatrealm wurde nicht eingetragen. Bitte im ACP unter "Konfiguration" -> "GMan Optionen" -> "Gilde" die Gilde und den Heimatrealmnamen angeben.]]></item>
-
   </category>
 
   <category name="wcf.acp.menu">
@@ -107,14 +287,11 @@
     <item name="wcf.acp.menu.link.gman.grouplist"><![CDATA[Gildengruppen verwalten]]></item>
     <item name="wcf.acp.menu.link.gman.groupadd"><![CDATA[Gildengruppe hinzufügen]]></item>
     <item name="wcf.acp.menu.link.gman.charlist"><![CDATA[Charaktere verwalten]]></item>
-    <item name="wcf.acp.menu.link.gman.charadd"><![CDATA[Charakter hinzufügen]]></item>    
-
+    <item name="wcf.acp.menu.link.gman.charadd"><![CDATA[Charakter hinzufügen]]></item>
+    <item name="wcf.acp.menu.link.gman.charedit"><![CDATA[Charakter bearbeiten]]></item>
     <item name="wcf.acp.menu.link.gman.group"><![CDATA[Gildengruppen]]></item>
-
-
-
-    
   </category>  
+  
   <category name="wcf.acp.group">
     <item name="wcf.acp.group.option.category.admin.gman"><![CDATA[GMan Admin]]></item>
     <item name="wcf.acp.group.option.category.mod.gman"><![CDATA[GMan Moderation]]></item>
@@ -135,10 +312,16 @@
     <item name="wcf.acp.group.option.admin.gman.canUpdateOwnChar"><![CDATA[Kann Charakteren einem Account zuordnen]]></item>
     <item name="wcf.acp.group.option.user.gman.canAddCharOwnerWithoutModeration"><![CDATA[Kann Charaktere ohne Moderation einem Account zuordnen]]></item>
     <item name="wcf.acp.group.calendar.description"><![CDATA[Optionen für den Kalender]]></item>
-
   </category> 
   <category name="wcf.acp">
-    
+    <item name="wcf.acp.gman.character.list"><![CDATA[Charakter Liste]]></item>
+    <item name="wcf.acp.gman.character.found"><![CDATA[Charaktere gefunden.]]></item>
+    <item name="wcf.acp.gman.guild.charedit"><![CDATA[Character bearbeiten]]></item>
+    <item name="wcf.acp.gman.guild.charedit.desc"><![CDATA[Hier kann der Charakter mit einem Benutzeraccount zugeordnet werden.]]></item>
+    <item name="wcf.acp.gman.guild.charbind"><![CDATA[Character mit Account verknüpfen]]></item>
+    <item name="wcf.acp.gman.guild.charbind.desc"><![CDATA[Hier können Charaktere Benutzeraccounts sowie Gruppen zugeordnet werden.]]></item>
+    <item name="wcf.acp.gman.guild.username"><![CDATA[Benutzername]]></item>
+    <item name="wcf.acp.gman.guild.username.desc"><![CDATA[Benutzer mit welchem der Character verknüpft werden soll.]]></item>
     <item name="wcf.acp.gman.guild.bnetupdate"><![CDATA[Zeitpunkt der letzten Aktualisierung im Battle.net / auf dieser Seite]]></item>
     <item name="wcf.acp.gman.guild.bnetdata"><![CDATA[Battle.net Daten]]></item>
     <item name="wcf.acp.gman.guild.bnetdata.desc"><![CDATA[Daten aus dem Battle.net]]></item>
@@ -148,72 +331,80 @@
     <item name="wcf.acp.gman.guild.charname.desc"><![CDATA[Name des Charakters]]></item>
     <item name="wcf.acp.gman.guild.charadd"><![CDATA[Charakter manuell hinzufügen]]></item>
     <item name="wcf.acp.gman.guild.charadd.desc"><![CDATA[Charakter aus dem battle.net manuell hinzufügen. Funktioniert <b>nicht</b> mit Charakteren unter Stufe 10. ]]></item>
-
     <item name="wcf.acp.gman.guild.realm"><![CDATA[Realm]]></item>
     <item name="wcf.acp.gman.guild.realm.desc"><![CDATA[Realm des Characters]]></item>
     <item name="wcf.acp.gman.guild.realm.conneted"><![CDATA[Realm und verbundene Realms]]></item>
     <item name="wcf.acp.gman.guild.guildinfo"><![CDATA[Gildeninformationen]]></item>
-	<item name="wcf.acp.gman.guild.guildinfo.desc"><![CDATA[Weitere Gildeninfos]]></item>
-	<item name="wcf.acp.gman.guild.image"><![CDATA[Gildenlogo]]></item>
-	<item name="wcf.acp.gman.guild.birthdate"><![CDATA[Gründungsdatum der Gilde]]></item>
-	<item name="wcf.acp.gman.guild.article"><![CDATA[Über uns Artikel]]></item>
-	<item name="wcf.acp.gman.guild.article"><![CDATA[Seite auf dem das Über uns angezeigt wird]]></item>
-	<item name="wcf.acp.gman.guild.data"><![CDATA[Daten abrufen]]></item>
-	<item name="wcf.acp.gman.guild.data.desc"><![CDATA[Manuelles Abrufen der Gildendaten]]></item>
-
-	<item name="wcf.acp.gman.guild.data.sync"><![CDATA[Automatische Synchronisierung erlauben]]></item>
-	<item name="wcf.acp.gman.guild.data.sync.desc"><![CDATA[Automatisches Abrufen aktivieren. (Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.)]]></item>
+	  <item name="wcf.acp.gman.guild.guildinfo.desc"><![CDATA[Weitere Gildeninfos]]></item>
+	  <item name="wcf.acp.gman.guild.image"><![CDATA[Gildenlogo]]></item>
+	  <item name="wcf.acp.gman.guild.birthdate"><![CDATA[Gründungsdatum der Gilde]]></item>
+	  <item name="wcf.acp.gman.guild.article"><![CDATA[Über uns Artikel]]></item>
+	  <item name="wcf.acp.gman.guild.article"><![CDATA[Seite auf dem das Über uns angezeigt wird]]></item>
+	  <item name="wcf.acp.gman.guild.data"><![CDATA[Daten abrufen]]></item>
+	  <item name="wcf.acp.gman.guild.data.desc"><![CDATA[Manuelles Abrufen der Gildendaten]]></item>
+	  <item name="wcf.acp.gman.guild.data.sync"><![CDATA[Automatische Synchronisierung erlauben]]></item>
+	  <item name="wcf.acp.gman.guild.data.sync.desc"><![CDATA[Automatisches Abrufen aktivieren. (Bitte erst einstellen, wenn die Daten erstmals manuell übertragen wurden.)]]></item>
     <item name="wcf.acp.gman.guild.rank"><![CDATA[Gildenrang]]></item>
     <item name="wcf.acp.gman.group.list"><![CDATA[Gildengruppen]]></item>
-
     <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Syncronisieren]]></item>
     <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[Syncronisieren]]></item>
-
     <item name="wcf.acp.gman.guildacm.sync"><![CDATA[Manuelles Update der Gildenerfolge]]></item>
-    <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Lalala!]]></item>
+    <item name="wcf.acp.gman.guildacm.sync.description"><![CDATA[Die Gildenerfolge werden aus dem battle.net abgerufen.]]></item>
     <item name="wcf.acp.gman.guildmember.sync"><![CDATA[Manuelles Update der Gildenmitgliederliste]]></item>
-    <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[nochmal lalala!]]></item>
-	
-	<item name="wcf.acp.gman.group.groupmain"><![CDATA[Gildengruppen bilden die Ränge und Gruppen der Gilde ab]]></item>
-	<item name="wcf.acp.gman.group.groupmain.desc"><![CDATA[Gildengruppen können Rang und/oder Benutzergruppen zugeordnet werden.]]></item>
-	<item name="wcf.acp.gman.group.name"><![CDATA[Gruppename]]></item>
-	<item name="wcf.acp.gman.group.name.description"><![CDATA[Der Name der Gruppe. (Muss mindest 4 Zeichen haben, darf nicht länger als 50 Zeichen sein.)]]></item>
-	<item name="wcf.acp.gman.group.teaser"><![CDATA[Kurzbeschreibung]]></item>
-	<item name="wcf.acp.gman.group.teaser.description"><![CDATA[Kurze Beschreibung der Gruppen. (Maximal 250 Zeichen)]]></item>
-	<item name="wcf.acp.gman.group.wcfgroup"><![CDATA[Verknüpfte Benutzergruppen]]></item>
-	<item name="wcf.acp.gman.group.wcfgroup.description"><![CDATA[Accounts die mit Charaktären in dieser Gruppe verknüpft sind werden automatisch diese Benutzergruppe zugeordnet (VORSICHT!)]]></item>
-	<item name="wcf.acp.gman.group.gamerank"><![CDATA[Rang im Spiel]]></item>
-	<item name="wcf.acp.gman.group.gamerank.description"><![CDATA[Charaktere, die diesen Rang im Spiel haben, werden automatisch dieser Gilden Gruppe hinzugefügt. (Vorsicht in Verbindung mit der Benutzergruppe!)]]></item>
-	<item name="wcf.acp.gman.group.calendar"><![CDATA[Kalenderoptionen]]></item>
-	<item name="wcf.acp.gman.group.showcalendar"><![CDATA[Im Kalender anzeigen]]></item>
-	<item name="wcf.acp.gman.group.showcalendar.description"><![CDATA[Zeige diese Gruppe im Kalender an]]></item>
-	<item name="wcf.acp.gman.group.calendartitle"><![CDATA[Titel für Kalenderevents]]></item>
-	<item name="wcf.acp.gman.group.calendartitle.description"><![CDATA[Dieser Titel wird für Kalenderevents benutzt wenn kein anderer angegeben wurde]]></item>
-	<item name="wcf.acp.gman.group.calendartext"><![CDATA[Text für Kalenderevents.]]></item>
-	<item name="wcf.acp.gman.group.calendartext.description"><![CDATA[Dieser Text wird für Kalenderevents benutzt wenn kein anderer angegeben wurde.]]></item>
-	<item name="wcf.acp.gman.calendarquery"><![CDATA[WoW Kalendertitel]]></item>
-	<item name="wcf.acp.gman.group.calendarquery.description"><![CDATA[Liest WoW Kalendereinträge mit EXAKT diesem Titel für diese Gruppe aus.]]></item>
-	<item name="wcf.acp.gman.group.calcat"><![CDATA[Kalenderkategorie]]></item>
-	<item name="wcf.acp.gman.group.calcat.description"><![CDATA[Events werden in dieser Kategorie erstellt.]]></item>
-	<item name="wcf.acp.gman.group.appearance"><![CDATA[Gruppenanzeige]]></item>
-	<item name="wcf.acp.gman.guild.appearance.desc"><![CDATA[Bilder, Texte und weiteres für die Gruppe]]></item>
-	<item name="wcf.acp.gman.group.image"><![CDATA[Gruppenbild]]></item>
-	<item name="wcf.acp.gman.group.article"><![CDATA[Artikel für diese Gruppe]]></item>
-	<item name="wcf.acp.gman.group.article.description"><![CDATA[Auf diesen Artikel wird verlinkt, bzw. in größeren Boxen wird der Artikel teilw. angezeigt]]></item>
-	<item name="wcf.acp.gman.guild.board"><![CDATA[Forum der Gruppe]]></item>
-	<item name="wcf.acp.gman.group.board.description"><![CDATA[Falls die Gruppe ein eigenes Forum hat, dann werden Gruppeninfos in der Übersicht des Forums angezeigt.]]></item>
-	<item name="wcf.acp.gman.group.thread"><![CDATA[Vorstellungsthread]]></item>
-	<item name="wcf.acp.gman.group.thread.description"><![CDATA[Auf diesen Thread wird verlinkt. Sollte kein Artikel angegeben sein, dann wird in größeren Boxen der Thread teilw. angezeigt.]]></item>
-	<item name="wcf.acp.gman.group.order"><![CDATA[Reihenfolge]]></item>
-	<item name="wcf.acp.gman.group.order.description"><![CDATA[Sortierreihenfolge der Gruppe (Aufsteigend)]]></item>
-	<item name="wcf.acp.gman.group.raid"><![CDATA[Schlachtzugsoptionen]]></item>
-	<item name="wcf.acp.gman.group.raid.desc"><![CDATA[Wenn die Gruppe ein Schlachtzug ist gibt es weitere Optionen]]></item>
-	<item name="wcf.acp.gman.group.israidgruop"><![CDATA[Schlachtzug]]></item>
-	<item name="wcf.acp.gman.group.israidgruop.description"><![CDATA[Ist die Gruppe ein Schlachtzug, dann wird die Gruppe in der Schlachtzugsübersicht angezeigt]]></item>
-	<item name="wcf.acp.gman.group.fetchwcl"><![CDATA[Warcraftlogs]]></item>
-	<item name="wcf.acp.gman.group.fetchwcl.description"><![CDATA[Verlinke Warcraftlogs (Benötigt API-Zugang)]]></item>
-	<item name="wcf.acp.gman.wclquery.name"><![CDATA[Warcraftlogs Gruppenname]]></item>
-	<item name="wcf.acp.gman.group.wclquery.description"><![CDATA[Name der Gruppe bei Warcraftlogs]]></item>
-	
-  </category>   
+    <item name="wcf.acp.gman.guildmember.sync.description"><![CDATA[Die Gildendaten werden aus dem battle.net abgerufen.]]></item>
+    <item name="wcf.acp.gman.group.image"><![CDATA[Gruppenbild]]></item>
+    <item name="wcf.acp.gman.group.image.description"><![CDATA[Das Bild der Gruppe. Kann z.B. ein Gruppenbild oder Logo sein. Die Größe sollte mind. 800x600 sein.]]></item>
+    <item name="wcf.acp.gman.group.icon"><![CDATA[Gruppenicon]]></item>
+    <item name="wcf.acp.gman.group.icon.description"><![CDATA[Ein Icon der Gruppe. Wird in der Auflistung verwendet. <b>Sollte nicht größer als 128x128 sein.</b>]]></item>
+    <item name="wcf.acp.gman.group.groupmain"><![CDATA[Gildengruppen bilden die Ränge und Gruppen der Gilde ab]]></item>
+	  <item name="wcf.acp.gman.group.groupmain.desc"><![CDATA[Gildengruppen können Rang und/oder Benutzergruppen zugeordnet werden.]]></item>
+	  <item name="wcf.acp.gman.group.name"><![CDATA[Gruppename]]></item>
+	  <item name="wcf.acp.gman.group.name.description"><![CDATA[Der Name der Gruppe. (Muss mindest 4 Zeichen haben, darf nicht länger als 50 Zeichen sein.)]]></item>
+	  <item name="wcf.acp.gman.group.teaser"><![CDATA[Kurzbeschreibung]]></item>
+	  <item name="wcf.acp.gman.group.teaser.description"><![CDATA[Kurze Beschreibung der Gruppen. (Maximal 250 Zeichen)]]></item>
+	  <item name="wcf.acp.gman.group.wcfgroup"><![CDATA[Verknüpfte Benutzergruppen]]></item>
+	  <item name="wcf.acp.gman.group.wcfgroup.description"><![CDATA[Accounts die mit Charaktären in dieser Gruppe verknüpft sind werden automatisch diese Benutzergruppe zugeordnet (VORSICHT!)]]></item>
+	  <item name="wcf.acp.gman.group.gamerank"><![CDATA[Rang im Spiel]]></item>
+	  <item name="wcf.acp.gman.group.gamerank.description"><![CDATA[Charaktere, die diesen Rang im Spiel haben, werden automatisch dieser Gilden Gruppe hinzugefügt. (Vorsicht in Verbindung mit der Benutzergruppe!)]]></item>
+	  <item name="wcf.acp.gman.group.calendar"><![CDATA[Kalenderoptionen]]></item>
+	  <item name="wcf.acp.gman.group.showcalendar"><![CDATA[Im Kalender anzeigen]]></item>
+	  <item name="wcf.acp.gman.group.showcalendar.description"><![CDATA[Zeige diese Gruppe im Kalender an]]></item>
+	  <item name="wcf.acp.gman.group.calendartitle"><![CDATA[Titel für Kalenderevents]]></item>
+	  <item name="wcf.acp.gman.group.calendartitle.description"><![CDATA[Dieser Titel wird für Kalenderevents benutzt wenn kein anderer angegeben wurde]]></item>
+	  <item name="wcf.acp.gman.group.calendartext"><![CDATA[Text für Kalenderevents.]]></item>
+	  <item name="wcf.acp.gman.group.calendartext.description"><![CDATA[Dieser Text wird für Kalenderevents benutzt wenn kein anderer angegeben wurde.]]></item>
+	  <item name="wcf.acp.gman.calendarquery"><![CDATA[WoW Kalendertitel]]></item>
+	  <item name="wcf.acp.gman.group.calendarquery.description"><![CDATA[Liest WoW Kalendereinträge mit EXAKT diesem Titel für diese Gruppe aus.]]></item>
+	  <item name="wcf.acp.gman.group.calcat"><![CDATA[Kalenderkategorie]]></item>
+	  <item name="wcf.acp.gman.group.calcat.description"><![CDATA[Events werden in dieser Kategorie erstellt.]]></item>
+	  <item name="wcf.acp.gman.group.appearance"><![CDATA[Gruppenanzeige]]></item>
+	  <item name="wcf.acp.gman.guild.appearance.desc"><![CDATA[Bilder, Texte und weiteres für die Gruppe]]></item>
+	  <item name="wcf.acp.gman.group.image"><![CDATA[Gruppenbild]]></item>
+	  <item name="wcf.acp.gman.group.article"><![CDATA[Artikel für diese Gruppe]]></item>
+	  <item name="wcf.acp.gman.group.article.description"><![CDATA[Auf diesen Artikel wird verlinkt, bzw. in größeren Boxen wird der Artikel teilw. angezeigt]]></item>
+	  <item name="wcf.acp.gman.guild.board"><![CDATA[Forum der Gruppe]]></item>
+	  <item name="wcf.acp.gman.group.board.description"><![CDATA[Falls die Gruppe ein eigenes Forum hat, dann werden Gruppeninfos in der Übersicht des Forums angezeigt.]]></item>
+	  <item name="wcf.acp.gman.group.thread"><![CDATA[Vorstellungsthread]]></item>
+	  <item name="wcf.acp.gman.group.thread.description"><![CDATA[Auf diesen Thread wird verlinkt. Sollte kein Artikel angegeben sein, dann wird in größeren Boxen der Thread teilw. angezeigt.]]></item>
+	  <item name="wcf.acp.gman.group.order"><![CDATA[Reihenfolge]]></item>
+	  <item name="wcf.acp.gman.group.order.description"><![CDATA[Sortierreihenfolge der Gruppe (Aufsteigend)]]></item>
+	  <item name="wcf.acp.gman.group.raid"><![CDATA[Schlachtzugsoptionen]]></item>
+	  <item name="wcf.acp.gman.group.raid.desc"><![CDATA[Wenn die Gruppe ein Schlachtzug ist gibt es weitere Optionen]]></item>
+	  <item name="wcf.acp.gman.group.israidgruop"><![CDATA[Schlachtzug]]></item>
+	  <item name="wcf.acp.gman.group.israidgruop.description"><![CDATA[Ist die Gruppe ein Schlachtzug, dann wird die Gruppe in der Schlachtzugsübersicht angezeigt]]></item>
+	  <item name="wcf.acp.gman.group.fetchwcl"><![CDATA[Warcraftlogs]]></item>
+	  <item name="wcf.acp.gman.group.fetchwcl.description"><![CDATA[Verlinke Warcraftlogs (Benötigt API-Zugang)]]></item>
+	  <item name="wcf.acp.gman.wclquery.name"><![CDATA[Warcraftlogs Gruppenname]]></item>
+	  <item name="wcf.acp.gman.group.wclquery.description"><![CDATA[Name der Gruppe bei Warcraftlogs]]></item>
+  </category>
+  <category name="wcf.acp.rebuildData">
+    <item name="wcf.acp.rebuildData.info.falkenbann.gman.SpellUpdateWorker"><![CDATA[WoW Zauberaktualisieren]]></item>
+    <item name="wcf.acp.rebuildData.info.falkenbann.gman.SpellUpdateWorker.description"><![CDATA[Nur notwendig, wenn neue verzauberungen in GMan eingepflegt wurden (nach update)]]></item>
+    <item name="wcf.acp.rebuildData.info.falkenbann.gman.CharacterUpdateWorker"><![CDATA[Alle Charaktere aktuallisieren ]]></item>
+    <item name="wcf.acp.rebuildData.info.falkenbann.gman.CharacterUpdateWorker.description"><![CDATA[Empfehlenswert nach der Installation oder größeren Änderungen wie Patches/Erweiterungen. Ansonsten geschieht dies über Cronjobs]]></item>
+  </category>
+
+  <category name="wcf.user.option">
+	<item name="wcf.user.option.OverrideAvatar"><![CDATA[Wow Charakterbild als Avatar verwenden]]></item>
+</category>
 </language>

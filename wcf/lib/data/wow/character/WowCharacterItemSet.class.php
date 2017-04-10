@@ -1,7 +1,9 @@
 <?php
 namespace wcf\data\wow\character;
-use wcf\data\DatabaseObjectDecorator;
 use wcf\data\DatabaseObject;
+use wcf\data\wow\item\WowItem;
+use wcf\data\wow\item\ViewableWowItem;
+use wcf\util\JSON;
 use wcf\system\WCF;
 
 /**
@@ -13,55 +15,72 @@ use wcf\system\WCF;
  *
  */
 
-class WowCharacterItemSet extends DatabaseObjectDecorator {
+class WowCharacterItemSet extends DatabaseObject {
 	/**
-	 * {@inheritDoc}
-	 */
-	public static $baseClass = WowCharacter::class;
+     * {@inheritDoc}
+     */
+	protected static $databaseTableName = 'gman_character_equip';
 
-    public $averageItemLevelEquipped = 0;
-
-    public $averageItemLevel = 0;
-
-    private $equip = [];
-
-     /**
-	 * Creates a new DatabaseObjectDecorator object.
-	 *
-	 * @param	DatabaseObject		$object
-	 */
-	public function __construct(DatabaseObject $object) {
-        // parent::__construct($object);
-			$sql = "SELECT	*
-				FROM	wcf".WCF_N."_gman_character_equip
-				WHERE	characterID = ?";
-			$statement = WCF::getDB()->prepareStatement($sql);
-			$statement->execute([$object->getObjectID()]);
-			$row = $statement->fetchArray();
-			if ($row === false) $row = [];
-            $this->averageItemLevel = @$row['averageItemLevel'] ?: 0;
-            $this->averageItemLevelEquipped = @$row['averageItemLevelEquipped'] ?: 0;
-            $this->equip  = $row;
-    }
-
-
+	/**
+     * {@inheritDoc}
+     */
+	protected static $databaseTableIndexName = 'characterID';
 
     /**
-     * Escute item calls.
-     *
-     * @param	string		$name   name of the slot
-     * @param   integer     $redner rendertype
-     * @return  string|null
+     * data store for json strings
+     * @var WowItem[]
      */
-   public function __call($name, $render = 0) {
-       if ($this->__isset($name)) {
-           if ($render == 0) {
-               return $this->equip[$name];
-           }
-           else {
-               return $this->equip[$name];
-           }
-       }
-       return null;
+    private $items = [];
+
+    public function getItem($name) {
+        if (!isset($this->items[$name])) {
+            if (empty($this->data[$name])) {
+                $this->items[$name] = new ViewableWowItem(new WowItem($name));
+            }
+            else {
+                $t = JSON::decode($this->data[$name]);
+                $gems = [];
+                $enchant = 0;
+                $transmog = 0;
+                $set = [];
+                $bonus = isset($t['bonusLists']) ? $t['bonusLists'] : [];
+                $context = isset($t['context']) ? $t['context'] : '';
+                // max 3 sockets supportet
+                if (isset($t['tooltipParams']['gem0'])) $gems[] = $t['tooltipParams']['gem0'];
+                if (isset($t['tooltipParams']['gem1'])) $gems[] = $t['tooltipParams']['gem1'];
+                if (isset($t['tooltipParams']['gem2'])) $gems[] = $t['tooltipParams']['gem2'];
+                // check fpr enchant
+                if (isset($t['tooltipParams']['enchant'])) $enchant = $t['tooltipParams']['enchant'];
+                // check for transmogItem
+                if (isset($t['tooltipParams']['transmogItem'])) $transmog = $t['tooltipParams']['transmogItem'];
+                // check for setitems set
+                if (isset($t['tooltipParams']['set'])) $set = $t['tooltipParams']['set'];
+                $this->items[$name] = new ViewableWowItem(new WowItem($t['id']), $context, $bonus, $gems, $enchant, $transmog, $set);
+            }
+        }
+        return $this->items[$name];
     }
+
+    /**
+     * @inheritDoc
+     */
+    //public function __get($name) {
+    //    if (isset($this->data[$name])) {
+    //        if ($name != 'characterID' or $name != 'averageItemLevel' or $name != 'averageItemLevelEquipped') {
+    //            if (!isset($this->items[$name])) {
+    //                 $t = JSON::decode($this->data[$name]);
+    //                //echo "intern: <pre>";var_dump($t); echo "</pre>";
+    //                 $this->items[$name] = new WowItem($t['id'], isset($t['context']) ? $t['context'] : '' , isset($t['bonusLists']) ? $t['bonusLists'] : []);
+    //                //echo "after: <pre>";var_dump($fuckyou); echo "</pre>";
+
+    //            }
+    //            return $this->items[$name];
+    //        }
+    //        return $this->data[$name];
+    //    }
+    //    else {
+    //        return null;
+    //    }
+    //}
+
 }

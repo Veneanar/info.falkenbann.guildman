@@ -5,7 +5,7 @@ use wcf\data\wow\character\WowCharacter;
 use wcf\data\wow\character\WowCharacterAction;
 use wcf\data\wow\character\WowCharacterList;
 use wcf\system\WCF;
-use wcf\system\wow\bnetAPI;
+use wcf\system\wow\bnetUpdate;
 
 /**
  * Executes Gildenbewerbung-related actions.
@@ -36,7 +36,7 @@ class GuildAction extends AbstractDatabaseObjectAction {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $requireACP = array('updateGuild');
+	protected $requireACP = array('updateGuild', 'updateWowData');
 	/**
 	 * {@inheritDoc}
 	 */
@@ -55,11 +55,19 @@ class GuildAction extends AbstractDatabaseObjectAction {
     }
 
     public function updateGuild() {
-        bnetAPI::updateGuild();
+        bnetUpdate::updateGuild();
         if (isset($this->parameters['updateType'])) {
-            if ($this->parameters['updateType']=='member') bnetAPI::updateGuildMemberList();
-            if ($this->parameters['updateType']=='gacms') bnetAPI::updateGuildMemberList();
+            if ($this->parameters['updateType']=='member') bnetUpdate::updateGuildMemberList();
+            if ($this->parameters['updateType']=='gacms') bnetUpdate::updateGuildMemberList();
         }
+    }
+
+    public function validateUpdateWowData() {
+        $this->validateUpdateGuild();
+    }
+
+    public function updateWowData() {
+        bnetUpdate::updateRaidBosses();
     }
 
     public function updateRanks() {

@@ -11,7 +11,6 @@ use wcf\data\JSONExtendedDatabaseObject;
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
  * @package	info.falkenbann.guildman
  *
- * @property array
  * @property string		    $name           Name of the Mount
  * @property integer        $spellID        Spell ID to summon Mount
  * @property integer        $itemID         Item to learn Mount
@@ -36,7 +35,7 @@ class CharacterMounts extends JSONExtendedDatabaseObject {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected static $databaseTableIndexName = 'charID';
+	protected static $databaseTableIndexName = 'characterID';
 
 
 }

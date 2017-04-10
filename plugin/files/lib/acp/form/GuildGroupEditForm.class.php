@@ -5,6 +5,7 @@ use wcf\data\guild\group\GuildGroupAction;
 use wcf\form\AbstractForm;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\WCF;
+use wcf\data\wow\character\WowCharacterAction;
 
 /**
  * Gilden Gruppen bearbeiten
@@ -42,7 +43,9 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 			'action' => 'edit',
 			'guildGroupObject' => $this->guildGroupObject
 		]);
-	}
+
+
+    }
 
 	/**
 	 * @inheritDoc
@@ -52,7 +55,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 		if (empty($_POST)) {
 			$this->groupName            = $this->guildGroupObject->groupName;
             $this->groupTeaser          = $this->guildGroupObject->groupTeaser;
-            $this->groupWcfID           = $this->guildGroupObject->groupWcfID;
+            $this->wcfGroupID           = $this->guildGroupObject->wcfGroupID;
             $this->showCalender         = $this->guildGroupObject->showCalender;
             $this->calendarCategoryID   = $this->guildGroupObject->calendarCategoryID;
             $this->calendarTitle        = $this->guildGroupObject->calendarTitle;
@@ -64,6 +67,7 @@ class GuildGroupEditForm extends GuildGroupAddForm {
             $this->articleID            = $this->guildGroupObject->articleID;
             $this->boardID              = $this->guildGroupObject->boardID;
             $this->imageID              = $this->guildGroupObject->imageID;
+            $this->iconID               = $this->guildGroupObject->iconID;
             $this->threadID             = $this->guildGroupObject->threadID;
             $this->isRaidgruop          = $this->guildGroupObject->isRaidgruop;
             $this->fetchWCL             = $this->guildGroupObject->fetchWCL;
@@ -91,12 +95,15 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 	 */
 	public function save() {
 		AbstractForm::save();
-
 		$this->objectAction = new GuildGroupAction([$this->guildGroupObject], 'update', [
-			'data' =>  [
+            'changeWCFGroup'    => $this->wcfGroupID != $this->guildGroupObject->wcfGroupID ? true : false,
+            'changeRank'        => $this->gameRank != $this->guildGroupObject->gameRank ? true : false,
+            'oldWCFGroups'     => [$this->guildGroupObject->wcfGroupID],
+            'oldRank'          => [$this->guildGroupObject->gameRank],
+            'data' =>  [
 			    'groupName'         => $this->groupName,
                 'groupTeaser'       => $this->groupTeaser,
-                'wcfGroupID'        => $this->groupWcfID,
+                'wcfGroupID'        => $this->wcfGroupID,
                 'showCalender'      => intval($this->showCalender),
                 'calendarTitle'     => $this->calendarTitle,
                 'calendarText'      => $this->calendarText,
@@ -106,17 +113,17 @@ class GuildGroupEditForm extends GuildGroupAddForm {
                 'showRoaster'       => intval($this->showRoaster),
                 'articleID'         => $this->articleID > 0 ? $this->articleID : null,
                 'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
-                'imageID'           => isset($this->imageID[0]) ? $this->imageID[0]: null,
+                'imageID'           => $this->imageID > 0 ? $this->imageID: null,
+                'iconID'            => $this->iconID > 0 ? $this->iconID : null,
                 'threadID'          => $this->threadID > 0 ? $this->threadID : null,
                 'isRaidgruop'       => intval($this->isRaidgruop),
                 'fetchWCL'          => intval($this->fetchWCL),
                 'wclQuery'          => $this->wclQuery,
                 'orderNo'           => $this->orderNo,
-                'lastUpdate'        => TIME_NOW
+                'lastUpdate'        => TIME_NOW,
 			]
 		]);
 		$this->objectAction->executeAction();
-
 		$this->saved();
 
 		WCF::getTPL()->assign('success', true);

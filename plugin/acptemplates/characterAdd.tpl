@@ -4,13 +4,17 @@
 	  <h1 class="contentTitle">{lang}wcf.acp.menu.link.gman.charadd{/lang}</h1>
 	</div>
 </header>
-
+<script data-relocate="true">
+    var validator = null;
+    require(['WoltLabSuite/GMan/Ui/Character/Validation/Input'], function (UiCharacterValidInput) {
+        validator = new UiCharacterValidInput(document.getElementById('charName'), document.getElementById('realmID'), document.getElementById('charSubmit'));
+    });
+</script> 
 {include file='formError'}
     {if $success|isset}
         <p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
     {/if}
 <form id="characterAddForm" method="post" action="{link controller='characterAdd'}{/link}" enctype="multipart/form-data">
-
     <div class="section">
         <header class="sectionHeader">
             <h2 class="sectionTitle">{lang}wcf.acp.gman.guild.charadd{/lang}</h2>
@@ -41,7 +45,7 @@
         <dl {if $errorField=='charName'} class="formError" {/if}>
         <dt><label for="charName">{lang}wcf.acp.gman.guild.charname{/lang}</label></dt>
         <dd>
-            <input name="charName" type="text" id="charName" value="{$charName}" class="medium" pattern="{literal}.{4,12}{/literal}" required>
+            <input name="charName" type="text" id="charName" value="{$charName}" data-realmslug="" class="medium" pattern="{literal}.{4,12}{/literal}" required>
             <small>{lang}wcf.acp.gman.guild.charname.desc{/lang}</small>
             {if $errorField == 'charName'}
             <small class="innerError">
@@ -59,7 +63,7 @@
 
     <div class="formSubmit">
         <input type="hidden">
-        <input type="submit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s">
+        <input type="submit" id="charSubmit" value="{lang}wcf.global.button.submit{/lang}" accesskey="s" disabled="disabled">
         {@SECURITY_TOKEN_INPUT_TAG}
     </div>
 </form>

@@ -3,3 +3,8 @@
 ################################################################################
 
 /lua/gman
+/plugin/*.sql
+/plugin/*.xml
+/sh
+/wcf/images/*
+/arsenal HTML.txt

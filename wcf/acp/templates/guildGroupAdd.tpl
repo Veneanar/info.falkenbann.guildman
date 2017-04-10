@@ -221,28 +221,55 @@
         </header>
 
         {if $__wcf->session->getPermission('admin.content.cms.canUseMedia')}
-            <dl{if $errorField == 'image'} class="formError" {/if}>
-            <dt><label for="image">{lang}wcf.acp.gman.guild.image{/lang}</label></dt>
+            <dl{if $errorField == 'imageID'} class="formError" {/if}>
+            <dt><label for="image">{lang}wcf.acp.gman.group.image{/lang}</label></dt>
             <dd>
                 <div id="imageDisplay" class="selectedImagePreview">
-                    {if $images[0]|isset}
-                        {@$images[0]->getThumbnailTag('small')}
+                    {if $image|isset}
+                        {@$image->getThumbnailTag('small')}
                     {/if}
                 </div>
-                <p class="button jsMediaSelectButton" data-store="imageID0" data-display="imageDisplay">{lang}wcf.media.chooseImage{/lang}</p>
-                <input type="hidden" name="imageID[0]" id="imageID0" {if $imageID[0]|isset} value="{@$imageID[0]}" {/if}>
+                <p class="button jsMediaSelectButton" data-store="imageID" data-display="imageDisplay">{lang}wcf.media.chooseImage{/lang}</p>
+                <input type="hidden" name="imageID" id="imageID" {if $imageID|isset} value="{@$imageID}" {/if}>
+                <small>{lang}wcf.acp.gman.group.image.description{/lang}</small>
                 {if $errorField == 'image'}
                 <small class="innerError">{lang}wcf.acp.article.image.error.{@$errorType}{/lang}</small>
                 {/if}
             </dd>
             </dl>
-        {elseif $action == 'edit' && $images[0]|isset}
+        {elseif $action == 'edit' && $image|isset}
             <dl>
                 <dt>{lang}wcf.acp.article.image{/lang}</dt>
                 <dd>
-                    <div id="imageDisplay">{@$images[0]->getThumbnailTag('small')}</div>
+                    <div id="imageDisplay">{@$image->getThumbnailTag('small')}</div>
                 </dd>
             </dl>
+        {/if}   
+
+        {if $__wcf->session->getPermission('admin.content.cms.canUseMedia')}
+        <dl{if $errorField=='iconID'} class="formError" {/if}>
+        <dt><label for="image">{lang}wcf.acp.gman.group.icon{/lang}</label></dt>
+        <dd>
+            <div id="iconDisplay" class="selectedImagePreview">
+                {if $icon|isset}
+                {@$icon->getThumbnailTag('small')}
+                {/if}
+            </div>
+            <p class="button jsMediaSelectButton" data-store="iconID" data-display="iconDisplay">{lang}wcf.media.chooseImage{/lang}</p>
+            <input type="hidden" name="iconID" id="iconID" {if $iconID|isset} value="{@$iconID}" {/if}>
+            <small>{lang}wcf.acp.gman.group.icon.description{/lang}</small>
+            {if $errorField == 'icon'}
+            <small class="innerError">{lang}wcf.acp.article.image.error.{@$errorType}{/lang}</small>
+            {/if}
+        </dd>
+        </dl>
+        {elseif $action == 'edit' && $icon|isset}
+        <dl>
+            <dt>{lang}wcf.acp.article.image{/lang}</dt>
+            <dd>
+                <div id="iconDisplay">{@$icon->getThumbnailTag('small')}</div>
+            </dd>
+        </dl>
         {/if}   
 
         <dl{if $errorField=='articleID'} class="formError" {/if}>

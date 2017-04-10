@@ -1,10 +1,11 @@
-﻿/**
- * Provides suggestions for users, optionally supporting groups.
+/**
+ * Provides suggestions for chars, optionally supporting groups.
  * 
- * @author	Alexander Ebert
- * @copyright	2001-2016 WoltLab GmbH
- * @license	GNU Lesser General Public License <http://opensource.org/licenses/lgpl-license.php>
- * @module	WoltLabSuite/Core/Ui/User/Search/Input
+ * checks if an input is valid 
+ * @author	Veneanar Falkenbann
+ * @copyright	2017  2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
+ * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
+ * @package	info.falkenbann.guildman
  * @see         module:WoltLabSuite/Core/Ui/Search/Input
  */
 define(['Core', 'WoltLabSuite/Core/Ui/Search/Input'], function (Core, UiSearchInput) {

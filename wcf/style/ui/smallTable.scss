@@ -1,0 +1,145 @@
+.smallTable {
+	border-bottom: 1px solid $wcfContentBorder;
+	border-spacing: 0;
+    font-size: 50%;
+	td,
+	th {
+		padding: 2px;
+		text-align: left;
+		vertical-align: middle;
+		
+		> label {
+			cursor: pointer;
+			display: block;
+		}
+	}
+	
+	th {
+		border-bottom: 2px solid currentColor;
+		color: $wcfTabularBoxHeadline;
+		text-align: left;
+		white-space: nowrap;
+		
+		@include wcfFontHeadline;
+		
+		> a {
+			color: $wcfTabularBoxHeadline;
+			display: block;
+		}
+		
+		&.active > a,
+		> a:hover {
+			color: $wcfTabularBoxHeadlineActive;
+		}
+		
+		&.ASC,
+		&.DESC {
+			> a::after {
+				display: inline-block;
+				font-family: FontAwesome;
+				margin-left: 1px;
+			}
+		}
+		
+		&.ASC > a::after {
+			content: $fa-var-caret-up;
+		}
+		
+		&.DESC > a::after {
+			content: $fa-var-caret-down;
+		}
+		
+		/* alignment only */
+		&.columnMark,
+		&.columnStatus {
+			text-align: center;
+		}
+		
+		&.columnDate,
+		&.columnDigits,
+		&.columnID {
+			text-align: right;
+		}
+	}
+	
+	td {
+		&.columnMark,
+		&.columnStatus {
+			text-align: center;
+			width: 1px;
+			white-space: nowrap;
+			word-wrap: normal;
+		}
+		
+		&.columnDigits,
+		&.columnID {
+			text-align: right;
+			width: 1px;
+			white-space: nowrap;
+			word-wrap: normal;
+		}
+		
+		&.columnIcon {
+			text-align: left;
+			width: 1px;
+			white-space: nowrap;
+			word-wrap: normal;
+		}
+		
+		&.columnTitle {
+			font-weight: bold;
+			text-align: left;
+		}
+		
+		&.columnText {
+			font-weight: normal;
+			text-align: left;
+			max-width: 20%;
+		}
+		
+		&.columnDate {
+			text-align: right;
+			width: 1px;
+			white-space: nowrap;
+			word-wrap: normal;
+			
+			@include wcfFontSmall;
+		}
+		
+		&.columnURL, &.columnSmallText {
+			text-align: left;
+			
+			@include wcfFontSmall;
+			
+		}
+	}
+	
+	tr {
+		&:hover > td {
+			background-color: rgb(242, 242, 242);
+		}
+		
+		&:not(:last-child) > td {
+			border-bottom: 1px solid $wcfContentBorderInner;
+		}
+	}
+	
+	.statusDisplay {
+		float: right;
+		
+		.statusIcons {
+			float: right;
+			margin-left: 1px;
+			
+			li {
+				display: inline-block;
+			}
+		}
+	}
+	
+	// table without header
+	tbody:first-child > tr:first-child > td {
+		border-top: 1px solid $wcfContentBorder;
+	}
+}
+

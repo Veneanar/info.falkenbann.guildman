@@ -69,7 +69,7 @@
                     {/if}
                 </td>
                 <td class="columnDigits columnMembers">
-                    <a class="jsTooltip" title="{lang}wcf.acp.group.showMembers{/lang}" href="{link controller='UserSearch'}groupID={@$group->groupID}{/link}">{#$group->members}</a>
+                    <a class="jsTooltip" title="{lang}wcf.acp.group.showMembers{/lang}" href="{link controller='CharacterList'}groupID={@$group->groupID}{/link}">{#$group->members}</a>
                 </td>
                 <td class="columnDigits columnGameRank">{$guild->getRankName($group->gameRank)}</td>
 

@@ -85,7 +85,7 @@ class WowRealm extends DatabaseObject {
 		$statement->execute([$name]);
 		$row = $statement->fetchArray();
 		if (!$row) $row = [];
-		return $lsugonly ? new WowRealm(null, $row);
+		return new WowRealm(null, $row);
     }
 
     public static function isSlug($realm) {
