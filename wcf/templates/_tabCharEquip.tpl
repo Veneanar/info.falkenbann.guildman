@@ -1,6 +1,6 @@
-﻿<header class="contentHeader marginTop">
+﻿<header class="contentHeader">
     <div class="contentHeaderTitle">
-        <h2 class="contentTitle">{lang}wcf.page.gman.arsenal.menu.equip{/lang}</h2>
+        <h1 class="contentTitle">{lang}wcf.page.gman.arsenal.menu.equip{/lang}</h1>
         <p>{lang}wcf.page.gman.arsenal.menu.equip.description{/lang}</p>
     </div>
 </header>
@@ -33,16 +33,18 @@
                         {@$item->getIcon()->getImageTag(36)}
                     </td>
                     <td class="columnItemName">
-                        <a href="/{$item->itemID}/{$slot->getName()}"
-                           class="wowItemToolTip"
-                           data-itemid="{$item->itemID}"
-                           data-enchant="{$item->enchantID}"
-                           data-gemlist="{$item->getGemDataTag()}"
-                           data-transmog="{$item->transmogID}"
-                           data-setlist="{$item->getSetDataTag()}"
-                           data-context="{$item->context}"
-                           data-bonus="{$item->getBonusDataTag()}"
-                           name="{$item->itemID}Tooltip">
+                        <a href="{link controller='ArmoryItem' object=$item}enchant={$item->enchantID}&gemlist={$item->getGemDataTag(1)}&transmog={$item->transmogID}&setlist={$item->getSetDataTag(1)}&context={$item->context}&bonus={$item->getBonusDataTag(1)}&itemlevel={$item->itemLevel}&isartifact={$item->isArtifact()}{/link}"
+                            class="wowItemToolTip"
+                            data-itemid="{$item->itemID}"
+                            data-enchant="{$item->enchantID}"
+                            data-gemlist="{$item->getGemDataTag()}"
+                            data-transmog="{$item->transmogID}"
+                            data-setlist="{$item->getSetDataTag()}"
+                            data-context="{$item->context}"
+                            data-bonus="{$item->getBonusDataTag()}"
+                            data-itemlevel="{$item->itemLevel}"
+                            data-isartifact="{$item->isArtifact()}"
+                            name="{$item->itemID}Tooltip">
                             {@$item->getNameTag()}
                         </a>
                     </td>
@@ -58,7 +60,7 @@
                             <li>
                                 {if $item->isEnchanted()}
                                 <span class="icon-frame enchant">
-                                    <a href="/wow/de/item/130218" data-itemid="{$item->itemID}" class="wowSpellToolTip enchant" title="{$item->getEnchant()->getName()}">
+                                    <a href="{link controller='ArmoryItem' object=$item} enchant="{$item->enchantID}",gemlist="{$item->getGemDataTag()}",transmog="{$item->transmogID}",setlist="{$item->getSetDataTag()}",context="{$item->context}",bonus="{$item->getBonusDataTag()}",itemlevel="{$item->itemLevel}",isartifact="{$item->isArtifact()}"{/link}" data-itemid="{$item->itemID}" class="wowSpellToolTip enchant" title="{$item->getEnchant()->getName()}">
                                         {@$item->getEnchant()->getIcon()->getIconTag(18)}
                                         <span class="frame"></span>
                                     </a>

@@ -73,49 +73,49 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
      */
 	protected static $baseClass = WowItem::class;
 
-    protected $context = '';
+    public $context = '';
 
     /**
      * bonus IDs
      * @var integer[]
      */
-    protected $bonusList = [];
+    public $bonusList = [];
 
     /**
      * Itemstats HTML
      * @var string
      */
-    protected $statTag = '';
+    public $statTag = '';
 
     /**
      * List of enchantable slots
      * @var integer[]
      */
-    protected $enchantableSlots = [11, 16, 2];
+    public $enchantableSlots = [11, 16, 2];
 
     /**
      * gem IDs
      * @var integer[]
      */
-    protected $gemIDs = [];
+    public $gemIDs = [];
 
     /**
      * Gems in sockets
      * @var WowItem[]
      */
-    protected $gems = [];
+    public $gems = [];
 
     /**
      * enchant ID
      * @var integer
      */
-    protected $enchantID = 0;
+    public $enchantID = 0;
 
     /**
      * Enchants
      * @var WowSpell
      */
-    protected $enchant = null;
+    public $enchant = null;
 
     /**
      * setItem IDs
@@ -127,21 +127,19 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
      * transmog ID
      * @var integer
      */
-    protected $transmogID = 0;
+    public $transmogID = 0;
 
     /**
      * transmog item
      * @var WoWItem
      */
-    protected $transmog = null;
+    public $transmog = null;
 
-	/** @noinspection PhpMissingParentConstructorInspection */
-	/**
-	 * Creates a new DatabaseObjectDecorator object.
-	 *
-	 * @param	DatabaseObject		$object
-	 * @throws	SystemException
-	 */
+    /**
+     * object data
+     * @var	array
+     */
+	public $newdata = null;
 
     private static function isAvaible($objectID, $context, $bonusString) {
         $sql = "SELECT	COUNT(*)
@@ -154,26 +152,35 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
 		return $statement->fetchColumn();
     }
 
+	/** @noinspection PhpMissingParentConstructorInspection */
+	/**
+     * Creates a new DatabaseObjectDecorator object.
+     *
+     * @param	DatabaseObject		$object
+     * @throws	SystemException
+     */
 	public function __construct(DatabaseObject $object, $context = '', array $bonusList = [], array $gems = [], $enchant = 0, $transmog = 0, array $set = []) {
         parent::__construct($object);
         $row = [];
-        if (!empty($context) || !empty($bonusString)) {
+        if (!empty($context) || !empty($bonusList)) {
             $context = $this->checkContext($context) ? $context : '';
             $bonusString = implode('', $bonusList);
-            if (!$this->isAvaible($object->getObjectID(), $context, $bonusString)) bnetAPI::getItem($object->getObjectID(), $context, $bonusList);
+            if (!$this->isAvaible($object->getObjectID(), $context, $bonusString)) {
+                bnetAPI::getItem($object->getObjectID(), $context, $bonusList);
+            }
             $sql = "SELECT	*
 			    FROM		wcf".WCF_N."_gman_wow_itembonus
 			    WHERE		itemID = ?
                 AND         context LIKE ?
                 AND         bonus LIKE ?";
 		    $statement = WCF::getDB()->prepareStatement($sql);
-		    $statement->execute([$object->getObjectID(), $context, $this->bonusString]);
+		    $statement->execute([$object->getObjectID(), $context, $bonusString]);
 		    $row = $statement->fetchArray();
             if ($row === false) $row = [];
-            // overwrite Data
+            // add Data
             if (isset($row['bnetData'])) {
-                $bnetData = json_decode($this->data['bnetData'], true);
-                $this->data = array_merge($bnetData, $this->data);
+                //echo "<br>ITEM return: <pre>"; var_dump($this->data); echo "</pre>"; die();
+                $this->object->data = array_replace($this->object->data, json_decode($row['bnetData'], true));
             }
         }
         $this->bonusList = $bonusList;
@@ -187,6 +194,17 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
         $this->setIDs = $set;
     }
 
+	/**
+     * @inheritDoc
+     */
+    public function __get($name) {
+        if (isset($this->newdata[$name])) {
+            return $this->data[$name];
+        }
+        else {
+            return parent::__get($name);
+        }
+    }
     /**
      * returns the item header for tooltip
      * @return array
@@ -275,24 +293,24 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
      * returns the comma sperated gemIDs as an string
      * @return string
      */
-    public function getGemDataTag() {
-        return JSON::encode($this->gemIDs);
+    public function getGemDataTag($url = false) {
+        return $url ? implode(",", $this->gemIDs) : JSON::encode($this->gemIDs);
     }
 
     /**
      * returns the comma sperated bonusIDs as an string
      * @return string
      */
-    public function getBonusDataTag() {
-        return JSON::encode($this->bonusList);
+    public function getBonusDataTag($url = false) {
+        return empty($this->bonusList) ? '' : $url ? implode(",", $this->bonusList) :  JSON::encode($this->bonusList);
     }
 
     /**
      * returns the comma sperated set itemIDs as an string
      * @return string
      */
-    public function getSetDataTag() {
-        return JSON::encode($this->setIDs);
+    public function getSetDataTag($url = false) {
+        return empty($this->setIDs) ? '' : $url ? implode(",", $this->setIDs) : JSON::encode($this->setIDs);
     }
 
     /**
@@ -318,19 +336,17 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
     public function isEnchanted() {
         return $this->enchantID > 0 ? true : false;
     }
-
     /**
      * returns the enchantment
      * @return null|WowSpell
      */
     public function getEnchant() {
         if ($this->enchant===null) {
-            if ($this->enchantID==0) return false;
+            if ($this->enchantID==0) return null;
             $this->enchant = WowSpell::getByEnchant($this->enchantID);
         }
         return $this->enchant;
     }
-
     /**
      * returns enchant as html tag
      * @param mixed $size
@@ -425,5 +441,12 @@ class ViewableWowItem extends DatabaseObjectDecorator implements IRouteControlle
 		return $this->name;
 	}
 
+    /**
+     * check if item is artifact
+     * @return integer
+     */
+    public function isArtifact() {
+        return 0;
+    }
 
 }

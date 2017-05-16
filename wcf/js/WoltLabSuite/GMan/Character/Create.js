@@ -45,7 +45,7 @@ define(['Ajax', 'Core', 'Language', 'Dom/Util', 'Ui/Dialog'], function (Ajax, Co
         },
         _ajaxSuccess: function (data) {
             if (data.returnValues.status) {
-                this._message = data.returnValues.template;
+                this._message = data.returnValues.message;
             }
             else {
                 this._message = Language.get("wcf.page.gman.dialog.addchar.failed");

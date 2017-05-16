@@ -1,5 +1,4 @@
 <div class="wiki-tooltip">    
-{$item}
     <span class="icon-frame frame-56 float-right" style='background-image: url("{@$item->getIcon()->getURL(56)}");'>
     </span>
     <h3 class="color-q{$item->quality}">{$item->getName()}</h3>
@@ -34,9 +33,15 @@
         </li>
         {/if}
         {if $item->isEnchanhtable()}
-            <li class="color-q2 item-spec-group">
-                {if $item->isEnchanted()}{@$item->getEnchantmentTag()}{else}<span class="color-red">{lang}wcf.page.gman.tooltip.noenchant{/lang}</span>{/if}
-            </li>
+                {if $item->isEnchanted()}
+                <li class="color-q2 item-spec-group">
+                    {@$item->getEnchantmentTag()}
+                </li>
+            {else}
+                <li class="color-red item-spec-group">
+                    {lang}wcf.page.gman.tooltip.noenchant{/lang}
+                </li>
+            {/if}
         {/if}
         <li>
             <ul class="item-specs">

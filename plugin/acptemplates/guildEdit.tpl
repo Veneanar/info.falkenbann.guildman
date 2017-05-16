@@ -255,7 +255,28 @@
                  </small>
                  {/if}
              </dd>
-             </dl
+             </dl>
+             <dl {if $errorField=='wcfGroupID'} class="formError" {/if}>
+             <dt><label for="groupWcfID">{lang}wcf.acp.gman.guild.wcfgroup{/lang}</label></dt>
+             <dd>
+                 <select name="wcfGroupID" id="wcfGroupID" class="medium">
+                     <option value="0">{lang}wcf.global.noSelection{/lang}</option>
+                     {foreach from=$wcfGroups item=$group}
+                     <option value="{$group->groupID}" {if $group->groupID==$wcfGroupID} selected{/if}>{$group->getTitle()}</option>
+                     {/foreach}
+                 </select>
+                 <small>{lang}wcf.acp.gman.guild.wcfgroup.description{/lang} ID: {$wcfGroupID}</small>
+                 {if $errorField == 'wcfGroupID'}
+                 <small class="innerError">
+                     {if $errorType == 'empty'}
+                     {lang}wcf.global.form.error.empty{/lang}
+                     {else}
+                     {lang}wcf.acp.article.category.error.{@$errorType}{/lang}
+                     {/if}
+                 </small>
+                 {/if}
+             </dd>
+             </dl>
         </div>
 
  	    <div class="section">

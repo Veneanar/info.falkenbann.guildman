@@ -3,6 +3,12 @@
 {include file='armoryViewSidebar'}
 {include file='header'}
             <script data-relocate="true">
+                $(document).ajaxStop(function () {
+                    $("#activity").find("script").each(function (i) {
+                        eval($(this).text());
+                    });
+                    console.log("Triggered ajaxComplete handler.");
+                });
                 require(['WoltLabSuite/GMan/Ui/TabMenu/Loadable'], function (TabMenuLoadable) {
                     new TabMenuLoadable(document.getElementById('profileContent'), {
                         ajax: {
@@ -41,6 +47,7 @@
                     <ul>
                         <li><a href="#start" class="jsTooltip" title="{lang}wcf.page.gman.arsenal.menu.start.description{/lang}">{lang}wcf.page.gman.arsenal.menu.start{/lang}</a></li>
                         <li><a href="#equip" class="jsTooltip" title="{lang}wcf.page.gman.arsenal.menu.equip.description{/lang}">{lang}wcf.page.gman.arsenal.menu.equip{/lang}</a></li>
+                        <li><a href="#activity" class="jsTooltip" title="{lang}wcf.page.gman.arsenal.menu.activity.description{/lang}">{lang}wcf.page.gman.arsenal.menu.activity{/lang}</a></li>
                         <li><a href="#talents" class="jsTooltip" title="{lang}wcf.page.gman.arsenal.menu.talents.description{/lang}">{lang}wcf.page.gman.arsenal.menu.talents{/lang}</a></li>
                         <li><a href="#stats" class="jsTooltip" title="{lang}wcf.page.gman.arsenal.menu.stats.description{/lang}">{lang}wcf.page.gman.arsenal.menu.stats{/lang}</a></li>
                     </ul>
@@ -90,7 +97,8 @@
                     {include file='_bossKill'}
                 </div>
                 <div id="equip" class="tabMenuContent" data-menu-item="equip"></div>
-                <div id="talents" class="tabMenuContent" data-menu-item="talents">lalala</div>
+                <div id="activity" class="tabMenuContent" data-menu-item="activity"></div>
+                <div id="talents" class="tabMenuContent" data-menu-item="talents">{include file='_tabCharTalents'}</div>
                 <div id="stats" class="tabMenuContent" data-menu-item="stats"></div>
             </div>
             {include file='footer'}

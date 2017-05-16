@@ -11,6 +11,8 @@ use wcf\system\cache\runtime\GuildRuntimeChache;
 use wcf\data\guild\bosskill\CharBosskillList;
 use wcf\data\guild\bosskill\CharBosskill;
 use wcf\data\object\type\ObjectTypeCache;
+use wcf\data\guild\tracking\Tracking;
+use wcf\system\cronjob\CharacterTrackingCronjob;
 //
 // Characterverwaltung -> Gruppen anzeige
 // Charverwaltung -> gruppenfunktionalität
@@ -21,106 +23,40 @@ use wcf\data\object\type\ObjectTypeCache;
 
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
-//bnetAPI::updateGuild();
-// bnetAPI::updateGuildMemberList();
-//bnetAPI::updateCharacter([
-//        [
-//            'charInfo' => [
-//                    'name'  => 'Aiox',
-//                    'realm' => 'forscherliga',
-//                    ],
-//            'bnetUpdate' => 10
-//        ],
-//        [
-//            'charInfo' => [
-//                    'name'  =>   'Veneanar',
-//                    'realm' => 'forscherliga',
-//                    ],
-//            'bnetUpdate' => 10
-//        ],
-        //[
-        //    'charInfo' => [
-        //            'name'  =>   'Goriox',
-        //            'realm' => 'die-nachtwache',
-        //            ],
-        //    'bnetUpdate' => 10
-        //],
-//    ]);
- // WowCharacterAction::bulkUpdate();
-//while (BackgroundQueueHandler::getInstance()->getRunnableCount() > 0)
-//    BackgroundQueueHandler::getInstance()->performNextJob();
-//\wcf\system\wow\bnetAPI::updateRaidBosses();
-
-            //$guild = GuildRuntimeChache::getInstance()->getCachedObject();
 
 
-//$myChar  = WowCharacter::getByCharAndRealm('Avenaro', 'forscherliga');
+                //$t = JSON::decode($this->data[$name]);
+                //$enchant = 0;
+                //$transmog = 0;
+                //$bonus = isset($t['bonusLists']) ? $t['bonusLists'] : [];
+                //$context = isset($t['context']) ? $t['context'] : '';
+                //if (isset($t['tooltipParams']['enchant'])) $enchant = $t['tooltipParams']['enchant'];
+                //if (isset($t['tooltipParams']['transmogItem'])) $transmog = $t['tooltipParams']['transmogItem'];
+                //if (isset($t['artifactId']) && $t['artifactId'] > 0) {
+                //    $artifactTraits= isset($t['artifactTraits']) ? $t['artifactTraits'] : [];
+                //    $relics = isset($t['relics']) ? $t['relics'] : [];
+                //    $itemLevel = isset($t['itemLevel']) ? $t['itemLevel'] : [];
+                //    //echo "<pre>"; var_dump($t); "</pre>"; die();
+                //    $this->items[$name] = new ViewableArtifact(new WowItem($t['id']), '', $bonus, $relics, $artifactTraits, $itemLevel, $enchant, $transmog, []);
 
-//echo $myChar->getAvatar()->getImageTag();
 
-//$wowCharList = new WowCharacterList();
-//$wowCharList->getConditionBuilder()->add("charID LIKE ?", ['Ai%']);
-//$wowCharList->sqlLimit = 10;
-//$wowCharList->readObjects();
 
-// \wcf\system\cronjob\GuildCharUpdateCronjob::directexecute();
+$vene = new WowCharacter(318);
+//$action = new WowCharacterAction([$vene], 'updateData');
+//$action->executeAction();
 
-//echo "<pre>"; var_dump($guild->getStatisticCategorys()); echo "</pre>";
-//$guild = GuildRuntimeChache::getInstance()->getCachedObject();
-//$zone = [];
-//foreach ($guild->getStatisticZoneIDs() as $zoneID) {
-//    $bosskillList = new CharBosskillList();
-//    $bosskillList->getConditionBuilder()->add("charID = ?", [329]);
-//    $bosskillList->getConditionBuilder()->add("zoneID = ?", [$zoneID]);
-//    $bosskillList->readObjects();
-//    $bosses = [];
-//    $bosseIDs = [];
-//    foreach ($bosskillList->getObjects() as $bosskill) {
-//        if (!in_array($bosskill->bossID, $bosseIDs)) {
-//            $bosses[$bosskill->bossID] = [
-//                'boss' => $bosskill->GetBoss(),
-//                'modes' => [ [
-//                    'difficulty' => $bosskill->difficulty,
-//                    'killDate'   => $bosskill->killDate,
-//                    'quantity'   => $bosskill->quantity,
-//                    'icon'       => WCF::getPath()  . 'images/wow/difficulty_'. substr($bosskill->difficulty, strrpos($bosskill->difficulty, '.') +1) . ".png",
-//                    'lastupdate' => $bosskill->lastupdate,
-//                    ] ]
-//                ];
-//            $bosseIDs[] = $bosskill->bossID;
-//        }
-//        else {
-//            $bosses[$bosskill->bossID]['modes'][] = [
-//                    'difficulty' => $bosskill->difficulty,
-//                    'killDate'   => $bosskill->killDate,
-//                    'quantity'   => $bosskill->quantity,
-//                    'icon'       => WCF::getPath() . 'images/wow/difficulty_'. substr($bosskill->difficulty, strrpos($bosskill->difficulty, '.') +1) . ".png",
-//                    'lastupdate' => $bosskill->lastupdate,
-//                    ];
-//            }
-//        }
-//    $zone[] = [
-//        'id' => $zoneID,
-//        'name' => WCF::getLanguage()->get('wcf.global.gman.zone.'. $zoneID),
-//        'bosses' => $bosses
-//        ];
-//}
+$weappon = $vene->getEquip()->getItem('mainHand');
+echo "<pre>"; var_dump($weappon); "</pre>";
 
-//echo WCF::getTPL()->fetch('_bossKill', 'wcf', ['zoneList' => $zone]);
-//echo "<pre>"; var_dump($zone); echo "</pre>";
-//echo "<pre>"; var_dump($zone); echo "</pre>";
-//echo "Leider geil";
 
-//$charObject = new WowCharacter(127);
-//$characterAction = new WowCharacterAction([$charObject], 'updateData');
-//$characterAction->executeAction();
-bnetUpdate::updateRealms();
-//$charListObject = new WowCharacterList();
-//$charListObject->sqlLimit = 2;
-//$charList = $charListObject->getGuildCharacters();
-//echo "count: " . count($charList);
-//bnetUpdate::updateCharacter($charList, true);
+//$tracking = new Tracking(1);
+//echo $tracking->renderTemplate(new WowCharacter(294));
 
+
+////echo time();
+$cronjob = new CharacterTrackingCronjob();
+$cronjob->directExecute();
+//echo "<br>allet kla<br>" . time() ;
 ?>
 
 <!--<script data-relocate="true">

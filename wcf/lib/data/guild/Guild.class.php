@@ -126,6 +126,13 @@ class Guild extends JSONExtendedDatabaseObject {
     private $trackStatisticZoneIDs = [];
 
     /**
+     * which  Achievements should tracked?
+     * @var arary[]
+     */
+    private $trackAchievements = [];
+
+
+    /**
      * Returns the Guildleader
      *
      * @return WowCharacter
@@ -212,6 +219,18 @@ class Guild extends JSONExtendedDatabaseObject {
             }
        }
        return $this->trackStatisticIDs;
+    }
+
+    public function getTrackedAchievements() {
+        if (empty($this->trackAchievements)) {
+            $sql = "SELECT * FROM wcf".WCF_N."_gman_track_acms WHERE 1";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute();
+            while ($row = $statement->fetchArray()) {
+                $this->trackAchievements[] = ['id' => $row["acmID"], 'field' => $row['field']];
+            }
+        }
+        return $this->trackAchievements;
     }
 
     public function getFaction() {

@@ -13,6 +13,44 @@
       <listclassname>wcf\data\guild\group\GuildGroupList</listclassname>
     </type>
 
+    <!-- ACL -->
+    <type>
+      <name>info.falkenbann.gman.userapplication</name>
+      <definitionname>com.woltlab.wcf.acl</definitionname>
+    </type>
+    <type>
+      <name>info.falkenbann.gman.guildgroup</name>
+      <definitionname>com.woltlab.wcf.acl</definitionname>
+    </type>    
+    <!-- /ACL -->
+    
+    <!-- Recent Activity -->
+    <type>
+      <name>info.falkenbann.gman.recentActivityEvent.achievement</name>
+      <definitionname>com.woltlab.wcf.user.recentActivityEvent</definitionname>
+      <classname>wbb\system\user\activity\event\WowAchievementUserActivityEvent</classname>
+    </type>
+    <!-- /Recent Activity -->
+
+    <!-- Activity Points -->
+    <type>
+      <name>info.falkenbann.gman.activityPointEvent.group</name>
+      <definitionname>com.woltlab.wcf.user.activityPointEvent</definitionname>
+      <points>5</points>
+    </type>
+    <type>
+      <name>info.falkenbann.gman.activityPointEvent.achievement</name>
+      <definitionname>com.woltlab.wcf.user.activityPointEvent</definitionname>
+      <points>2</points>
+    </type>
+    <!-- /Activity Points -->
+
+    <type>
+      <name>info.falkenbann.gman.applicationComment</name>
+      <definitionname>com.woltlab.wcf.comment.commentableContent</definitionname>
+      <classname>wcf\system\comment\manager\PersonCommentManager</classname>
+    </type>
+    
     <!-- moderation items -->
     <type>
       <name>info.falkenbann.gman.moderation.charowner</name>

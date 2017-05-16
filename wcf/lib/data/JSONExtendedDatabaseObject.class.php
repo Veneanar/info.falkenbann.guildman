@@ -12,6 +12,7 @@ use wcf\system\WCF;
  */
 
 abstract class JSONExtendedDatabaseObject extends DatabaseObject {
+
     /**
      * name of the JSON field
      * @var	string

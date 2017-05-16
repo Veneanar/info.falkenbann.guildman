@@ -75,8 +75,9 @@ final class bnetUpdate {
                             bnetData = VALUES(bnetData),
                             bnetUpdate = VALUES(bnetUpdate)
                 ";
-                    $statement = WCF::getDB()->prepareStatement($sql);
+
                     WCF::getDB()->beginTransaction();
+                    $statement = WCF::getDB()->prepareStatement($sql);
                     foreach($zone['bosses'] as $boss) {
                         $statement->execute([
                             $boss["id"],
@@ -211,20 +212,22 @@ final class bnetUpdate {
         $plaindata['petSlots'] = null;
         $plaindata['mounts'] = null;
         $plaindata['lastModified'] = $plaindata['lastModified'] / 1000;
+        $plaindata['achievements'] = null;
         $petdata = array_merge($charData['pets'], $charData['petSlots']);
         $petstring = JSON::encode($petdata);
         $accID = '';
         if (strlen($petstring) > 10000)  $accID = hash('ripemd256', JSON::encode($petstring));
         $petstring = '';
-        WCF::getDB()->beginTransaction();
+        //WCF::getDB()->beginTransaction();
         $idlist= [];
+        static::updateTrackedAchievments($wowChar, $charData['achievements']);
         static::updateFeed($wowChar, $charData['feed'], $charData['inGuild']);
         static::updateCharData($wowChar, $plaindata, $accID);
         $idlist = static::updateEquip($wowChar, $plaindata['lastModified'], $charData['items']);
         static::updateMounts($wowChar, $plaindata['lastModified'], $charData['mounts']);
         static::updateStatistics($wowChar, $plaindata['lastModified'], $charData['statistics']);
         static::updatePets($wowChar, $plaindata['lastModified'], $petdata);
-        WCF::getDB()->commitTransaction();
+        //WCF::getDB()->commitTransaction();
         return $idlist;
     }
     static public function normalizeFeed($feedData, $charID, $inGuild) {
@@ -311,7 +314,9 @@ final class bnetUpdate {
             'artifactId'=>              isset($item['artifactId'])              ? $item['artifactId']           : null,
             'artifactAppearanceId'=>    isset($item['artifactAppearanceId'])    ? $item['artifactAppearanceId'] : null,
             'artifactTraits'=>          isset($item['artifactTraits'])          ? $item['artifactTraits']       : null,
-            'appearance' =>             isset($item['appearance'])              ? $item['appearance']       : null,
+            'appearance' =>             isset($item['appearance'])              ? $item['appearance']           : null,
+            'relics' =>                 isset($item['relics'])                  ? $item['relics']               : null,
+            'itemLevel' =>              isset($item['itemLevel'])               ? $item['itemLevel']            : null,
         ]);
     }
     static public function updateGuildMemberList() {
@@ -337,10 +342,9 @@ final class bnetUpdate {
                             bnetUpdate = VALUES(bnetUpdate),
                             guildRank = VALUES(guildRank)
             ";
-        $statement = WCF::getDB()->prepareStatement($sql);
 
         WCF::getDB()->beginTransaction();
-
+        $statement = WCF::getDB()->prepareStatement($sql);
         foreach ($guildmember as $member) {
             $member["character"]['lastModified'] = $member["character"]['lastModified'] / 1000;
             $member["character"]["guild"] = null;
@@ -381,7 +385,6 @@ final class bnetUpdate {
     }
     static public function updateRealms() {
         $url = bnetAPI::buildURL('realm');
-        echo "UKRL: ". $url; die();
         $request = new HTTPRequest($url);
         $request->execute();
         $reply = $request->getReply();
@@ -483,7 +486,26 @@ final class bnetUpdate {
                 )
            VALUES      (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
            ON DUPLICATE KEY UPDATE
-           characterID = VALUES(characterID)
+           averageItemLevel = VALUES(averageItemLevel),
+           averageItemLevelEquipped = VALUES(averageItemLevelEquipped),
+           head = VALUES(head),
+           neck = VALUES(neck),
+           shoulder = VALUES(shoulder),
+           back = VALUES(back),
+           chest = VALUES(chest),
+           shirt = VALUES(shirt),
+           wrist = VALUES(wrist),
+           hands = VALUES(hands),
+           waist = VALUES(waist),
+           legs = VALUES(legs),
+           feet = VALUES(feet),
+           finger1 = VALUES(finger1),
+           finger2 = VALUES(finger2),
+           trinket1 = VALUES(trinket1),
+           trinket2 = VALUES(trinket2),
+           mainHand = VALUES(mainHand),
+           offHand = VALUES(offHand),
+           equipTime = VALUES(equipTime)
            ";
         $statement = WCF::getDB()->prepareStatement($sql);
         $statement->execute([
@@ -512,17 +534,19 @@ final class bnetUpdate {
         return $idlist;
     }
     public static function updateFeed(WowCharacterEditor $wowChar, $feedList, $inGuild) {
-        $sql = "INSERT INTO  wcf".WCF_N."_gman_feedlist
+        $sql = "INSERT INTO  wcf".WCF_N."_gman_character_feedlist
                             (characterID, type, itemID, acmID, quantity, bonusLists, context, criteria, feedTime, inGuild)
                 VALUES      (?,?,?,?,?,?,?,?,?,?)
                 ON DUPLICATE KEY UPDATE
-                            characterID = VALUES(characterID)
+                            type = type
             ";
+        WCF::getDB()->beginTransaction();
         $statement = WCF::getDB()->prepareStatement($sql);
         foreach ($feedList as $feed) {
             $data = static::normalizeFeed($feed, $wowChar->characterID, $inGuild);
             $statement->execute($data);
         }
+        WCF::getDB()->commitTransaction();
     }
     public static function updateMounts(WowCharacterEditor $wowChar, $updateTime, $mountData) {
         $sql = "INSERT INTO  wcf".WCF_N."_gman_character_mounts
@@ -531,12 +555,14 @@ final class bnetUpdate {
                 ON DUPLICATE KEY UPDATE
                             characterID = VALUES(characterID)
             ";
+        WCF::getDB()->beginTransaction();
         $statement = WCF::getDB()->prepareStatement($sql);
         $statement->execute([
             $wowChar->characterID,
             JSON::encode($mountData['collected']),
             $updateTime,
         ]);
+        WCF::getDB()->commitTransaction();
     }
     public static function updateStatistics(WowCharacterEditor $wowChar, $updateTime, $statistictData) {
         $guild = GuildRuntimeChache::getInstance()->getCachedObject();
@@ -550,10 +576,10 @@ final class bnetUpdate {
                                 ON DUPLICATE KEY UPDATE
                                             quantity = VALUES(quantity),
                                             lastupdate = VALUES(lastupdate)";
-                        $statement = WCF::getDB()->prepareStatement($sql);
                         WCF::getDB()->beginTransaction();
+                        $statement = WCF::getDB()->prepareStatement($sql);
                         foreach($subCategory['statistics'] as $statistic) {
-                            if (in_array($statistic["id"], $guild->getStatisticIDs())) {
+                            if ($statistic["lastUpdated"] > 0 && in_array($statistic["id"], $guild->getStatisticIDs())) {
                                 $statistic["lastUpdated"] = $statistic["lastUpdated"] / 1000;
                                  $statement->execute([
                                     $statistic["id"],
@@ -583,18 +609,74 @@ final class bnetUpdate {
         ]);
     }
     public static function updatePets(WowCharacterEditor $wowChar, $updateTime, $pettData) {
+
         $sql = "INSERT INTO  wcf".WCF_N."_gman_character_pets
                             (characterID, bnetData, bnetUpdate)
                 VALUES      (?,?,?)
                 ON DUPLICATE KEY UPDATE
                             characterID = VALUES(characterID)
             ";
+        WCF::getDB()->beginTransaction();
         $statement = WCF::getDB()->prepareStatement($sql);
         $statement->execute([
             $wowChar->characterID,
             JSON::encode($pettData),
             $updateTime,
         ]);
+        WCF::getDB()->commitTransaction();
+    }
+    public static function updateTrackedAchievments(WowCharacterEditor $wowChar, $acmData) {
+        $guild = GuildRuntimeChache::getInstance()->getCachedObject();
+        $trackedIDs = $guild->getTrackedAchievements();
+        $sql = "INSERT INTO wcf".WCF_N."_gman_character_acms
+                                            (characterID, acmID, acmCompleted, acmQuantity, acmTimestamp, acmTimestampCompleted)
+                VALUES                      (?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                                            acmCompleted = VALUES(acmCompleted),
+                                            acmQuantity = VALUES(acmQuantity),
+                                            acmTimestamp = VALUES(acmTimestamp),
+                                            acmTimestampCompleted = VALUES(acmTimestampCompleted)
+                ";
+        WCF::getDB()->beginTransaction();
+        $statement = WCF::getDB()->prepareStatement($sql);
+        foreach ($trackedIDs as $trackID) {
+            // track Criteria
+            if ($trackID['field']=='criteria') {
+                $acmcheck = array_search($trackID['id'], $acmData['achievementsCompleted']);
+                $completd = ($acmcheck ===false) ? 0 : 1;
+                $completedtime = ($acmcheck ===false) ? $acmData['achievementsCompletedTimestamp'][$acmcheck] / 1000: 0;
+                $key = array_search($trackID['id'], $acmData['criteria']);
+                $data = isset($acmData['criteriaQuantity'][$key]) ? $acmData['criteriaQuantity'][$key] : 0;
+                $time = isset($acmData['criteriaTimestamp'][$key]) ? $acmData['criteriaTimestamp'][$key] / 1000 : 0;
+                $statement->execute([
+                    $wowChar->characterID,
+                    $trackID['id'],
+                    $completd,
+                    $data,
+                    $time,
+                    $completedtime
+                ]);
+            }
+            // track ACMs
+            else {
+                $key = array_search($trackID['id'], $acmData['achievementsCompleted']);
+                $completd = 0;
+                $time = 0;
+                if ($key!==false) {
+                    $completd = 1;
+                    $time = isset($acmData['achievementsCompletedTimestamp'][$key]) ? $acmData['achievementsCompletedTimestamp'][$key] / 1000: 0;
+                }
+                $statement->execute([
+                    $wowChar->characterID,
+                    $trackID['id'],
+                    $completd,
+                    0,
+                    $time,
+                    $time
+                ]);
+           }
+        }
+        WCF::getDB()->commitTransaction();
     }
 }
 

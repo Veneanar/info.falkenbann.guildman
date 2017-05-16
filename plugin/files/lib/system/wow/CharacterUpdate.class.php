@@ -6,6 +6,7 @@ use wcf\util\HTTPRequest;
 use wcf\util\StringUtil;
 use wcf\util\JSON;
 use wcf\system\WCF;
+use wcf\data\guild\Guild;
 use wcf\data\wow\item\WowItem;
 use wcf\data\wow\item\ViewableWowItem;
 use wcf\data\wow\character\WowCharacter;
@@ -98,7 +99,7 @@ class CharacterUpdate {
             return;
         }
          $charData = [];
-         $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->char->charname, 'realm' => $this->char->realmSlug], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts' ]);
+         $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->char->charname, 'realm' => $this->char->realmSlug], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts', 'achievements']);
         // Rufe Daten ab.
         // sollte der request fehlschalgen, warte 100ms bis 300ms und Versuche erneut.
         // notwendig um nicht gegen das key LIMIT zu stoßen.

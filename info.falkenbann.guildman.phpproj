@@ -19,10 +19,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.php" />
+    <Compile Include="plugin\ms2_ms3.sql" />
     <Compile Include="wcf\acp\templates\characterAdd.tpl" />
     <Compile Include="wcf\CLI\conf.php" />
     <Compile Include="wcf\CLI\GuildUpdate.php" />
     <Compile Include="wcf\CLI\GuildCharacterUpdate.sh" />
+    <Compile Include="wcf\imports\artifact_load.php" />
     <Compile Include="wcf\js\WoltLabSuite\GMan\Ui\Character\Search\Input.js" />
     <Compile Include="wcf\js\WoltLabSuite\GMan\Ui\Validation\Input.js" />
     <Compile Include="wcf\lib\acp\form\CharacterEditForm.class.php" />
@@ -36,37 +38,53 @@
     <Compile Include="wcf\lib\data\guild\bosskill\BosskillList.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\CharBosskillList.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\CharBosskill.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ViewableApplicationFieldList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ViewableApplicationField.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationField.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationFieldList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\GuildGroupApplication.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\GuildGroupApplicationAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\GuildGroupApplicationList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\GuildGroupApplicationEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\GuildGroupApplicationCache.class.php" />
+    <Compile Include="wcf\lib\data\guild\tracking\TrackingList.class.php" />
+    <Compile Include="wcf\lib\data\guild\tracking\TrackingDataList.class.php" />
+    <Compile Include="wcf\lib\data\guild\tracking\Tracking.class.php" />
+    <Compile Include="wcf\lib\data\guild\tracking\TrackingData.class.php" />
     <Compile Include="wcf\lib\data\ITooltipAction.class.php" />
     <Compile Include="wcf\lib\data\IValidateAction.class.php" />
     <Compile Include="wcf\lib\data\wow\boss\WowBoss.class.php" />
     <Compile Include="wcf\lib\data\wow\boss\WowBossIcon.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\CharacterTrackedData.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\CharacterTrackedDataList.class.php" />
     <Compile Include="wcf\lib\data\wow\character\slot\CharacterSlot.class.php" />
     <Compile Include="wcf\lib\data\wow\character\slot\CharacterSlotList.class.php" />
     <Compile Include="wcf\lib\data\ITabContentAction.class.php" />
+    <Compile Include="wcf\lib\data\wow\character\WowCharacterAchievment.class.php" />
+    <Compile Include="wcf\lib\data\wow\item\ViewableArtifact.class.php" />
     <Compile Include="wcf\lib\data\wow\item\ViewableWowItem.class.php" />
     <Compile Include="wcf\lib\data\wow\item\ViewableWowItemAction.class.php" />
     <Compile Include="wcf\lib\data\wow\item\WowItemAction.class.php" />
     <Compile Include="wcf\lib\data\wow\item\WowItemEditor.class.php" />
     <Compile Include="wcf\lib\data\wow\item\WowItemIcon.class.php" />
+    <Compile Include="wcf\lib\data\wow\spell\ArtifactSpell.class.php" />
     <Compile Include="wcf\lib\data\wow\spell\WowSpell.class.php" />
     <Compile Include="wcf\lib\data\wow\spell\WowSpellAction.class.php" />
     <Compile Include="wcf\lib\data\wow\spell\WowSpellEditor.class.php" />
     <Compile Include="wcf\lib\data\wow\spell\WowSpellIcon.class.php" />
     <Compile Include="wcf\lib\data\wow\spell\WowSpellList.class.php" />
+    <Compile Include="wcf\lib\form\GuildGroupEditForm.class.php" />
+    <Compile Include="wcf\lib\form\SelectCharacterForm.class.php" />
+    <Compile Include="wcf\lib\form\UserGuildGroupManageForm.class.php" />
+    <Compile Include="wcf\lib\form\GuildGroupApplicationForm.class.php" />
     <Compile Include="wcf\lib\form\UserStoryForm.class.php" />
     <Compile Include="wcf\lib\form\UserCharacterManageForm.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACM.class.php" />
     <Compile Include="wcf\lib\data\guild\achievments\GuildACMList.class.php" />
-    <Compile Include="wcf\lib\data\guild\application\GuildApplication.class.php" />
-    <Compile Include="wcf\lib\data\guild\application\GuildApplicationAction.class.php" />
-    <Compile Include="wcf\lib\data\guild\application\GuildApplicationDecorated.class.php" />
-    <Compile Include="wcf\lib\data\guild\application\GuildApplicationEditor.class.php" />
-    <Compile Include="wcf\lib\data\guild\application\GuildApplicationList.class.php" />
     <Compile Include="wcf\lib\data\guild\feed\FeedList.class.php" />
     <Compile Include="wcf\lib\data\guild\feed\FeedListList.class.php" />
     <Compile Include="wcf\lib\data\guild\group\GuildGroup.class.php" />
     <Compile Include="wcf\lib\data\guild\group\GuildGroupAction.class.php" />
-    <Compile Include="wcf\lib\data\guild\group\GuildGroupDecorated.class.php" />
     <Compile Include="wcf\lib\data\guild\group\GuildGroupEditor.class.php" />
     <Compile Include="wcf\lib\data\guild\group\GuildGroupList.class.php" />
     <Compile Include="wcf\lib\data\guild\Guild.class.php" />
@@ -84,7 +102,10 @@
     <Compile Include="wcf\lib\data\guild\point\type\PointTypeEditor.class.php" />
     <Compile Include="wcf\lib\data\guild\point\type\PointTypeList.class.php" />
     <Compile Include="wcf\lib\data\JSONExtendedDatabaseObject.class.php" />
+    <Compile Include="wcf\lib\system\cache\builder\GuildGroupApplicationCacheBuilder.class.php" />
+    <Compile Include="wcf\lib\system\comment\manager\GuildGroupApplicationCommentManager.class.php" />
     <Compile Include="wcf\lib\system\cronjob\BossesUpdateCronjob.class.php" />
+    <Compile Include="wcf\lib\system\cronjob\CharacterTrackingCronjob.class.php" />
     <Compile Include="wcf\lib\system\moderation\queue\activation\WowCharacterQueueActivationHandler.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowACM.class.php" />
     <Compile Include="wcf\lib\data\wow\acm\WowACMList.class.php" />
@@ -122,9 +143,10 @@
     <Compile Include="wcf\lib\system\cronjob\GuildCharactersUpdateCronjob.class.php" />
     <Compile Include="wcf\lib\system\cronjob\GuildUpdateACMCronjob.class.php" />
     <Compile Include="wcf\lib\system\cronjob\GuildUpdateCronjob.class.php" />
-    <Compile Include="wcf\lib\system\event\listener\UserPageWowCharsListener.class.php" />
+    <Compile Include="wcf\lib\system\event\listener\GuildGroupApplicationPageListener.class.php" />
     <Compile Include="wcf\lib\system\menu\user\profile\content\WowCharacterListContent.class.php" />
     <Compile Include="wcf\lib\system\option\user\WowCharacterDetails.class.php" />
+    <Compile Include="wcf\lib\system\user\activity\event\WowAchievementUserActivityEvent.class.php" />
     <Compile Include="wcf\lib\system\worker\SpellUpdateWorker.class.php" />
     <Compile Include="wcf\lib\system\worker\CharacterUpdateWorker.class.php" />
     <Compile Include="wcf\lib\system\wow\AsyncSpellUpdate.class.php" />
@@ -144,12 +166,14 @@
     <Compile Include="wcf\templates\charList48.tpl" />
     <Compile Include="wcf\templates\itemTooltip.tpl" />
     <Compile Include="wcf\templates\userCharacterManage.tpl" />
+    <Compile Include="wcf\templates\_relicList.tpl" />
     <Compile Include="wcf\templates\_socketList.tpl" />
     <Compile Include="wcf\test.php" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="plugin\" />
     <Folder Include="plugin\language\" />
+    <Folder Include="wcf\imports\" />
     <Folder Include="wcf\" />
     <Folder Include="wcf\acp\templates\" />
     <Folder Include="wcf\acp\images\" />
@@ -177,10 +201,12 @@
     <Folder Include="wcf\lib\acp\form\" />
     <Folder Include="wcf\lib\data\guild\" />
     <Folder Include="wcf\lib\data\guild\achievments\" />
-    <Folder Include="wcf\lib\data\guild\application\" />
     <Folder Include="wcf\lib\data\guild\feed\" />
     <Folder Include="wcf\lib\data\guild\group\" />
     <Folder Include="wcf\lib\data\guild\bosskill\" />
+    <Folder Include="wcf\lib\data\guild\group\application\" />
+    <Folder Include="wcf\lib\data\guild\group\application\field\" />
+    <Folder Include="wcf\lib\data\guild\tracking\" />
     <Folder Include="wcf\lib\data\guild\point\" />
     <Folder Include="wcf\lib\data\guild\point\type\" />
     <Folder Include="wcf\lib\data\moderation\" />
@@ -195,6 +221,13 @@
     <Folder Include="wcf\lib\data\wow\spell\" />
     <Folder Include="wcf\lib\data\wow\realm\" />
     <Folder Include="wcf\lib\form\" />
+    <Folder Include="wcf\lib\system\cache\builder\" />
+    <Folder Include="wcf\lib\system\comment\" />
+    <Folder Include="wcf\lib\system\comment\manager\" />
+    <Folder Include="wcf\lib\system\user\" />
+    <Folder Include="wcf\lib\system\user\activity\" />
+    <Folder Include="wcf\lib\system\user\activity\event\" />
+    <Folder Include="wcf\lib\util\" />
     <Folder Include="wcf\lib\page\" />
     <Folder Include="wcf\lib\system\" />
     <Folder Include="wcf\lib\system\background\" />
@@ -225,6 +258,8 @@
     <Folder Include="wcf\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="artifact.txt" />
+    <Content Include="plugin\aclOption.xml" />
     <Content Include="plugin\acpMenu.xml" />
     <Content Include="plugin\clipboardAction.xml" />
     <Content Include="plugin\cronjob.xml" />
@@ -245,6 +280,7 @@
     <Content Include="plugin\userProfileMenu.xml" />
     <Content Include="wcf\acp\templates\characterEdit.tpl" />
     <Content Include="wcf\acp\templates\charList48.tpl" />
+    <Content Include="wcf\acp\templates\groupApplicationAdd.tpl" />
     <Content Include="wcf\acp\templates\guildEdit.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd - Copy.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd.tpl" />
@@ -258,6 +294,9 @@
     <Content Include="wcf\CLI\GuildUpdate.sh" />
     <Content Include="wcf\CLI\GuildCharacterUpdate.bat" />
     <Content Include="wcf\CLI\GuildCharacterUpdate.php" />
+    <Content Include="wcf\images\bar.png" />
+    <Content Include="wcf\images\bg_chart.gif" />
+    <Content Include="wcf\images\subbar.png" />
     <Content Include="wcf\images\wow\0-0-avatar.jpg" />
     <Content Include="wcf\images\wow\0-0-inset.jpg" />
     <Content Include="wcf\images\wow\1-0-avatar.jpg" />
@@ -350,6 +389,9 @@
     <Content Include="wcf\images\wow\9-1-avatar.jpg" />
     <Content Include="wcf\images\wow\9-1-inset.jpg" />
     <Content Include="wcf\images\wow\9-1-profilemain.jpg" />
+    <Content Include="wcf\imports\artifactTraits.json" />
+    <Content Include="wcf\imports\TextFile1.txt" />
+    <Content Include="wcf\js\WoltLabSuite\GMan\Character\CreateAndAdd.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\SetMain.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\SetUser.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\Create.js" />
@@ -365,14 +407,26 @@
     <Content Include="wcf\templates\charShow24.tpl" />
     <Content Include="wcf\templates\charStatistics.tpl" />
     <Content Include="wcf\templates\charStoryEdit.tpl" />
+    <Content Include="wcf\templates\charts.html" />
     <Content Include="wcf\templates\dialogAddChar.tpl" />
+    <Content Include="wcf\templates\guildGroupAdd.tpl" />
+    <Content Include="wcf\templates\spellTooltip.tpl" />
     <Content Include="wcf\templates\moderationCharEnable.tpl" />
     <Content Include="wcf\templates\charList24.tpl" />
+    <Content Include="wcf\templates\selectCharacter.tpl" />
+    <Content Include="wcf\templates\userGroupManage.tpl" />
     <Content Include="wcf\templates\userProfileWowCharacterList.tpl" />
     <Content Include="wcf\templates\_bossKill.tpl" />
+    <Content Include="wcf\templates\_charSelection.tpl" />
+    <Content Include="wcf\templates\_chartCSS.tpl" />
+    <Content Include="wcf\templates\_forumGroupApplication.tpl" />
     <Content Include="wcf\templates\_socketList18.tpl" />
+    <Content Include="wcf\templates\_tabCharActivity_itemlvl.tpl" />
+    <Content Include="wcf\templates\_tabCharActivity_artifact.tpl" />
+    <Content Include="wcf\templates\_tabCharActivity_mythics.tpl" />
     <Content Include="wcf\templates\_tabCharEquip.tpl" />
     <Content Include="wcf\templates\_tabCharStatistics.tpl" />
+    <Content Include="wcf\templates\_tabCharTalents.tpl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libs\moderatedUserGroups\moderatedUserGroups.phpproj">

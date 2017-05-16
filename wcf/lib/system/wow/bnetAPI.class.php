@@ -33,8 +33,6 @@ use wcf\util\HTTPRequest;
  */
 
 final class bnetAPI {
-
-
     static public function buildURL($type, $game='wow', array $data = [], array $parameters = []) {
         if (GMAN_BNET_KEY == '') throw new AuthenticationFailure('Missing battle.net API Key! Settings -> Gman -> battle.net');
         if ($type=='guild') {
@@ -100,7 +98,7 @@ final class bnetAPI {
             throw new LoggedException('Cannot connect to battle.net: '.$url.' returns: HTTP: ' . $reply['statusCode']);
         }
         $iteminfo = JSON::decode($reply['body'], true);
-        if (empty($con) && empty($bonusList)) {
+        if (empty($con) && empty($bl)) {
             $itemName = $iteminfo['name'];
             $sql = "INSERT INTO  wcf".WCF_N."_gman_wow_items
                                 (itemID, bnetData, bnetUpdate, itemName)

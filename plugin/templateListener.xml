@@ -6,6 +6,12 @@
       <environment>user</environment>
       <templatecode><![CDATA[{if $userProfile->characterID}{@$userProfile->getFormattedUserOption('characterID')}{/if}]]></templatecode>
       <templatename>messageSidebar</templatename>
+    </templatelistener>
+    <templatelistener name="ApplicationForum">
+      <environment>user</environment>
+      <templatename>header</templatename>
+      <eventname>contents</eventname>
+      <templatecode><![CDATA[{if $guildGroupApplication|isset}{include file='_forumGroupApplication'}{/if}]]></templatecode>
     </templatelistener>    
 	</import>
 </data>

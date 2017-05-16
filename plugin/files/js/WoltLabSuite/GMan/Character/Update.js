@@ -51,7 +51,8 @@ define(['Ajax', 'Core', 'Dom/Util'], function (Ajax, Core, DomUtil) {
             this._activeElement = event.currentTarget;
             var charID = elData(this._activeElement, 'character-id');
             return {
-                objectIDs: [ charID  ]
+                objectIDs: [charID],
+                force: true
             };
         }
     };

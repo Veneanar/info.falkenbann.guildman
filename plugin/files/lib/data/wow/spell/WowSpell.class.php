@@ -11,12 +11,13 @@ use wcf\data\JSONExtendedDatabaseObject;
  * @author	Veneanar Falkenbann
  * @copyright	2017  2017 Sylvanas Garde - sylvanasgarde.com - distributed by falkenbann.info
  * @license	GNU General Public License <http://opensource.org/licenses/gpl-license.php>
- * @package	info.falkenbann.guildman
+ * @package	info.falkenbann.guildman artifactID, spellRank
  *
  * @property        integer		    $itemID			                PRIMARY KEY
  * @property        string		    $bnetData
  * @property-read	integer			$spellID						spell ID
  * @property-read	integer			$enchantID			            enchantID
+ * @property-read	integer			$enchantID			            spellRank
  * @property-read	string			$spellName					    Name des Zaubers
  * @property-read	string			$name   					    Name des Zaubers
  * @property-read	integer			$bnetUpdate						Zeitpunkt der Aktualisierung
@@ -30,17 +31,17 @@ use wcf\data\JSONExtendedDatabaseObject;
  *
  */
 class WowSpell extends JSONExtendedDatabaseObject {
-	
+
     /**
      * @inheritDoc
      */
 	protected static $databaseTableName = 'gman_wow_spells';
-	
+
     /**
      * @inheritDoc
      */
 	protected static $databaseTableIndexName = 'spellID';
-	
+
     /**
      * {@inheritDoc}
      */
@@ -52,9 +53,50 @@ class WowSpell extends JSONExtendedDatabaseObject {
      */
     private $iconimage = null;
 
+    /**
+     * artifact rank
+     * @var integer
+     */
+    public $rank = 0;
+
+    public $bonusRank = 0;
+
     const SMALL = 18;
     const MEDIUM = 36;
     const LARGE = 56;
+
+    //public function __construct($id, array $row = null, DatabaseObject $object = null) {
+    //    if ($id !== null) {
+    //        $sql = "SELECT	*
+    //            FROM	".static::getDatabaseTableName()."
+    //            WHERE	".static::getDatabaseTableIndexName()." = ?";
+    //        $statement = WCF::getDB()->prepareStatement($sql);
+    //        $statement->execute([$id]);
+    //        $row = $statement->fetchArray();
+
+    //        // enforce data type 'array'
+    //        if ($row === false) $row = [];
+    //    }
+    //    else if ($object !== null) {
+    //        $row = $object->data;
+    //    }
+
+    //    if (isset($row[static::$JSONfield])) {
+    //        if (empty($row[static::$JSONfield])) {
+    //            $sql = "SELECT	".static::$JSONfield."
+    //                FROM	".static::getDatabaseTableName()."
+    //                WHERE	".static::getDatabaseTableIndexName()." = ?";
+    //            $statement = WCF::getDB()->prepareStatement($sql);
+    //            $statement->execute([$id]);
+    //            $row = $statement->fetchArray();
+    //        }
+    //        $bnetData = json_decode($row[static::$JSONfield], true);
+    //        $row[static::$JSONfield] = '';
+    //        $row = array_merge($bnetData, $row);
+    //    }
+    //    $this->handleData($row);
+
+    //}
 
     /**
      * get the Spell via the enchant ID
@@ -93,10 +135,14 @@ class WowSpell extends JSONExtendedDatabaseObject {
         return $this->spellName;
     }
 
-    public function getSimpleTooltip() {
+    public function getDescription() {
         return $this->description;
     }
-    
+
+    public function getSimpleTooltip() {
+        return $this->getDescription();
+    }
+
     /**
      * Get tag with optinal tooltip
      *

@@ -16,7 +16,7 @@ class WowCharacterList extends DatabaseObjectList {
 	/**
 	 * {@inheritDoc}
 	 */
-	public static $baseClass = WowCharacter::class;
+	public $className = WowCharacter::class;
 
     public function getGuildCharacters($jobList = false, $splitcount = GMAN_BNET_JOBSIZE) {
         $this->getConditionBuilder()->add('inGuild = ?', [1]);

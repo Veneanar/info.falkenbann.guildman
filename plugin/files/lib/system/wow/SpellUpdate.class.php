@@ -107,7 +107,6 @@ class SpellUpdate {
             $t->getIcon()->getURL(56);
 
        } else {
-           echo "UPDATE spell ID: ".$this->spellID. " ERROR Spell not found". PHP_EOL;
             if (ENABLE_DEBUG_MODE) @file_put_contents(WCF_DIR . 'log/spell.log', "*** ERROR *** spell ".$this->spellID. ": Item not found". PHP_EOL, FILE_APPEND);
         }
     }

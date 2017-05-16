@@ -5,8 +5,8 @@
 		<packagename language="de">Gildenmanager für World of Warcraft</packagename>
 		<packagedescription>Gildenmanager</packagedescription>
 		<packagedescription language="de">Gildenmanager</packagedescription>
-		<version>0.9.0 dev 2</version>
-		<date>2017-04-10</date>
+		<version>0.3.5 dev 3</version>
+		<date>2017-05-16</date>
 	</packageinformation>
 
 	<authorinformation>
@@ -34,6 +34,7 @@
     <instruction type="userMenu" />
     <instruction type="userProfileMenu" />    
     <instruction type="templateListener" />
+    <instruction type="eventListener" />
     <instruction type="cronjob" />
     <instruction type="clipboardAction" />
     <instruction type="objectType" />

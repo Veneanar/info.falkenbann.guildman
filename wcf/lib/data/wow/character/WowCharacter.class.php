@@ -1,6 +1,7 @@
 <?php
 namespace wcf\data\wow\character;
 use wcf\system\WCF;
+use wcf\util\JSON;
 use wcf\system\WCFACP;
 use wcf\system\request\LinkHandler;
 use wcf\system\request\IRouteController;
@@ -16,6 +17,8 @@ use wcf\data\wow\realm\WowRealm;
 use wcf\data\JSONExtendedDatabaseObject;
 use wbb\data\thread\Thread;
 use wbb\data\post\Post;
+use wcf\data\wow\item\WowItem;
+use wcf\data\wow\item\ViewableWowItem;
 
 /**
  * Represents a WoW Charackter
@@ -158,6 +161,13 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
      * @var float
      */
     private $lastcall = 0;
+
+    /**
+     * char's acms
+     * @var WowCharacterAchievment[]
+     */
+    private $wowAcm = [];
+
 
     /**
      * Returns a WoWChar Object from a given char and realm name
@@ -655,5 +665,31 @@ class WowCharacter extends JSONExtendedDatabaseObject implements IRouteControlle
 
     public function getWarcraftlogsLink() {
         return 'https://www.warcraftlogs.com/';
+    }
+
+    public function getHighestMythicDungeon() {
+        date_default_timezone_set('UTC');
+        $time1 = strtotime("last " .GMAN_BNET_FIRSTDAYOFWEEK) + (3600 * 3);
+        $sql = "SELECT * FROM wcf".WCF_N."_gman_character_feedlist
+                WHERE characterID = ?
+                AND feedTime > ?
+                AND context LIKE 'challenge-mode-jackpot'";
+        $statement = WCF::getDB()->prepareStatement($sql);
+        $statement->execute([$this->characterID, $time1]);
+        $row = $statement->fetchSingleRow();
+        if (!isset($row['itemID'])) return 0;
+        $bonus = isset($row['bonusLists']) ? JSON::decode($row['bonusLists']) : [];
+        $item = new ViewableWowItem(new WowItem($row['itemID']), 'challenge-mode-jackpot', $bonus);
+        if(preg_match('/\d+/',$item->nameDescription ,$matches) == true){
+            return $matches[0];
+        }
+        return 0;
+    }
+
+    public function getAchievment($acmID) {
+        if (!isset($this->wowAcm[$acmID])) {
+            $this->wowAcm[$acmID] = WowCharacterAchievment::getForCharacter($this->characterID, $acmID);
+        }
+        return $this->wowAcm[$acmID];
     }
 }

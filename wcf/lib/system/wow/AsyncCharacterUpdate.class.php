@@ -99,6 +99,24 @@ class AsyncCharacterUpdate extends \Thread{
         }
     }
 
+    /**
+     * checks if an update is needed
+     * @return bool
+     */
+    private function checkUpdate() {
+        if ($this->forceUpdate) return true;
+        $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->char->charname, 'realm' => $this->char->realmSlug]);
+        $data = $this->getData($url);
+        if (!isset($data['lastModified'])) return true;
+        if ($this->char->bnetUpdate < ($data['lastModified'] / 1000)) return true;
+        return false;
+    }
+
+    /**
+     * trys to get data
+     * @param mixed $url
+     * @return array|null
+     */
     private function getData($url) {
         $reply = '';
         $request = new HTTPRequest($url, ['timeout' => 25]);
@@ -130,7 +148,11 @@ class AsyncCharacterUpdate extends \Thread{
     public function run() {
         new \wcf\system\WCF();
         $charData = [];
-        $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->char->charname, 'realm' => $this->char->realmSlug], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts' ]);
+        if (!$this->checkUpdate()) {
+            echo "UPDATE ". $this->char->charname . "(".$this->char->characterID."): no update requiered" . PHP_EOL;
+            return;
+        }
+        $url = bnetAPI::buildURL('character', 'wow', ['char' => $this->char->charname, 'realm' => $this->char->realmSlug], ['guild', 'items', 'feed', 'statistics', 'stats', 'petSlots', 'pets', 'mounts', 'achievements']);
         // Rufe Daten ab.
         // sollte der request fehlschalgen, warte 500ms bis 1,5 und Verscuhe erneut.
         // notwendig um nicht gegen das key LIMIT zu stoßen.
@@ -151,7 +173,6 @@ class AsyncCharacterUpdate extends \Thread{
             if (ENABLE_DEBUG_MODE) file_put_contents(WCF_DIR .  'log/bnet.log', '*** ERROR *** '. $url . PHP_EOL, FILE_APPEND);
             return;
         }
-        if ($this->forceUpdate || $this->bnetUpdate < ($charData['lastModified'] / 1000)) {
             // download images
             $images = ['avatar','inset','profilemain'];
             foreach($images as $image) {
@@ -170,10 +191,6 @@ class AsyncCharacterUpdate extends \Thread{
                 }
             }
             echo "UPDATE ". $this->char->charname . "(".$this->char->characterID."): \033[32m update done. \033[0m" . PHP_EOL;
-        }
-        else {
-            echo "UPDATE ". $this->char->charname . "(".$this->char->characterID."): no update requiered" . PHP_EOL;
-        }
     }
 }
 

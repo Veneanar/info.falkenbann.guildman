@@ -6,6 +6,8 @@ use wcf\form\AbstractForm;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\WCF;
 use wcf\data\wow\character\WowCharacterAction;
+use wcf\data\wow\character\WowCharacterList;
+use wcf\data\wow\character\WowCharacter;
 
 /**
  * Gilden Gruppen bearbeiten
@@ -73,6 +75,20 @@ class GuildGroupEditForm extends GuildGroupAddForm {
             $this->fetchWCL             = $this->guildGroupObject->fetchWCL;
             $this->wclQuery             = $this->guildGroupObject->wclQuery;
             $this->orderNo              = $this->guildGroupObject->orderNo;
+
+            $this->leaderList = new WowCharacterList();
+            $this->leaderList->getConditionBuilder()->add('gman_character.characterID IN (
+				SELECT	leaderID
+				FROM	wcf'.WCF_N.'_gman_group_leader
+				WHERE	groupID = ?
+			)', [$this->guildGroupObject->groupID]);
+            $this->leaderList->sqlOrderBy = 'gman_character.charname ASC';
+            $this->leaderList->readObjects();
+
+            $this->leader = [];
+            foreach ($this->leaderList as $wowChar) {
+                $this->leader[] = $wowChar->charname;
+            }
         }
     }
 
@@ -124,6 +140,28 @@ class GuildGroupEditForm extends GuildGroupAddForm {
 			]
 		]);
 		$this->objectAction->executeAction();
+
+        // save group leaders
+        $sql = "DELETE FROM wcf".WCF_N."_gman_group_leader WHERE groupID = ?";
+        $statement = WCF::getDB()->prepareStatement($sql);
+        $statement->execute([$this->guildGroupObject->groupID]);
+
+        if ($this->leaderList !== null) {
+            $sql = "INSERT INTO wcf".WCF_N."_gman_group_leader (groupID, leaderID) VALUES (?, ?)";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            foreach ($this->leaderList as $wowChar) {
+                $statement->execute([$this->guildGroupObject->groupID, $wowChar->characterID]);
+                if (!$this->guildGroupObject->isMember($wowChar, null)) {
+                    $characterAction = new WowCharacterAction([$wowChar], 'AddToGroup', [
+                        'groupID' => $this->guildGroupObject->groupID
+                        ]);
+                    $characterAction->executeAction();
+                }
+            }
+        }
+
+        // add chars
+
 		$this->saved();
 
 		WCF::getTPL()->assign('success', true);

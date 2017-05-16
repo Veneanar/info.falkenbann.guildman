@@ -20,6 +20,8 @@ use wcf\system\request\RouteHandler;
 use wcf\system\wow\bnetUpdate;
 use wcf\system\exception\NamedUserException;
 use wcf\system\cache\runtime\GuildRuntimeChache;
+use wcf\data\user\group\UserGroupList;
+use wcf\data\user\group\UserGroup;
 
 /**
  * ACP Gildenverwaltung
@@ -65,6 +67,17 @@ class GuildEditForm extends AbstractForm {
      */
 	public $birthday = '';
 
+	/**
+     * group ID assigned to WCF group
+     * @var	integer
+     */
+	public $wcfGroupID = 0;
+
+	/**
+     * group assigned to WCF group
+     * @var	UserGroup;
+     */
+	public $groupWcf = null;
 	/**
      * publication date object
      * @var	\DateTime
@@ -145,6 +158,8 @@ class GuildEditForm extends AbstractForm {
             }
             if (isset($_POST['articleID'])) $this->articleID = intval($_POST['articleID']);
             if (isset($_POST['pageID'])) $this->pageID = intval($_POST['pageID']);
+            if (isset($_POST['wcfGroupID']))  $this->wcfGroupID = intval($_POST['wcfGroupID']);
+
     }
 
 	/**
@@ -189,6 +204,10 @@ class GuildEditForm extends AbstractForm {
                 throw new UserInputException('pageID', 'notFound');
             }
         }
+		if ($this->wcfGroupID > 0) {
+            $this->groupWcf = new UserGroup($this->wcfGroupID);
+            if ($this->groupWcf->getObjectID()==0) throw new UserInputException('wcfGroupID');
+		}
     }
 
 	/**
@@ -202,6 +221,7 @@ class GuildEditForm extends AbstractForm {
 				'pageID'    => $this->pageID > 0 ? $this->pageID : null ,
 				'birthday'  => $this->birthdayObj->getTimestamp(),
 				'logoID'    => $this->imageID[0] > 0 ? $this->imageID[0]: null,
+                'wcfGroupID'  => $this->wcfGroupID,
 			]
 		];
 		$this->objectAction = new GuildAction([$this->guild], 'update', $data);
@@ -225,6 +245,7 @@ class GuildEditForm extends AbstractForm {
 			$dateTime = DateUtil::getDateTimeByTimestamp($this->guild->birthday);
 			$dateTime->setTimezone(WCF::getUser()->getTimeZone());
 			$this->birthday = $dateTime->format('c');
+            $this->wcfGroupID = $this->guild->wcfGroupID;
             $this->readImages();
         }
 	}
@@ -252,6 +273,11 @@ class GuildEditForm extends AbstractForm {
             $pageList->readObjects();
             $pages = $pageList->getObjects();
             //echo "<pre>"; var_dump($pages); echo "</pre>"; die;
+
+            $wcfGroupList = new UserGroupList();
+            $wcfGroupList->readObjects();
+            $wcfGroups = $wcfGroupList->getObjects();
+
             WCF::getTPL()->assign([
 			    'action'    => 'edit',
 			    'articles'  => $articles,
@@ -262,6 +288,8 @@ class GuildEditForm extends AbstractForm {
                 'birthday'  => $this->birthday,
                 'articleID' => $this->articleID,
                 'pageID'    =>  $this->pageID,
+                'wcfGroupID'        => $this->wcfGroupID,
+                'wcfGroups'         => $wcfGroups,
 		    ]);
         }
 	}

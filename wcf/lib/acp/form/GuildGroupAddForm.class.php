@@ -22,6 +22,8 @@ use wbb\data\board\BoardList;
 use wcf\data\user\group\UserGroupList;
 use wcf\data\guild\Guild;
 use wcf\data\wow\character\WowCharacterAction;
+use wcf\data\wow\character\WowCharacterList;
+use wcf\data\wow\character\WowCharacter;
 use wcf\system\cache\runtime\GuildRuntimeChache;
 
 /**
@@ -182,6 +184,17 @@ class GuildGroupAddForm extends AbstractForm {
      */
 	public $calendarCategoryID = 0;
 
+	/**
+     * array of leader given by the user
+     * @var	string[]
+     */
+	protected $leader = [];
+
+	/**
+     * userlist containing the group leaders
+     * @var	WowCharacterList
+     */
+	protected $leaderList;
 
 
 	/**
@@ -240,6 +253,7 @@ class GuildGroupAddForm extends AbstractForm {
             'fetchWCL'          => $this->fetchWCL,
             'wclQuery'          => $this->wclQuery,
             'orderNo'           => $this->orderNo,
+            'leader' => implode(', ', $this->leader)
 		]);
         //echo "assign Vars: <pre>"; var_dump($this->wcfGroupID); echo "</pre>"; die();
 	}
@@ -287,6 +301,14 @@ class GuildGroupAddForm extends AbstractForm {
             if (isset($_POST['wclQuery']))      $this->wclQuery         = StringUtil::trim($_POST['wclQuery']);
         }
         if (isset($_POST['orderNo']))       $this->orderNo          = intval($_POST['orderNo']);
+		if (isset($_POST['leader'])) {
+			$leaders = ArrayUtil::trim(explode(',', $_POST['leader']));
+
+			// remove duplicates
+			foreach ($leaders as $leader) {
+				$this->leader[mb_strtolower($leader)] = $leader;
+			}
+		}
 	}
 
 
@@ -364,6 +386,32 @@ class GuildGroupAddForm extends AbstractForm {
             }
         }
 
+		try {
+			if (!empty($this->leader)) {
+				$this->leaderList = new WowCharacterList();
+				$this->leaderList->getConditionBuilder()->add('charname IN (?)', [$this->leader]);
+				$this->leaderList->readObjects();
+
+				$tmp = [];
+				foreach ($this->leaderList as $wowChar) {
+					$tmp[mb_strtolower($wowChar->charname)] = $wowChar->charname;
+				}
+
+				$difference = array_diff_key($this->leader, $tmp);
+				if (!empty($difference)) {
+					WCF::getTPL()->assign([
+						'unknownLeader' => $difference
+					]);
+					throw new UserInputException('leader', 'notFound');
+				}
+
+				$this->leader = $tmp;
+			}
+		}
+		catch (UserInputException $e) {
+			throw new UserInputException('leader', 'notFound');
+		}
+
 	}
 
 	/**
@@ -397,11 +445,23 @@ class GuildGroupAddForm extends AbstractForm {
                 'lastUpdate'        => TIME_NOW
 			]
 		]);
-		$this->objectAction->executeAction();
-
+		$group = $this->objectAction->executeAction()['returnValues'];
+        if ($this->leaderList !== null) {
+			// save group leaders
+			$sql = "INSERT INTO wcf".WCF_N."_gman_group_leader (groupID, leaderID) VALUES (?, ?)";
+			$statement = WCF::getDB()->prepareStatement($sql);
+			foreach ($this->leaderList as $wowChar) {
+				$statement->execute([$group->groupID, $wowChar->characterID]);
+                $characterAction = new WowCharacterAction([$wowChar], 'AddToGroup', [
+                        'groupID' => $group->groupID
+                        ]);
+               $characterAction->executeAction();
+			}
+		}
 		$this->saved();
 
 		// reset values
+        $this->leader = [];
 		$this->groupName = '';
         $this->groupTeaser = '';
         $this->wcfGroupID = 0;

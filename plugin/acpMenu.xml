@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/maelstrom/acpMenu.xsd">
   <import>
+
+    <acpmenuitem name="wcf.acp.menu.link.gman">
+      <parent>wcf.acp.menu.link.application</parent>
+    </acpmenuitem>
     
     <acpmenuitem name="wcf.acp.menu.link.gman.guildedit">
       <controller>wcf\acp\form\GuildEditForm</controller>
-      <parent>wcf.acp.menu.link.user.management</parent>
+      <parent>wcf.acp.menu.link.gman</parent>
       <permissions>admin.gman.canChangeGuild</permissions>
     </acpmenuitem>
 
     <acpmenuitem name="wcf.acp.menu.link.gman.charlist">
       <controller>wcf\acp\page\CharacterListForm</controller>
-      <parent>wcf.acp.menu.link.user.management</parent>
+      <parent>wcf.acp.menu.link.gman</parent>
       <permissions>mod.gman.canUpdateChar</permissions>
     </acpmenuitem>
 
@@ -23,7 +27,7 @@
     
     <acpmenuitem name="wcf.acp.menu.link.gman.grouplist">
       <controller>wcf\acp\page\GuildGroupListForm</controller>
-      <parent>wcf.acp.menu.link.user.management</parent>
+      <parent>wcf.acp.menu.link.gman</parent>
       <permissions>admin.gman.canEditGroups</permissions>
     </acpmenuitem>
    
@@ -32,8 +36,20 @@
       <parent>wcf.acp.menu.link.gman.grouplist</parent>
       <permissions>admin.gman.canAddGroups</permissions>
       <icon>fa-plus</icon>
-    </acpmenuitem>    
-    
+    </acpmenuitem>
 
+    <acpmenuitem name="wcf.acp.menu.link.gman.applist">
+      <controller>wcf\acp\page\GuildGroupApplicationList</controller>
+      <parent>wcf.acp.menu.link.gman</parent>
+      <permissions>mod.gman.canEditGroups</permissions>
+    </acpmenuitem>
+
+    <acpmenuitem name="wcf.acp.menu.link.gman.appadd">
+      <controller>wcf\acp\form\GuildGroupApplicationAdd</controller>
+      <parent>wcf.acp.menu.link.gman.applist</parent>
+      <permissions>admin.gman.canAddGroups</permissions>
+      <icon>fa-plus</icon>
+    </acpmenuitem>
+    
   </import>
 </data>

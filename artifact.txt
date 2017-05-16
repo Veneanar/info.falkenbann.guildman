@@ -1,0 +1,241 @@
+﻿        "mainHand": {
+            "id": 128861,
+            "name": "Titanenblitz",
+            "icon": "inv_firearm_2h_artifactlegion_d_02",
+            "quality": 6,
+            "itemLevel": 919,
+            "tooltipParams": {
+                "gem0": 140841,
+                "gem1": 140812,
+                "gem2": 140815,
+                "transmogItem": 67224,
+                "timewalkerLevel": 110
+            },
+            "stats": [{
+                "stat": 32,
+                "amount": 902
+            }, {
+                "stat": 49,
+                "amount": 866
+            }, {
+                "stat": 3,
+                "amount": 2590
+            }, {
+                "stat": 7,
+                "amount": 3885
+            }],
+            "armor": 0,
+            "weaponInfo": {
+                "damage": {
+                    "min": 13296,
+                    "max": 13297,
+                    "exactMin": 13296.0,
+                    "exactMax": 13296.0
+                },
+                "weaponSpeed": 3.0,
+                "dps": 4432.0
+            },
+            "context": "scenario-normal",
+            "bonusLists": [726, 1533, 1525, 1527],
+            "artifactId": 56,
+            "displayInfoId": 156952,
+            "artifactAppearanceId": 448,
+            "artifactTraits": [{
+                "id": 1336,
+                "rank": 1
+            }, {
+                "id": 872,
+                "rank": 3
+            }, {
+                "id": 874,
+                "rank": 3
+            }, {
+                "id": 875,
+                "rank": 6
+            }, {
+                "id": 869,
+                "rank": 3
+            }, {
+                "id": 878,
+                "rank": 1
+            }, {
+                "id": 1095,
+                "rank": 3
+            }, {
+                "id": 882,
+                "rank": 1
+            }, {
+                "id": 880,
+                "rank": 1
+            }, {
+                "id": 870,
+                "rank": 3
+            }, {
+                "id": 868,
+                "rank": 3
+            }, {
+                "id": 879,
+                "rank": 1
+            }, {
+                "id": 873,
+                "rank": 4
+            }, {
+                "id": 877,
+                "rank": 1
+            }, {
+                "id": 871,
+                "rank": 3
+            }, {
+                "id": 876,
+                "rank": 1
+            }, {
+                "id": 1368,
+                "rank": 1
+            }, {
+                "id": 1636,
+                "rank": 1
+            }, {
+                "id": 1517,
+                "rank": 2
+            }],
+            "relics": [{
+                "socket": 0,
+                "itemId": 140841,
+                "context": 4,
+                "bonusLists": [3520, 1507, 3337]
+            }, {
+                "socket": 1,
+                "itemId": 140812,
+                "context": 5,
+                "bonusLists": [3444, 1482, 3528]
+            }, {
+                "socket": 2,
+                "itemId": 140815,
+                "context": 5,
+                "bonusLists": [3444, 1487, 3336]
+            }],
+            "appearance": {
+                "itemId": 67224,
+                "itemAppearanceModId": 13
+            }
+        }
+    },
+
+	{
+		"id": 128861,
+		"description": "Ein unnachahmliches Beispiel technomagischer Ingenieurskunst, erf\u00fcllt mit der Macht der St\u00fcrme.",
+		"name": "Titanenblitz",
+		"icon": "inv_firearm_2h_artifactlegion_d_01",
+		"stackable": 1,
+		"itemBind": 1,
+		"bonusStats": [{
+			"stat": 32,
+			"amount": 346
+		}, {
+			"stat": 49,
+			"amount": 332
+		}, {
+			"stat": 3,
+			"amount": 511
+		}, {
+			"stat": 7,
+			"amount": 766
+		}],
+		"itemSpells": [{
+			"spellId": 197886,
+			"spell": {
+				"id": 197886,
+				"name": "",
+				"icon": "trade_archaeology_nerubian_artifactfragment",
+				"description": "",
+				"castTime": "Spontanzauber"
+			},
+			"nCharges": 0,
+			"consumable": false,
+			"categoryId": 0,
+			"trigger": "ON_EQUIP"
+		}, {
+			"spellId": 212009,
+			"spell": {
+				"id": 212009,
+				"name": "Titanenblitz",
+				"icon": "trade_engineering",
+				"description": "",
+				"range": "100 Meter Reichweite",
+				"castTime": "Spontanzauber",
+				"cooldown": "1,5 Sek. Abklingzeit"
+			},
+			"nCharges": 0,
+			"consumable": false,
+			"categoryId": 0,
+			"trigger": "ON_LOOTED"
+		}, {
+			"spellId": 197344,
+			"spell": {
+				"id": 197344,
+				"name": "Hatis Bande",
+				"icon": "ability_hunter_ferociousinspiration",
+				"description": "Hati k\u00e4mpft jetzt als Begleiter f\u00fcr Euch.",
+				"castTime": "Passiv"
+			},
+			"nCharges": 0,
+			"consumable": false,
+			"categoryId": 0,
+			"trigger": "ON_EQUIP"
+		}],
+		"buyPrice": 11066649,
+		"itemClass": 2,
+		"itemSubClass": 3,
+		"containerSlots": 0,
+		"weaponInfo": {
+			"damage": {
+				"min": 2752,
+				"max": 2753,
+				"exactMin": 2752,
+				"exactMax": 2752
+			},
+			"weaponSpeed": 3,
+			"dps": 917.3333
+		},
+		"inventoryType": 26,
+		"equippable": true,
+		"itemLevel": 750,
+		"maxCount": 1,
+		"maxDurability": 0,
+		"minFactionId": 0,
+		"minReputation": 0,
+		"quality": 6,
+		"sellPrice": 2213329,
+		"requiredSkill": 0,
+		"requiredLevel": 0,
+		"requiredSkillRank": 0,
+		"socketInfo": {
+			"sockets": [{
+				"type": "WIND"
+			}, {
+				"type": "ARCANE"
+			}]
+		},
+		"itemSource": {
+			"sourceId": 0,
+			"sourceType": "NONE"
+		},
+		"baseArmor": 0,
+		"hasSockets": true,
+		"isAuctionable": false,
+		"armor": 0,
+		"displayInfoId": 156948,
+		"nameDescription": "",
+		"nameDescriptionColor": "000000",
+		"upgradable": true,
+		"heroicTooltip": false,
+		"context": "",
+		"bonusLists": [],
+		"availableContexts": [""],
+		"bonusSummary": {
+			"defaultBonusLists": [],
+			"chanceBonusLists": [],
+			"bonusChances": []
+		},
+		"artifactId": 56
+	}

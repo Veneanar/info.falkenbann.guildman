@@ -178,8 +178,12 @@
         <categoryname>gman.bnet</categoryname>
         <optiontype>text</optiontype>
         <defaultvalue></defaultvalue>
+      </option>
+      <option name="gman_bnet_trackingdata">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>boolean</optiontype>
+        <defaultvalue>60</defaultvalue>
       </option>      
-      
       <option name="gman_bnet_region">
         <categoryname>gman.bnet</categoryname>
         <optiontype>select</optiontype>
@@ -188,11 +192,18 @@
 us.api.battle.net:us.api.battle.net
 kr.api.battle.net:kr.api.battle.net
 tw.api.battle.net:tw.api.battle.net]]>
-
         </selectoptions>
         <defaultvalue><![CDATA[eu.api.battle.net]]></defaultvalue>
       </option>
-
+      <option name="gman_bnet_firstdayofweek">
+        <categoryname>gman.bnet</categoryname>
+        <optiontype>select</optiontype>
+      <selectoptions>
+        tuesday:gman.bnet.gman_bnet_firstdayofweek.tuesday
+        wednesday:gman.bnet.gman_bnet_firstdayofweek.wednesday
+      </selectoptions>
+        <defaultvalue>wednesday</defaultvalue>
+      </option>     
       <option name="gman_bnet_language">
         <categoryname>gman.bnet</categoryname>
 	<optiontype>select</optiontype>

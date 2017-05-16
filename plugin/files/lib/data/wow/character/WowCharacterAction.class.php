@@ -29,6 +29,9 @@ use wcf\util\JSON;
 use wcf\system\cache\runtime\GuildRuntimeChache;
 use wcf\data\wow\character\slot\CharacterSlotList;
 use wcf\data\user\option\ViewableUserOption;
+use wcf\data\guild\tracking\Tracking;
+use wcf\data\guild\tracking\TrackingList;
+use wcf\data\guild\group\application\GuildGroupApplication;
 
 /**
  * Executes WoW Character-related actions.
@@ -74,7 +77,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
 	/**
      * @inheritDoc
      */
-	protected $allowGuestAccess = ['getSearchResultList', 'getValidateResult'];
+	protected $allowGuestAccess = ['create', 'validateCreate', 'validateGetValidateResult', 'getSearchResultList', 'getValidateResult', 'getTabContent'];
 
     /**
      * @inheritDoc
@@ -197,6 +200,7 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
         $this->validateGetValidateResult();
         $this->readBoolean('isAjax', false, 'data');
         $this->readInteger('userAdd', true, 'data');
+        $this->readInteger('appID', true, 'data');
     }
 
     /**
@@ -221,11 +225,21 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
         if ($this->parameters['data']['contentName']=='equip') {
             $template = WCF::getTPL()->fetch('_tabCharEquip', 'wcf', ['viewChar' => $wowChar, 'slotList' => $slotlist->getObjects()]);
         }
+        if ($this->parameters['data']['contentName']=='activity') {
+            $trackingList = new TrackingList();
+            $trackingList->sqlOrderBy ='trackingOrderNo ASC';
+            $trackingList->readObjects();
+            $template = '';
+            foreach ($trackingList->getObjects() as $tracking) {
+                $template .= $tracking->renderTemplate($wowChar);
+            }
+        }
         return [
             'status'        => true,
             'contentName'   => $this->parameters['data']['contentName'],
             'template'      => $template,
         ];
+
     }
 
     /**
@@ -271,7 +285,12 @@ class WowCharacterAction extends AbstractDatabaseObjectAction implements ISearch
             if (isset($this->parameters['data']['isAjax'])) {
                 return [
                     'status'    => true,
-                    'template' => WCF::getTPL()->fetch('dialogAddChar', 'wcf', ['success' => true, 'char' => $charObject]),
+                    'message' => WCF::getTPL()->fetch('dialogAddChar', 'wcf', ['success' => true, 'char' => $charObject]),
+                    'template' => WCF::getTPL()->fetch('_charSelection', 'wcf', [
+                        'success' => true,
+                        'char' => $charObject,
+                        'application' => isset($this->parameters['data']['appID']) ? new GuildGroupApplication($this->parameters['data']['appID']) : null,
+                        ])
                     ];
             }
             else {

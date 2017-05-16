@@ -20,6 +20,49 @@
   top: 40px;
 }
 
+artifactRelic {
+    display: inline-block; 
+    float: none;
+}
+
+
+.artifactTrait1 {
+    border-color: #ffffff;
+    margin: 5px;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.artifactTrait2, .artifactTrait4 {
+    border-color: #1eff00;
+    margin: 5px;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block; 
+    float: none;
+}
+
+.artifactTrait3, .artifactTrait5 {
+    border-color: #0081ff;
+    margin: 5px;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.artifactTrait6 {
+    border-color: #c600ff;
+    margin: 5px;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block; 
+    float: none;
+}
+
+.artifactTraitItem {
+    width: 300px;
+    margin: 5px;
+}
+
 /* utility*/
 .clear { clear: both; display: block; margin: 0; padding: 0; }
 

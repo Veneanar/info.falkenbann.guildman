@@ -31,16 +31,42 @@ class ViewableWowItemAction extends WowItemAction implements ITooltipAction{
     /**
      * @inheritDoc
      */
+
 	public function getTooltip() {
-        $wowItem = new ViewableWowItem(
-            new WowItem($this->parameters['data']['itemID']),
-            $this->parameters['data']['itemContext'],
-            $this->parameters['data']['itemBonuslist'],
-            $this->parameters['data']['itemGems'],
-            $this->parameters['data']['itemEnchant'],
-            $this->parameters['data']['itemTransmog'],
-            $this->parameters['data']['itemSet']
-            );
+        $wowItem = null;
+        if ($this->parameters['data']['isArtifact']) {
+            $relicList = [];
+            foreach($this->parameters['data']['itemGems'] as $relic) {
+                $data = explode('-', $relic);
+                $relicList[] = [
+                    'itemId'        => intval($data[0]),
+                    'bonusLists'    => isset($data[1]) ? explode('.', $data[1]) : '',
+                    ];
+            }
+            //echo "<pre>"; var_dump($this->parameters['data']['itemGems']); var_dump($relicList); echo "</pre>"; die();
+            $wowItem = new ViewableArtifact(
+                new WowItem($this->parameters['data']['itemID']),
+                $this->parameters['data']['itemContext'],
+                $this->parameters['data']['itemBonuslist'],
+                $relicList,
+                [],
+                $this->parameters['data']['itemLevel'],
+                $this->parameters['data']['itemEnchant'],
+                $this->parameters['data']['itemTransmog']
+                );
+        }
+        else {
+            $wowItem = new ViewableWowItem(
+                new WowItem($this->parameters['data']['itemID']),
+                $this->parameters['data']['itemContext'],
+                $this->parameters['data']['itemBonuslist'],
+                $this->parameters['data']['itemGems'],
+                $this->parameters['data']['itemEnchant'],
+                $this->parameters['data']['itemTransmog'],
+                $this->parameters['data']['itemSet']
+                );
+        }
+        // echo "<pre>";  var_dump($wowItem); echo "</pre>"; die();
         //             'template' => WCF::getTPL()->fetch('itemTooltip')
         return [
             'success' => true,
@@ -54,10 +80,16 @@ class ViewableWowItemAction extends WowItemAction implements ITooltipAction{
 	public function validateGetTooltip() {
         $this->readInteger('itemID', false, 'data');
         $this->readString('itemContext', true, 'data');
-        $this->readIntegerArray('itemBonuslist', true, 'data');
         $this->readInteger('itemEnchant', true, 'data');
         $this->readInteger('itemTransmog', true, 'data');
-        $this->readIntegerArray('itemGems', true, 'data');
+        $this->readIntegerArray('itemBonuslist', true, 'data');
         $this->readIntegerArray('itemSet', true, 'data');
+        $this->readBoolean('isArtifact', false, 'data');
+        if ($this->parameters['data']['isArtifact']) {
+            $this->readStringArray('itemGems', true, 'data');
+        }
+        else {
+            $this->readIntegerArray('itemGems', true, 'data');
+        }
     }
 }

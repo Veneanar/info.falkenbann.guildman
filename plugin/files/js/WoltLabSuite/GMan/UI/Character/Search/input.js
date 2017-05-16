@@ -8,7 +8,7 @@
  * @package	info.falkenbann.guildman
  * @see         module:WoltLabSuite/Core/Ui/Search/Input
  */
-define(['Core', 'WoltLabSuite/Core/Ui/Search/Input'], function (Core, UiSearchInput) {
+define(['Ajax', 'Core', 'Ui/SimpleDropdown', 'WoltLabSuite/Core/Ui/Search/Input'], function (Ajax, Core, UiSimpleDropdown, UiSearchInput) {
     "use strict";
 
     /**
@@ -31,6 +31,42 @@ define(['Core', 'WoltLabSuite/Core/Ui/Search/Input'], function (Core, UiSearchIn
             UiCharacterSearchInput._super.prototype.init.call(this, element, options);
         },
 
+
+        _search: function (value) {
+            if (this._request) {
+                this._request.abortPrevious();
+            }
+            var output = value.split(/[,]+/).pop();
+            if (output.length > 2) {
+                this._request = Ajax.api(this, this._getParameters(output.trim()));
+            }
+        },
+
+        _setValue: function (value) {
+            var commaIndex = this._element.value.lastIndexOf(",");
+            if (commaIndex > 1) {
+                this._element.value = this._element.value.substring(0, commaIndex) + ', ' + value;
+            }
+            else {
+                this._element.value = value;
+            }
+        },
+        /**
+		 * Selects an item.
+		 * 
+		 * @param       {Element}       item    selected item
+		 * @protected
+		 */
+        _selectItem: function (item) {
+            if (this._options.callbackSelect && this._options.callbackSelect(item) === false) {
+                this._setValue('');
+            }
+            else {
+                this._setValue(elData(item, 'label'));
+            }
+            this._activeItem = null;
+            UiSimpleDropdown.close(this._dropdownContainerId);
+        },
         _createListItem: function (item) {
             var listItem = UiCharacterSearchInput._super.prototype._createListItem.call(this, item);
             elData(listItem, 'type', item.type);

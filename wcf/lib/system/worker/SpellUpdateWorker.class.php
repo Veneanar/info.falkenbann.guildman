@@ -43,7 +43,7 @@ class SpellUpdateWorker extends AbstractRebuildDataWorker {
 			return;
 		}
         foreach ($this->objectList as $spell) {
-            $sync = new SpellUpdate($spell->getObjectID());
+            $sync = new SpellUpdate($spell->spellID);
             $sync->run();
         }
     }

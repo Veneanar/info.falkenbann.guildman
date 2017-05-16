@@ -110,6 +110,27 @@
         </dd>
         </dl>
 
+        <dl{if $errorField=='leader'} class="formError" {/if}>
+        <dt><label for="leader">{lang}wcf.acp.gman.group.leader{/lang}</label></dt>
+        <dd>
+            <input type="text" id="leader" name="leader" value="{$leader}" class="long">
+            {if $errorField == 'leader'}
+            <small class="innerError">
+                {if $errorType == 'empty'}
+                {lang}wcf.global.form.error.empty{/lang}
+                {else}
+                {lang}wcf.acp.gman.leader.error.{@$errorType}{/lang}
+                {/if}
+            </small>
+            {/if}
+            <small>{lang}wcf.acp.gman.group.leader.description{/lang}</small>
+        </dd>
+        </dl>
+        <script data-relocate="true">
+            require(['WoltLabSuite/GMan/Ui/Character/Search/Input'], function(UiCharacterSearchInput) {
+                new UiCharacterSearchInput(elBySel('input[name="leader"]'));
+            });
+        </script>
     </div>
 
     <div class="section">

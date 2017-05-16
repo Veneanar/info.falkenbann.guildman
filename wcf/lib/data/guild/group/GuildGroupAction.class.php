@@ -28,15 +28,15 @@ class GuildGroupAction extends AbstractDatabaseObjectAction implements ISearchAc
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $permissionsUpdate = array();
+	protected $permissionsUpdate = array('admin.gman.canEditGroups');
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $permissionsCreate = array();
+	protected $permissionsCreate = array('admin.gman.canAddGroups');
 	/**
 	 * {@inheritDoc}
 	 */
-	protected $permissionsDelete = array();
+	protected $permissionsDelete = array('admin.gman.canDeleteGroups');
 	/**
 	 * {@inheritDoc}
 	 */
@@ -93,9 +93,7 @@ class GuildGroupAction extends AbstractDatabaseObjectAction implements ISearchAc
             $objectAction = new WowCharacterAction($charList, 'setWCFGroups', ['oldWCFGroups' => []]);
             $objectAction->executeAction();
         }
-
-
-
+        return $guildGroup;
     }
 
     public function update() {

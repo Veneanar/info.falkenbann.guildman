@@ -8,8 +8,10 @@ use wcf\data\DatabaseObject;
 use wcf\data\media\Media;
 use wcf\data\media\ViewableMedia;
 use wcf\data\user\group\UserGroup;
+use wcf\data\user\User;
 use wcf\data\wow\character\WowCharacter;
 use wcf\data\wow\character\WowCharacterList;
+use wcf\system\database\util\PreparedStatementConditionBuilder;
 
 
 /**
@@ -82,6 +84,12 @@ class GuildGroup extends DatabaseObject implements IRouteController {
      */
     private $wcfGroup = null;
 
+    /**
+     * temporary member object
+     * @var WoWCharacter
+     */
+    private $tMember = null;
+
 	/**
      * Returns true if current user may delete this group.
      *
@@ -131,6 +139,67 @@ class GuildGroup extends DatabaseObject implements IRouteController {
     }
 
     /**
+     * get Chaname if user is member
+     * @param User $user
+     * @return null|WowCharacter
+     */
+    public function getMemberNameFromUser(User $user) {
+        if ($this->tMember===null) {
+            if ($this->isMember(null, $user)) {
+                return $this->tMember;
+            }
+            else {
+                return null;
+            }
+        }
+        return $this->tMember;
+    }
+
+
+
+
+    /**
+     * checks if a char or an user is member of this group.
+     * @param WowCharacter $wowChar
+     * @param User $user
+     * @return bool
+     */
+    public function isMember(WowCharacter $wowChar = null, User $user = null) {
+        if ($wowChar !== null) {
+            $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_char_to_group
+			    WHERE		groupID = ?
+                AND         characterID = ?";
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute([$this->getObjectID(), $wowChar->getObjectID()]);
+            $row = $statement->fetchArray();
+            if (!$row) return false;
+            return true;
+        }
+        if ($user !== null) {
+            $userCharList = new WowCharacterList();
+            $userCharList->getConditionBuilder()->add("userID = ?", [$user->getObjectID()]);
+            $userCharList->readObjectIDs();
+
+            $conditions = new PreparedStatementConditionBuilder();
+            $conditions->add("groupID = ?", [$this->getObjectID()]);
+            $conditions->add("characterID IN (?)", [$userCharList->getObjectIDs()]);
+            $sql = "SELECT	characterID, groupID
+			FROM	wcf".WCF_N."_gman_char_to_group
+			".$conditions;
+            $statement = WCF::getDB()->prepareStatement($sql);
+            $statement->execute($conditions->getParameters());
+            $row = $statement->fetchArray();
+            if (!$row) return false;
+            $this->tMember = new WowCharacter($row['characterID']);
+            return true;
+        }
+        return false;
+    }
+
+
+
+    /**
      * Checks if a user or a character is leader. if omitted the params the session user will be used.
      *
      * @param integer $id either the ID of an User or a WoWCharacter
@@ -140,7 +209,7 @@ class GuildGroup extends DatabaseObject implements IRouteController {
      */
     public function isLeader($id = 0, $isUser = true) {
         if ($id==0) $id = WCF::getUser()->userID;
-        $leaderList = $this->getLeader;
+        $leaderList = $this->getLeader();
         foreach($leaderList as $wowChar) {
             if ($isUser) {
                 if ($wowChar->userID == $id) return true;

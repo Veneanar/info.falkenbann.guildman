@@ -3,6 +3,7 @@ namespace wcf\data\wow\character;
 use wcf\data\DatabaseObject;
 use wcf\data\wow\item\WowItem;
 use wcf\data\wow\item\ViewableWowItem;
+use wcf\data\wow\item\ViewableArtifact;
 use wcf\util\JSON;
 use wcf\system\WCF;
 
@@ -39,23 +40,32 @@ class WowCharacterItemSet extends DatabaseObject {
             }
             else {
                 $t = JSON::decode($this->data[$name]);
-                $gems = [];
                 $enchant = 0;
                 $transmog = 0;
-                $set = [];
                 $bonus = isset($t['bonusLists']) ? $t['bonusLists'] : [];
                 $context = isset($t['context']) ? $t['context'] : '';
-                // max 3 sockets supportet
-                if (isset($t['tooltipParams']['gem0'])) $gems[] = $t['tooltipParams']['gem0'];
-                if (isset($t['tooltipParams']['gem1'])) $gems[] = $t['tooltipParams']['gem1'];
-                if (isset($t['tooltipParams']['gem2'])) $gems[] = $t['tooltipParams']['gem2'];
-                // check fpr enchant
                 if (isset($t['tooltipParams']['enchant'])) $enchant = $t['tooltipParams']['enchant'];
-                // check for transmogItem
                 if (isset($t['tooltipParams']['transmogItem'])) $transmog = $t['tooltipParams']['transmogItem'];
-                // check for setitems set
-                if (isset($t['tooltipParams']['set'])) $set = $t['tooltipParams']['set'];
-                $this->items[$name] = new ViewableWowItem(new WowItem($t['id']), $context, $bonus, $gems, $enchant, $transmog, $set);
+                if (isset($t['artifactId']) && $t['artifactId'] > 0) {
+                    $artifactTraits= isset($t['artifactTraits']) ? $t['artifactTraits'] : [];
+                    $relics = isset($t['relics']) ? $t['relics'] : [];
+                    $itemLevel = isset($t['itemLevel']) ? $t['itemLevel'] : 0;
+                    //echo "<pre>"; var_dump($t); "</pre>"; die();
+                    $this->items[$name] = new ViewableArtifact(new WowItem($t['id']), '', $bonus, $relics, $artifactTraits, $itemLevel, $enchant, $transmog, []);
+                }
+                else {
+                    // Herausfinden warum die artefactwaffen nicht korrekt abgerufen werden!
+                    $gems = [];
+                    $set = [];
+                    // max 3 sockets supportet
+                    if (isset($t['tooltipParams']['gem0'])) $gems[] = $t['tooltipParams']['gem0'];
+                    if (isset($t['tooltipParams']['gem1'])) $gems[] = $t['tooltipParams']['gem1'];
+                    if (isset($t['tooltipParams']['gem2'])) $gems[] = $t['tooltipParams']['gem2'];
+                    // check for setitems set
+                    if (isset($t['tooltipParams']['set'])) $set = $t['tooltipParams']['set'];
+                    $this->items[$name] = new ViewableWowItem(new WowItem($t['id']), $context, $bonus, $gems, $enchant, $transmog, $set);
+
+                }
             }
         }
         return $this->items[$name];

@@ -128,7 +128,7 @@ class WowItem extends JSONExtendedDatabaseObject {
 		$this->handleData($row);
     }
 
-    private static function isAvaible($id) {
+    public static function isAvaible($id) {
         $sql = "SELECT	COUNT(*)
 			    FROM		wcf".WCF_N."_gman_wow_items
 			    WHERE		itemID = ?";
@@ -181,7 +181,6 @@ class WowItem extends JSONExtendedDatabaseObject {
         return $this->name;
     }
 
-
     /**
      * Returns the Itemname
      * @return string
@@ -198,7 +197,6 @@ class WowItem extends JSONExtendedDatabaseObject {
     public function getNameTag() {
         return '<span class="color-q'.$this->quality.'">'. $this->getName().'</span>';
     }
-
 
     /**
      * get the requirements of an item as string array
@@ -235,7 +233,6 @@ class WowItem extends JSONExtendedDatabaseObject {
     public function getMaxCount() {
         return $this->maxCount ? WCF::getLanguage()->get('wcf.page.gman.item.maxcount') : null;
     }
-
     /**
      * returns the price as gold, silver, copper arry
      * @return array

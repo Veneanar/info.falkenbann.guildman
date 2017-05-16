@@ -164,7 +164,8 @@ class ArmoryCharPage extends AbstractPage {
         }
         $slotlist = new CharacterSlotList();
         $slotlist->readObjects();
-		WCF::getTPL()->assign([
+        //WCF::getTPL()->append('specialStyles', '<link rel="stylesheet" type="text/css" href="'.RELATIVE_WCF_DIR.'style/chartist/chartist.css" />');
+        WCF::getTPL()->assign([
             'guild' => $this->guild,
 			'viewChar' => $this->char,
             'twinks' => $this->twinks,

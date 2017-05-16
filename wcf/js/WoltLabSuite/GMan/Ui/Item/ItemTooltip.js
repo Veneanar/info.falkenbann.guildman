@@ -45,6 +45,8 @@ define(['Core', 'Dom/ChangeListener', 'WoltLabSuite/GMan/Ui/WowTooltip'], functi
             var set = JSON.parse( elData(this._activeElement, 'setlist'));
             var enchant = elData(this._activeElement, 'enchant');
             var transmog = elData(this._activeElement, 'transmog');
+            var isartifact = elData(this._activeElement, 'isartifact');
+            var itemlevel = elData(this._activeElement, 'itemlevel');
             return {
                 parameters: {
                     data: {
@@ -54,7 +56,10 @@ define(['Core', 'Dom/ChangeListener', 'WoltLabSuite/GMan/Ui/WowTooltip'], functi
                         itemEnchant: enchant,
                         itemGems: gems,
                         itemSet: set,
-                        itemTransmog: transmog
+                        itemTransmog: transmog,
+                        isArtifact: isartifact,
+                        itemLevel: itemlevel
+
                     }
                 }
             };
