@@ -49,10 +49,7 @@ class ViewableApplicationField extends DatabaseObjectDecorator {
             $statement = WCF::getDB()->prepareStatement($sql);
             $statement->execute([$object->getObjectID(), $appID]);
             $row = $statement->fetchArray();
-            if ($row === false) throw new SystemException('Base application not specified');
-            if (isset($row['bnetData'])) {
-                $this->object->data = array_replace($this->object->data, $row);
-            }
+            if ($row === false) throw new SystemException('Base field not specified');
         }
     }
 }

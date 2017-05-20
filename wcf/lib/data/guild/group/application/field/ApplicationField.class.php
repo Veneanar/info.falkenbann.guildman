@@ -29,8 +29,6 @@ use wcf\util\MessageUtil;
  * @property string		    $fieldRead              Forum in der die Bewrbungen gepostet werden
  * @property string		    $fieldValidation        Der Bewerber muss eingelogt sein j/n
  * @property string		    $fieldRender	        Artikel über die Bewerbung
- * @property integer		$fieldRequierd		    Gruppe für die Bewerbung
- * @property integer		$fieldOrder	            Gruppe für die Bewerbung
  *
  */
 class ApplicationField extends DatabaseObject {
@@ -52,6 +50,8 @@ class ApplicationField extends DatabaseObject {
      * @var mixed
      */
     protected $value = null;
+
+    public $orderNo = 0;
 
     /**
      * reads the field value
@@ -153,9 +153,9 @@ class ApplicationField extends DatabaseObject {
 	}
 
 	/**
-	 * returns the field title
-	 * @return string
-	 */
+     * returns the field title
+     * @return string
+     */
 	public function getTitle() {
         if (strpos($this->fieldTitle, '.page.') > 1) {
             return WCF::getLanguage()->get($this->fieldTitle);
@@ -164,4 +164,11 @@ class ApplicationField extends DatabaseObject {
             return $this->fieldTitle;
         }
 	}
+
+    public function setOrder($order) {
+        $this->orderNo = $order;
+    }
+    public function getOrder() {
+        return $this->orderNo;
+    }
 }

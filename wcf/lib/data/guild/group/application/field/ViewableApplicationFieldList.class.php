@@ -17,7 +17,7 @@ class ViewableApplicationFieldList extends DatabaseObjectList {
     /**
      * @inheritDoc
      */
-	public $sqlOrderBy = 'user_table.username';
+	public $sqlOrderBy = 'field_to_application.fieldOrder';
 
     /**
 	 * @inheritDoc

@@ -31,6 +31,7 @@ use wcf\data\guild\group\application\field\ViewableApplicationFieldList;
  * @property integer		$appGroupID		    Gruppe für die Bewerbung
  * @property integer		$appForumID         Forum in der die Bewrbungen gepostet werden
  * @property integer		$requireUser        Der Bewerber muss eingelogt sein j/n
+ * @property integer        $active             Die Bewerbung ist aktiv
  *
  */
 class GuildGroupApplication extends DatabaseObject implements IRouteController {

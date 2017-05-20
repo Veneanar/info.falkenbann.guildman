@@ -39,7 +39,7 @@ class GuildGroupAddForm extends AbstractForm {
 	/**
 	 * @inheritDoc
 	 */
-	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
+	public $activeMenuItem = 'wcf.acp.menu.link.gman.groupadd';
 
 	/**
 	 * @inheritDoc

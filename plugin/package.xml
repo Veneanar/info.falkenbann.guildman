@@ -5,7 +5,7 @@
 		<packagename language="de">Gildenmanager für World of Warcraft</packagename>
 		<packagedescription>Gildenmanager</packagedescription>
 		<packagedescription language="de">Gildenmanager</packagedescription>
-		<version>0.3.5 dev 3</version>
+		<version>0.3.6 dev 3</version>
 		<date>2017-05-16</date>
 	</packageinformation>
 
@@ -27,6 +27,7 @@
     <instruction type="acpTemplate">acptemplate.tar</instruction>
     <instruction type="language">language/*.xml</instruction>
     <instruction type="acpMenu" />
+    <instruction type="aclOption" />    
     <instruction type="userGroupOption" />
     <instruction type="userOption" />
     <instruction type="option" />
@@ -40,8 +41,9 @@
     <instruction type="objectType" />
   </instructions>
 
-  <instructions type="update" fromversion="0.8.0 dev 2">
-    <instruction type="userOption" />
+  <instructions type="update" fromversion="0.3.5 dev 3">
+    <instruction type="aclOption" />
+    <instruction type="acpMenu" />    
   </instructions> 
   
 </package>

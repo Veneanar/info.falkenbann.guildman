@@ -21,6 +21,7 @@
     <Compile Include="index.php" />
     <Compile Include="plugin\ms2_ms3.sql" />
     <Compile Include="wcf\acp\templates\characterAdd.tpl" />
+    <Compile Include="wcf\acp\templates\_applicationField.tpl" />
     <Compile Include="wcf\CLI\conf.php" />
     <Compile Include="wcf\CLI\GuildUpdate.php" />
     <Compile Include="wcf\CLI\GuildCharacterUpdate.sh" />
@@ -29,15 +30,24 @@
     <Compile Include="wcf\js\WoltLabSuite\GMan\Ui\Validation\Input.js" />
     <Compile Include="wcf\lib\acp\form\CharacterEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\CharacterAddForm.class.php" />
+    <Compile Include="wcf\lib\acp\form\GuildGroupApplicationAddForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildGroupAddForm.class.php" />
+    <Compile Include="wcf\lib\acp\form\GuildGroupApplicationEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildGroupEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
     <Compile Include="wcf\lib\acp\page\CharacterListPage.class.php" />
+    <Compile Include="wcf\lib\acp\page\GuildGroupApplicationList.class.php" />
     <Compile Include="wcf\lib\acp\page\GuildGroupListPage.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\Bosskill.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\BosskillList.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\CharBosskillList.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\CharBosskill.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ApplicationAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ApplicationActionList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ViewableApplicationField.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ViewableApplicationFieldList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationFieldEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationFieldAction.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\field\ViewableApplicationFieldList.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\field\ViewableApplicationField.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationField.class.php" />
@@ -185,6 +195,7 @@
     <Folder Include="wcf\js\WoltLabSuite\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Character\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\Appfields\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Character\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Character\Validation\" />
@@ -192,6 +203,7 @@
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Character\Search\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\GuildGroup\Search\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Item\" />
+    <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Ul\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\TabMenu\" />
     <Folder Include="wcf\js\WoltLabSuite\GMan\Ui\Validation\" />
     <Folder Include="wcf\lib\" />
@@ -206,6 +218,7 @@
     <Folder Include="wcf\lib\data\guild\bosskill\" />
     <Folder Include="wcf\lib\data\guild\group\application\" />
     <Folder Include="wcf\lib\data\guild\group\application\field\" />
+    <Folder Include="wcf\lib\data\guild\group\application\action\" />
     <Folder Include="wcf\lib\data\guild\tracking\" />
     <Folder Include="wcf\lib\data\guild\point\" />
     <Folder Include="wcf\lib\data\guild\point\type\" />
@@ -281,6 +294,7 @@
     <Content Include="wcf\acp\templates\characterEdit.tpl" />
     <Content Include="wcf\acp\templates\charList48.tpl" />
     <Content Include="wcf\acp\templates\groupApplicationAdd.tpl" />
+    <Content Include="wcf\acp\templates\groupApplicationEdit.tpl" />
     <Content Include="wcf\acp\templates\guildEdit.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd - Copy.tpl" />
     <Content Include="wcf\acp\templates\guildGroupAdd.tpl" />
@@ -391,6 +405,7 @@
     <Content Include="wcf\images\wow\9-1-profilemain.jpg" />
     <Content Include="wcf\imports\artifactTraits.json" />
     <Content Include="wcf\imports\TextFile1.txt" />
+    <Content Include="wcf\js\WoltLabSuite\GMan\Ui\Ul\UladdElement.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\CreateAndAdd.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\SetMain.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\SetUser.js" />

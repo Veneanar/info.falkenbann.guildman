@@ -71,11 +71,11 @@ CREATE TABLE wcf1_gman_character (
 
 DROP TABLE IF EXISTS wcf1_gman_tracking;
 CREATE TABLE wcf1_gman_tracking (
-  trackingID int(10) NOT NULL,
-  trackingName varchar(24) DEFAULT NULL,
-  trackingTitle varchar(30) DEFAULT NULL,
-  trackingDescription varchar(30) DEFAULT NULL,
-  trackingTemplate varchar(30) DEFAULT NULL,
+  trackingID INT(10) NOT NULL,
+  trackingName varchar(50) DEFAULT NULL,
+  trackingTitle varchar(80) DEFAULT NULL,
+  trackingDescription varchar(250) DEFAULT NULL,
+  trackingTemplate varchar(100) DEFAULT NULL,
   trackingTab varchar(30) DEFAULT NULL,
   trackingOrderNo smallint(4) DEFAULT NULL
 ) ENGINE=InnoDB;
@@ -183,14 +183,16 @@ CREATE TABLE wcf1_gman_char_to_group (
 DROP TABLE IF EXISTS wcf1_gman_application;
 CREATE TABLE wcf1_gman_application (
   appID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  appName VARCHAR(25) NOT NULL,
-  appTitle VARCHAR(30) NOT NULL,
+  appTitle VARCHAR(100) NOT NULL,
   appDescription TEXT NULL,
   appArticleID INT(10) NOT NULL DEFAULT 0,
   appGroupID INT(10) NOT NULL DEFAULT 0,
   appForumID INT(10) NOT NULL DEFAULT 0,
+  appPollID INT(10) NOT NULL DEFAULT 0,
+  appCommentID INT(10) NOT NULL DEFAULT 0,
   requireUser INT(1) NOT NULL DEFAULT 0,
-  KEY (appGroupID, appForumID)
+  isActive INT(1) NOT NULL DEFAULT 1,
+  KEY (appGroupID, appForumID, active)
 ) ENGINE=InnoDB ;
 
 DROP TABLE IF EXISTS wcf1_gman_application_field;
@@ -219,11 +221,10 @@ CREATE TABLE wcf1_gman_field_to_application (
 DROP TABLE IF EXISTS wcf1_gman_application_action;
 CREATE TABLE wcf1_gman_application_action (
   actionID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  actionName VARCHAR(25) NOT NULL,
+  actionName VARCHAR(100) NOT NULL,
   actionType INT(3) NOT NULL DEFAULT 1,
   actionWork TEXT NULL,
-  actionVariable VARCHAR(25) NULL,
-  actionTitle VARCHAR(30) NOT NULL,
+  actionTitle VARCHAR(80) NOT NULL,
   actionDescription TEXT NULL
 ) ENGINE=InnoDB;
 
@@ -232,8 +233,9 @@ CREATE TABLE wcf1_gman_action_to_application (
   actionID INT(10) NOT NULL,
   appID INT(10) NOT NULL,
   actionOrder INT(3) NOT NULL DEFAULT 1,
+  actionVariable TEXT NULL,
   actionTrigger INT(3) NOT NULL DEFAULT 1,
-  KEY (actionID, appID)
+  KEY (actionID, appID, actionTrigger)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS wcf1_gman_group_leader;
@@ -280,21 +282,11 @@ CREATE TABLE wcf1_gman_pointtrans (
   deleteDate INT(10) NULL,
   KEY (deleteDate, autoDelete, characterID, groupID, typeID)
 ) ENGINE=InnoDB ;
-DROP TABLE IF EXISTS wcf1_gman_tracking;
-CREATE TABLE wcf1_gman_tracking (
-  trackingID int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  trackingName varchar(24) DEFAULT NULL,
-  trackingTitle varchar(30) DEFAULT NULL,
-  trackingDescription varchar(30) DEFAULT NULL,
-  trackingTemplate varchar(30) DEFAULT NULL,
-  trackingTab varchar(30) DEFAULT NULL,
-  trackingOrderNo smallint(4) DEFAULT NULL
-) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS wcf1_gman_tracking_data;
 CREATE TABLE wcf1_gman_tracking_data (
   dataID int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  trackingID int(10) NOT NULL,
+  trackingID INT(10) NOT NULL,
   dataClass enum('Guild','CharBosskill','Character','OwnData') NOT NULL,
   dataSource varchar(50) NOT NULL,
   sourceType enum('method','property') NOT NULL,
@@ -485,6 +477,35 @@ CREATE TABLE wcf1_gman_acmlist (
   KEY (userID, acmID, feedTime),
   UNIQUE KEY charACM (userID, acmID, feedTime)
 ) ENGINE=InnoDB;
+
+
+ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (articleID) REFERENCES wcf1_article (articleID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (threadID) REFERENCES wbb1_thread (threadID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (boardID) REFERENCES wbb1_board (boardID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (imageID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (iconID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_character ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_character ADD FOREIGN KEY (primaryGroup) REFERENCES wcf1_gman_group (groupID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_char_to_group ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_char_to_group ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_group_bosskills ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_char_bosskills ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_group_leader ADD FOREIGN KEY (leaderID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_group_leader ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_guild ADD FOREIGN KEY (articleID) REFERENCES wcf1_article (articleID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_guild ADD FOREIGN KEY (pageID) REFERENCES wcf1_page (pageID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (issuerID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (eventID) REFERENCES calendar1_event (eventID) ON DELETE SET NULL;
+ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (typeID) REFERENCES wcf1_gman_pointtype (typeID) ON DELETE RESTRICT;
+ALTER TABLE wcf1_gman_character_equip ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_character_feedlist ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_acmlist ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_character_statistics ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_character_pets ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_character_mounts ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
+ALTER TABLE wcf1_gman_character_tracked_statistics ADD FOREIGN KEY (dataID) REFERENCES wcf1_gman_tracking_data (dataID) ON DELETE CASCADE;
+
 
 INSERT INTO wcf1_gman_wow_charslot (slotID, name, fieldName, cssName, cosmetic, optional, orderNo) VALUES (1, 'wcf.global.gman.slot1', 'head', 'itemslot, charslotleft', 0, 0, 1), (2, 'wcf.global.gman.slot2', 'neck', 'itemslot, charslotleft', 0, 0, 2), (3, 'wcf.global.gman.slot3', 'shoulder', 'itemslot, charslotleft', 0, 0, 3), (4, 'wcf.global.gman.slot4', 'shirt', 'itemslot, charslotleft', 1, 1, 6), (5, 'wcf.global.gman.slot5', 'chest', 'itemslot, charslotleft', 0, 0, 5), (6, 'wcf.global.gman.slot6', 'waist', 'itemslot, charslotleft', 0, 0, 10), (7, 'wcf.global.gman.slot7', 'legs', 'itemslot, charslotleft', 0, 0, 11), (8, 'wcf.global.gman.slot8', 'feet', 'itemslot, charslotleft', 0, 0, 12), (9, 'wcf.global.gman.slot9', 'wrist', 'itemslot, charslotleft', 0, 0, 8), (10, 'wcf.global.gman.slot10', 'hands', 'itemslot, charslotright', 0, 0, 9), (11, 'wcf.global.gman.slot11', 'finger1', 'itemslot, charslotright', 0, 0, 13), (12, 'wcf.global.gman.slot12', 'finger2', 'itemslot, charslotright', 0, 0, 14), (13, 'wcf.global.gman.slot13', 'trinket1', 'itemslot, charslotright', 0, 0, 15), (14, 'wcf.global.gman.slot14', 'trinket2', 'itemslot, charslotleft', 0, 0, 16), (16, 'wcf.global.gman.slot16', 'back', 'itemslot, charslotright', 0, 0, 4), (19, 'wcf.global.gman.slot19', 'tabard', 'itemslot, charslotright', 1, 1, 7), (21, 'wcf.global.gman.slot21', 'mainHand', 'itemslot, charslotright', 0, 0, 20), (22, 'wcf.global.gman.slot22', 'offHand', 'itemslot, charslotright', 0, 1, 21);
 INSERT INTO wcf1_gman_wow_classes (wclassID, mask, powerType, name, cssName) VALUES ('1', '1', 'rage', 'wcf.global.gman.class1', '#C79C6E'), ('2', '2', 'mana', 'wcf.global.gman.class2', '#F58CBA'), ('3', '4', 'focus', 'wcf.global.gman.class3', '#ABD473'), ('4', '8', 'energy', 'wcf.global.gman.class4', '#FFF569'), ('5', '16', 'mana', 'wcf.global.gman.class5', '#FFFFFF'), ('6', '32', 'runic-power', 'wcf.global.gman.class6', '#C41F3B'), ('7', '64', 'mana', 'wcf.global.gman.class7', '#0070DE'), ('8', '128', 'mana', 'wcf.global.gman.class8', '#69CCF0'), ('9', '256', 'mana', 'wcf.global.gman.class9', '#9482C9'), ('10', '512', 'energy', 'wcf.global.gman.class10', '#00FF96'), ('11', '1024', 'mana', 'wcf.global.gman.class11', '#FF7D0A'), ('12', '2048', 'fury', 'wcf.global.gman.class12', '#A330C9');
@@ -874,7 +895,8 @@ INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spe
 (144, 337, 0, 192657, 1, '', '[]', 2),
 (145, 346, 0, 192759, 1, '', '[]', 1),
 (146, 347, 0, 192923, 1, '', '[]', 2),
-(147, 352, 0, 193058, 1, '', '[]', 1),
+(147, 352, 0, 193058, 1, '', '[]', 1);
+INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spellID, spellRanks, overridePattern, overrideData, orderNo) VALUES
 (148, 1237, 0, 193108, 1, '', '[]', 1),
 (149, 286, 0, 193213, 1, '', '[]', 2),
 (150, 768, 0, 193371, 1, '', '[]', 2),
@@ -1060,7 +1082,8 @@ INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spe
 (330, 953, 0, 200414, 8, '1', '{"1":"1","2":"2","3":"3","4":"4","5":"5","6":"6","7":"7","8":"8"}', 1),
 (331, 954, 0, 200415, 8, '5', '{"1":"5","2":"10","3":"15","4":"20","5":"25","6":"30","7":"35","8":"40"}', 1),
 (332, 966, 0, 200421, 1, '', '[]', 2),
-(333, 964, 0, 200430, 1, '', '[]', 2),
+(333, 964, 0, 200430, 1, '', '[]', 2);
+INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spellID, spellRanks, overridePattern, overrideData, orderNo) VALUES
 (334, 956, 0, 200440, 8, '7', '{"1":"7","2":"14","3":"21","4":"28","5":"35","6":"42","7":"49","8":"55"}', 1),
 (335, 963, 0, 200474, 1, '', '[]', 2),
 (336, 1186, 0, 200482, 8, '5', '{"1":"5","2":"10","3":"15","4":"20","5":"25","6":"30","7":"35","8":"40"}', 1),
@@ -1312,7 +1335,8 @@ INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spe
 (582, 1294, 0, 214514, 1, '', '[]', 1),
 (583, 1295, 0, 214516, 1, '', '[]', 1),
 (584, 792, 0, 214626, 8, '6', '{"1":"6","2":"12","3":"18","4":"24","5":"30","6":"36","7":"42","8":"NEWVAL"}', 1),
-(585, 1296, 0, 214629, 1, '', '[]', 1),
+(585, 1296, 0, 214629, 1, '', '[]', 1);
+INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spellID, spellRanks, overridePattern, overrideData, orderNo) VALUES
 (586, 783, 0, 214634, 1, '', '[]', 1),
 (587, 794, 0, 214664, 1, '', '[]', 1),
 (588, 1327, 0, 214736, 1, '', '[]', 1),
@@ -1389,7 +1413,8 @@ INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spe
 (659, 795, 0, 220817, 1, '', '[]', 1),
 (660, 1338, 0, 221773, 1, '', '[]', 1),
 (661, 1331, 0, 221775, 1, '', '[]', 1),
-(662, 1343, 0, 221841, 1, '', '[]', 1),
+(662, 1343, 0, 221841, 1, '', '[]', 1);
+INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spellID, spellRanks, overridePattern, overrideData, orderNo) VALUES
 (663, 1340, 0, 221844, 1, '', '[]', 1),
 (664, 1349, 0, 221856, 1, '', '[]', 1),
 (665, 1353, 0, 221862, 1, '', '[]', 1),
@@ -1556,7 +1581,8 @@ INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spe
 (886, 9, 1, 178162, 1, '', '[]', 1),
 (887, 9, 2, 179226, 1, '', '[]', 1),
 (888, 9, 3, 179227, 1, '', '[]', 1),
-(972, 264, 1, 191592, 1, '', '[]', 1),
+(972, 264, 1, 191592, 1, '', '[]', 1);
+INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spellID, spellRanks, overridePattern, overrideData, orderNo) VALUES
 (973, 264, 2, 191593, 1, '', '[]', 1),
 (974, 264, 3, 191594, 1, '', '[]', 1),
 (975, 264, 4, 224466, 1, '', '[]', 1),
@@ -1698,7 +1724,8 @@ INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spe
 (2126, 1477, 0, 166737, 1, '', '[]', 1),
 (2127, 1478, 0, 166737, 4, '', '[]', 1),
 (2128, 1479, 0, 166737, 1, '', '[]', 1),
-(2129, 1480, 0, 166737, 13, '', '[]', 1),
+(2129, 1480, 0, 166737, 13, '', '[]', 1);
+INSERT INTO wcf1_gman_wow_artifacttraits (traitID, artifactID, artifactRank, spellID, spellRanks, overridePattern, overrideData, orderNo) VALUES
 (2137, 1488, 0, 239042, 50, '2000', '{"1":"2000","2":"2200","3":"2400","4":"2600","5":"2800","6":"3000","7":"3200","8":"3400","9":"3600","10":"3800","11":"4000","12":"4200","13":"4400","14":"4600","15":"4800","16":"5000","17":"5200","18":"5400","19":"5600","20":"5800","21":"6000","22":"6200","23":"6400","24":"6600","25":"6800","26":"7000","27":"7200","28":"7400","29":"7600","30":"7800","31":"8000","32":"8200","33":"8400","34":"8600","35":"8800","36":"9000","37":"9200","38":"9400","39":"9600","40":"9800","41":"10000","42":"10200","43":"10400","44":"10600","45":"10800","46":"11000","47":"11200","48":"11400","49":"11600","50":"11800"}', 6),
 (2141, 1492, 0, 239042, 50, '2000', '{"1":"2000","2":"2200","3":"2400","4":"2600","5":"2800","6":"3000","7":"3200","8":"3400","9":"3600","10":"3800","11":"4000","12":"4200","13":"4400","14":"4600","15":"4800","16":"5000","17":"5200","18":"5400","19":"5600","20":"5800","21":"6000","22":"6200","23":"6400","24":"6600","25":"6800","26":"7000","27":"7200","28":"7400","29":"7600","30":"7800","31":"8000","32":"8200","33":"8400","34":"8600","35":"8800","36":"9000","37":"9200","38":"9400","39":"9600","40":"9800","41":"10000","42":"10200","43":"10400","44":"10600","45":"10800","46":"11000","47":"11200","48":"11400","49":"11600","50":"11800"}', 6),
 (2145, 1496, 0, 239042, 50, '2000', '{"1":"2000","2":"2200","3":"2400","4":"2600","5":"2800","6":"3000","7":"3200","8":"3400","9":"3600","10":"3800","11":"4000","12":"4200","13":"4400","14":"4600","15":"4800","16":"5000","17":"5200","18":"5400","19":"5600","20":"5800","21":"6000","22":"6200","23":"6400","24":"6600","25":"6800","26":"7000","27":"7200","28":"7400","29":"7600","30":"7800","31":"8000","32":"8200","33":"8400","34":"8600","35":"8800","36":"9000","37":"9200","38":"9400","39":"9600","40":"9800","41":"10000","42":"10200","43":"10400","44":"10600","45":"10800","46":"11000","47":"11200","48":"11400","49":"11600","50":"11800"}', 6),
@@ -1817,7 +1844,8 @@ INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetU
 (13937, 963, '', '', 0),
 (13939, 927, '', '', 0),
 (13941, 928, '', '', 0),
-(13943, 805, '', '', 0),
+(13943, 805, '', '', 0);
+INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetUpdate) VALUES
 (13945, 4743, '', '', 0),
 (13947, 930, '', '', 0),
 (13948, 931, '', '', 0),
@@ -2063,7 +2091,8 @@ INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetU
 (104445, 4434, '', '', 0),
 (110400, 333, '', '', 0),
 (130758, 4993, '', '', 0),
-(147709, 0, '', '', 0),
+(147709, 0, '', '', 0);
+INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetUpdate) VALUES
 (158716, 333, '', '', 0),
 (158877, 5281, '', '', 0),
 (158878, 5298, '', '', 0),
@@ -2457,7 +2486,8 @@ INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetU
 (197729, 0, '', '', 0),
 (197762, 0, '', '', 0),
 (197766, 0, '', '', 0),
-(197779, 0, '', '', 0),
+(197779, 0, '', '', 0);
+INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetUpdate) VALUES
 (197781, 0, '', '', 0),
 (197815, 0, '', '', 0),
 (198068, 0, '', '', 0),
@@ -2760,7 +2790,8 @@ INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetU
 (211099, 0, '', '', 0),
 (211105, 0, '', '', 0),
 (211106, 0, '', '', 0),
-(211108, 0, '', '', 0),
+(211108, 0, '', '', 0);
+INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetUpdate) VALUES
 (211119, 0, '', '', 0),
 (211123, 0, '', '', 0),
 (211126, 0, '', '', 0),
@@ -3009,7 +3040,8 @@ INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetU
 (238099, 0, '', '', 0),
 (238100, 0, '', '', 0),
 (238101, 0, '', '', 0),
-(238102, 0, '', '', 0),
+(238102, 0, '', '', 0);
+INSERT INTO wcf1_gman_wow_spells (spellID, enchantID, spellName, bnetData, bnetUpdate) VALUES
 (238103, 0, '', '', 0),
 (238105, 0, '', '', 0),
 (238106, 0, '', '', 0),
@@ -3220,34 +3252,3 @@ INSERT INTO wcf1_gman_tracking_data (dataID, trackingID, dataClass, dataSource, 
 (7, 2, 'Character', 'getAchievmentCriteria', 'method', '[31466]', 'INTEGER', 'ArtifactKnowledge'),
 (8, 3, 'Character', 'getEquip()->averageItemLevel', 'property', '', 'INTEGER', 'averageItemLevel'),
 (9, 3, 'Character', 'getEquip()->averageItemLevelEquipped', 'property', '', 'INTEGER', 'averageItemLevelEquipped');
-
-
-ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (articleID) REFERENCES wcf1_article (articleID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (threadID) REFERENCES wbb1_thread (threadID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (boardID) REFERENCES wbb1_board (boardID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (imageID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_group ADD FOREIGN KEY (iconID) REFERENCES wcf1_media (mediaID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_character ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_character ADD FOREIGN KEY (primaryGroup) REFERENCES wcf1_gman_group (groupID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_char_to_group ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_char_to_group ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_group_bosskills ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_char_bosskills ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_group_leader ADD FOREIGN KEY (leaderID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_group_leader ADD FOREIGN KEY (groupID) REFERENCES wcf1_gman_group (groupID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_application ADD FOREIGN KEY (assignedOfficerID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_application ADD FOREIGN KEY (threadID) REFERENCES wbb1_thread (threadID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_guild ADD FOREIGN KEY (articleID) REFERENCES wcf1_article (articleID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_guild ADD FOREIGN KEY (pageID) REFERENCES wcf1_page (pageID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (issuerID) REFERENCES wcf1_user (userID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (eventID) REFERENCES calendar1_event (eventID) ON DELETE SET NULL;
-ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_pointtrans ADD FOREIGN KEY (typeID) REFERENCES wcf1_gman_pointtype (typeID) ON DELETE RESTRICT;
-ALTER TABLE wcf1_gman_character_equip ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_character_feedlist ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_acmlist ADD FOREIGN KEY (userID) REFERENCES wcf1_user (userID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_character_statistics ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_character_pets ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_character_mounts ADD FOREIGN KEY (characterID) REFERENCES wcf1_gman_character (characterID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_character_tracked_statistics ADD FOREIGN KEY (dataID) REFERENCES wcf1_gman_tracking_data (dataID) ON DELETE CASCADE;
-ALTER TABLE wcf1_gman_tracking_data ADD FOREIGN KEY (trackingID) REFERENCES wcf1_gman_tracking (trackingID) ON DELETE CASCADE;

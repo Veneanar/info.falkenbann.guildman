@@ -18,8 +18,9 @@ class GuildGroupApplicationPageListener implements IParameterizedEventListener {
      * @inheritDoc
      */
 	public function execute($eventObj, $className, $eventName, array &$parameters) {
-        if (!isset($eventObj->boardID)) return;
-        $application = GuildGroupApplicationCache::getInstance()->getApplicationForBord($eventObj->boardID);
+        //echo "<pre>"; var_dump($eventObj->board); echo "</pre>"; die();
+        if (!isset($eventObj->board->boardID)) return;
+        $application = GuildGroupApplicationCache::getInstance()->getApplicationForBord($eventObj->board->boardID);
         if ($application !== null) {
             WCF::getTPL()->assign('guildGroupApplication', $application);
         }
