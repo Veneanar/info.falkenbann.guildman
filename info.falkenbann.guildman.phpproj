@@ -44,8 +44,11 @@
     <Compile Include="wcf\lib\data\guild\bosskill\CharBosskill.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\action\ApplicationAction.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\action\ApplicationActionList.class.php" />
-    <Compile Include="wcf\lib\data\guild\group\application\action\ViewableApplicationField.class.php" />
-    <Compile Include="wcf\lib\data\guild\group\application\action\ViewableApplicationFieldList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ApplicationActionAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ApplicationActionEditor.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ViewableApplicationAction.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\action\ViewableApplicationActionList.class.php" />
+    <Compile Include="wcf\lib\data\guild\group\application\field\ViewableApplicationFieldAction.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationFieldEditor.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\field\ApplicationFieldAction.class.php" />
     <Compile Include="wcf\lib\data\guild\group\application\field\ViewableApplicationFieldList.class.php" />
@@ -287,6 +290,7 @@
     <Content Include="plugin\package.xml" />
     <Content Include="plugin\page.xml" />
     <Content Include="plugin\templateListener.xml" />
+    <Content Include="plugin\update.sql" />
     <Content Include="plugin\userGroupOption.xml" />
     <Content Include="plugin\userMenu.xml" />
     <Content Include="plugin\userOption.xml" />
@@ -301,6 +305,7 @@
     <Content Include="wcf\acp\templates\characterList.tpl" />
     <Content Include="wcf\acp\templates\guildGroupList.tpl" />
     <Content Include="wcf\acp\templates\HTMLPage1.html" />
+    <Content Include="wcf\acp\templates\_applicationAction.tpl" />
     <Content Include="wcf\CLI\AllCharacterUpdate.bat" />
     <Content Include="wcf\CLI\AllCharacterUpdate.php" />
     <Content Include="wcf\CLI\AllCharacterUpdate.sh" />
@@ -429,6 +434,7 @@
     <Content Include="wcf\templates\moderationCharEnable.tpl" />
     <Content Include="wcf\templates\charList24.tpl" />
     <Content Include="wcf\templates\selectCharacter.tpl" />
+    <Content Include="wcf\templates\temp_.tpl" />
     <Content Include="wcf\templates\userGroupManage.tpl" />
     <Content Include="wcf\templates\userProfileWowCharacterList.tpl" />
     <Content Include="wcf\templates\_bossKill.tpl" />

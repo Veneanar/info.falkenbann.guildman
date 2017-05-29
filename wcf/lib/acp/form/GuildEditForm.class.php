@@ -22,6 +22,7 @@ use wcf\system\exception\NamedUserException;
 use wcf\system\cache\runtime\GuildRuntimeChache;
 use wcf\data\user\group\UserGroupList;
 use wcf\data\user\group\UserGroup;
+use wcf\data\user\User;
 
 /**
  * ACP Gildenverwaltung
@@ -107,6 +108,12 @@ class GuildEditForm extends AbstractForm {
      */
     private $images = [];
 
+    private $systemUserID = 0;
+
+    private $systemUser = null;
+
+    private $systemUsername = '';
+
 	/**
 	 * @inheritDoc
 	 */
@@ -159,6 +166,7 @@ class GuildEditForm extends AbstractForm {
             if (isset($_POST['articleID'])) $this->articleID = intval($_POST['articleID']);
             if (isset($_POST['pageID'])) $this->pageID = intval($_POST['pageID']);
             if (isset($_POST['wcfGroupID']))  $this->wcfGroupID = intval($_POST['wcfGroupID']);
+            if (isset($_POST['systemUsername']))  $this->systemUsername = trim($_POST['systemUsername']);
 
     }
 
@@ -192,6 +200,17 @@ class GuildEditForm extends AbstractForm {
 		if (!$this->birthdayObj) {
 			throw new UserInputException('birthdayDate', 'invalid');
 		}
+        if (empty($this->systemUsername)) {
+            throw new UserInputException('systemUsername');
+        }
+        else {
+            $this->systemUser = User::getUserByUsername($this->systemUsername);
+            $this->systemUserID = $this->systemUser->userID;
+            if ($this->systemUserID==0) {
+                throw new UserInputException('systemUsername', 'invalid');
+            }
+        }
+
         if ($this->articleID > 0) {
             $artcile = new Article($this->articleID);
             if ($artcile===null) {
@@ -222,6 +241,7 @@ class GuildEditForm extends AbstractForm {
 				'birthday'  => $this->birthdayObj->getTimestamp(),
 				'logoID'    => $this->imageID[0] > 0 ? $this->imageID[0]: null,
                 'wcfGroupID'  => $this->wcfGroupID,
+                'systemUser' => $this->systemUserID,
 			]
 		];
 		$this->objectAction = new GuildAction([$this->guild], 'update', $data);
@@ -239,6 +259,9 @@ class GuildEditForm extends AbstractForm {
 		parent::readData();
         if ($this->forceStart) return;
 		if (empty($_POST)) {
+            $this->systemUserID = $this->guild->systemUser;
+            $this->systemUser = new User($this->systemUserID);
+            $this->systemUsername = $this->systemUser->username;
 			$this->articleID = $this->guild->articleID;
 			$this->pageID = $this->guild->pageID;
 			$this->imageID = [$this->guild->logoID];
@@ -290,6 +313,7 @@ class GuildEditForm extends AbstractForm {
                 'pageID'    =>  $this->pageID,
                 'wcfGroupID'        => $this->wcfGroupID,
                 'wcfGroups'         => $wcfGroups,
+                'systemUsername'  => $this->systemUsername,
 		    ]);
         }
 	}

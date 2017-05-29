@@ -205,7 +205,8 @@ CREATE TABLE wcf1_gman_application_field (
   fieldType INT(3) NOT NULL DEFAULT 1,
   fieldRead TEXT NULL,
   fieldValidation TEXT NULL,
-  fieldRender TEXT NULL
+  fieldRender TEXT NULL,
+  fieldRenderTemplate TEXT NULL
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS wcf1_gman_field_to_application;
@@ -257,6 +258,7 @@ CREATE TABLE wcf1_gman_guild (
  currentMaxLevel SMALLINT(4) NOT NULL DEFAULT 110,
  bnetUpdate INT(10) NOT NULL,
  bnetData TEXT NULL,
+ systemUser INT(10) NULL,
  KEY(leaderID, articleID, pageID)
 ) ENGINE=InnoDB;
 

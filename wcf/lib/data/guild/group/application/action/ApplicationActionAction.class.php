@@ -1,5 +1,5 @@
 <?php
-namespace wcf\data\guild\group\application\field;
+namespace wcf\data\guild\group\application\action;
 use wcf\data\AbstractDatabaseObjectAction;
 use wcf\system\cache\runtime\GuildRuntimeChache;
 use wcf\system\WCF;
@@ -13,11 +13,11 @@ use wcf\system\WCF;
  *
  */
 
-class ApplicationFieldAction extends AbstractDatabaseObjectAction {
+class ApplicationActionAction extends AbstractDatabaseObjectAction {
 	/**
      * {@inheritDoc}
      */
-	public static $baseClass = ApplicationFieldEditor::class;
+	public static $baseClass = ApplicationActionEditor::class;
 	/**
      * {@inheritDoc}
      */
@@ -41,13 +41,11 @@ class ApplicationFieldAction extends AbstractDatabaseObjectAction {
 
     public function validateGetLiElement() {
         parent::validateUpdate();
-        parent::readInteger('position', false);
     }
 
     public function getLiElement() {
        $object = parent::getSingleObject();
-       $object->setOrder($this->parameters['position']);
-       return WCF::getTPL()->fetch('_applicationField', 'wcf', ['field' => $object, 'noli' => 1]);
+       return WCF::getTPL()->fetch('_applicationAction', 'wcf', ['action' => $object, 'noli' => 1]);
     }
 
     public function validateSave() {

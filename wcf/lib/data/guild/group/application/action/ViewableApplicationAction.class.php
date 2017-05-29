@@ -19,7 +19,7 @@ use wcf\system\exception\SystemException;
  * @property string		    $actionDescription	   	Beschreibungstext
  * @property integer		$actionType		        Typ der aktion
  * @property string		    $actionWork             Aktion
- * @property integer		$actionOrder	        Typ der aktion
+ * @property integer		$actionText	            Text der gesendet wird
  * @property string		    $actionVariable         Variablen
  * @property integer		$actionTrigger	        Typ der aktion
  *
@@ -40,17 +40,27 @@ class ViewableApplicationAction extends DatabaseObjectDecorator {
 	public function __construct(DatabaseObject $object, $appID = 0) {
         parent::__construct($object);
         if ($appID > 0) {
-            $sql = "SELECT	fieldRequierd, fieldOrder, fieldPermission
-			    FROM		wcf".WCF_N."_gman_field_to_application
-			    WHERE		fieldID = ?
+            $sql = "SELECT	actionVariable, actionTrigger, actionText
+			    FROM		wcf".WCF_N."_gman_action_to_application
+			    WHERE		actionID = ?
                 AND         appID = ?";
             $statement = WCF::getDB()->prepareStatement($sql);
             $statement->execute([$object->getObjectID(), $appID]);
             $row = $statement->fetchArray();
             if ($row === false) throw new SystemException('Base application not specified');
-            if (isset($row['bnetData'])) {
-                $this->object->data = array_replace($this->object->data, $row);
+        }
+    }
+
+    public function execute() {
+        if (!empty($this->actionWork)) {
+            eval($this->actionWork);
+        }
+        else {
+            switch ($this->actionType) {
+                case 11:
+            	default:
             }
+
         }
     }
 }

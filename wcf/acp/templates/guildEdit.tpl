@@ -14,6 +14,9 @@
 {/if}
 
 <script data-relocate="true">
+    require(['WoltLabSuite/Core/Ui/User/Search/Input'], function(UiUserSearchInput) {
+        new UiUserSearchInput(elBySel('input[name="systemUsername"]'));
+    });
     require(['WoltLabSuite/Core/Ajax'], function(Ajax) {
         "use strict";
         function GuildUpdate() {};
@@ -208,13 +211,13 @@
 						        {if $errorType == 'empty'}
 							        {lang}wcf.global.form.error.empty{/lang}
 						        {else}
-							        {lang}wcf.acp.article.time.error.{@$errorType}{/lang}
+							        {lang}wcf.acp.gman.guild.birthday.error.{@$errorType}{/lang}
 						        {/if}
 					        </small>
 				        {/if}
 			        </dd>
 		        </dl>
-             <dl{if $errorField=='articleID'} class="formError" {/if}>
+             <dl{if $errorField == 'articleID'} class="formError" {/if}>
                  <dt><label for="articleID">{lang}wcf.acp.gman.guild.article{/lang}</label></dt>
                  <dd>
                      <select name="articleID" id="articleID">
@@ -229,13 +232,13 @@
                          {if $errorType == 'empty'}
                          {lang}wcf.global.form.error.empty{/lang}
                          {else}
-                         {lang}wcf.acp.article.category.error.{@$errorType}{/lang}
+                         {lang}wcf.acp.gman.guild.article.error.{@$errorType}{/lang}
                          {/if}
                      </small>
                      {/if}
                  </dd>
              </dl>
-             <dl{if $errorField=='pageID'} class="formError" {/if}>
+             <dl{if $errorField == 'pageID'} class="formError" {/if}>
              <dt><label for="pageID">{lang}wcf.acp.gman.guild.article{/lang}</label></dt>
              <dd>
                  <select name="pageID" id="pageID">
@@ -256,7 +259,7 @@
                  {/if}
              </dd>
              </dl>
-             <dl {if $errorField=='wcfGroupID'} class="formError" {/if}>
+             <dl {if $errorField == 'wcfGroupID'} class="formError" {/if}>
              <dt><label for="groupWcfID">{lang}wcf.acp.gman.guild.wcfgroup{/lang}</label></dt>
              <dd>
                  <select name="wcfGroupID" id="wcfGroupID" class="medium">
@@ -265,13 +268,29 @@
                      <option value="{$group->groupID}" {if $group->groupID==$wcfGroupID} selected{/if}>{$group->getTitle()}</option>
                      {/foreach}
                  </select>
-                 <small>{lang}wcf.acp.gman.guild.wcfgroup.description{/lang} ID: {$wcfGroupID}</small>
+                 <small>{lang}wcf.acp.gman.guild.wcfgroup.description{/lang}</small>
                  {if $errorField == 'wcfGroupID'}
                  <small class="innerError">
                      {if $errorType == 'empty'}
                      {lang}wcf.global.form.error.empty{/lang}
                      {else}
                      {lang}wcf.acp.article.category.error.{@$errorType}{/lang}
+                     {/if}
+                 </small>
+                 {/if}
+             </dd>
+             </dl>
+             <dl {if $errorField == 'systemUsername'} class="formError" {/if}>
+             <dt><label for="systemUsername">{lang}wcf.acp.gman.guild.systemUsername{/lang}</label></dt>
+             <dd>
+                 <input name="systemUsername" type="text" id="systemUsername" value="{$systemUsername}" class="medium" required>
+                 <small>{lang}wcf.acp.gman.guild.systemUsername.desc{/lang}</small>
+                 {if $errorField == 'systemUsername'}
+                 <small class="innerError">
+                     {if $errorType == 'empty'}
+                     {lang}wcf.global.form.error.empty{/lang}
+                     {else}
+                     {lang}wcf.acp.gman.systemUsername.error.{@$errorType}{/lang}
                      {/if}
                  </small>
                  {/if}
