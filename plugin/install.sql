@@ -183,8 +183,8 @@ CREATE TABLE wcf1_gman_char_to_group (
 DROP TABLE IF EXISTS wcf1_gman_application;
 CREATE TABLE wcf1_gman_application (
   appID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  appTitle VARCHAR(100) NOT NULL,
-  appDescription TEXT NULL,
+  title VARCHAR(100) NOT NULL,
+  description TEXT NULL,
   appArticleID INT(10) NOT NULL DEFAULT 0,
   appGroupID INT(10) NOT NULL DEFAULT 0,
   appForumID INT(10) NOT NULL DEFAULT 0,
@@ -216,17 +216,19 @@ CREATE TABLE wcf1_gman_field_to_application (
   fieldRequierd INT(1) NOT NULL DEFAULT 0,
   fieldOrder INT(3) NULL,
   fieldPermission INT(3) NOT NULL DEFAULT 1,
-  KEY (fieldID, appID)
+  KEY (fieldID, appID),
+  UNIQUE KEY fieldUQ (fieldID, appID)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS wcf1_gman_application_action;
 CREATE TABLE wcf1_gman_application_action (
   actionID INT(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   actionName VARCHAR(100) NOT NULL,
+  actionTitle VARCHAR(80) NOT NULL,
+  actionDescription TEXT NULL,
   actionType INT(3) NOT NULL DEFAULT 1,
   actionWork TEXT NULL,
-  actionTitle VARCHAR(80) NOT NULL,
-  actionDescription TEXT NULL
+  hasVariable  TINYINT(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS wcf1_gman_action_to_application;
@@ -236,7 +238,8 @@ CREATE TABLE wcf1_gman_action_to_application (
   actionOrder INT(3) NOT NULL DEFAULT 1,
   actionVariable TEXT NULL,
   actionTrigger INT(3) NOT NULL DEFAULT 1,
-  KEY (actionID, appID, actionTrigger)
+  KEY (actionID, appID, actionTrigger),
+  UNIQUE KEY actionUQ (actionID, appID)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS wcf1_gman_group_leader;

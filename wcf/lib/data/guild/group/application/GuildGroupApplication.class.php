@@ -62,6 +62,17 @@ class GuildGroupApplication extends DatabaseObject implements IRouteController {
      */
     protected $fieldList = [];
 
+    public static function getForGroup($groupID) {
+        $sql = "SELECT	*
+			    FROM		wcf".WCF_N."_gman_application
+			    WHERE		appGroupID LIKE ?";
+		$statement = WCF::getDB()->prepareStatement($sql);
+		$statement->execute([$groupID]);
+		$row = $statement->fetchArray();
+		if (!$row) $row = [];
+		return new GuildGroupApplication(null, $row);
+    }
+
     /**
      * get Application for User wcf1_gman_guild_group_application
      * @param User $user
@@ -103,7 +114,6 @@ class GuildGroupApplication extends DatabaseObject implements IRouteController {
         }
         return $this->guildGroup;
     }
-
 	/**
      * @inheritDoc
      */

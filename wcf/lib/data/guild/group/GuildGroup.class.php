@@ -12,6 +12,7 @@ use wcf\data\user\User;
 use wcf\data\wow\character\WowCharacter;
 use wcf\data\wow\character\WowCharacterList;
 use wcf\system\database\util\PreparedStatementConditionBuilder;
+use wcf\data\guild\group\application\GuildGroupApplication;
 
 
 /**
@@ -155,10 +156,16 @@ class GuildGroup extends DatabaseObject implements IRouteController {
         return $this->tMember;
     }
 
-
-
-
     /**
+     * returns an avaiple application
+     * @return null|GuildGroupApplication
+     */
+    public function getApplication() {
+        $check = GuildGroupApplication::getForGroup($this->groupID);
+        return $check->appID > 0 ? $check : null;
+    }
+
+     /**
      * checks if a char or an user is member of this group.
      * @param WowCharacter $wowChar
      * @param User $user
@@ -196,8 +203,6 @@ class GuildGroup extends DatabaseObject implements IRouteController {
         }
         return false;
     }
-
-
 
     /**
      * Checks if a user or a character is leader. if omitted the params the session user will be used.

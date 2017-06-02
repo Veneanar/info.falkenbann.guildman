@@ -25,7 +25,8 @@ use wcf\util\MessageUtil;
  * @property string		    $actionTitle		    action Titel
  * @property string		    $actionDescription	   	Beschreibungstext
  * @property integer		$actionType		        Typ der aktion
- * @property string		    $actionWork             Aktion
+ * @property integer	    $hasVariable            hat eine Variable 0/1
+ *
  *
  */
 class ApplicationAction extends DatabaseObject {
@@ -62,11 +63,21 @@ class ApplicationAction extends DatabaseObject {
 	 * @return string
 	 */
 	public function getTitle() {
-        if (strpos($this->actionTitle, '.page.') > 1) {
+        if (strpos($this->actionTitle, '.acp.') > 1) {
             return WCF::getLanguage()->get($this->actionTitle);
         }
         else {
             return $this->actionTitle;
         }
 	}
+
+	public function getDescription() {
+        if (strpos($this->actionDescription, '.acp.') > 1) {
+            return WCF::getLanguage()->get($this->actionDescription);
+        }
+        else {
+            return $this->actionDescription;
+        }
+	}
+
 }

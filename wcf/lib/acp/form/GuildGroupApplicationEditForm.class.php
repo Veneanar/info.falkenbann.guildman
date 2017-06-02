@@ -1,14 +1,19 @@
 <?php
 namespace wcf\acp\form;
-use wcf\data\guild\group\GuildGroup;
-use wcf\data\guild\group\GuildGroupAction;
 use wcf\form\AbstractForm;
 use wcf\system\exception\IllegalLinkException;
 use wcf\system\WCF;
-use wcf\data\wow\character\WowCharacterAction;
-use wcf\data\wow\character\WowCharacterList;
-use wcf\data\wow\character\WowCharacter;
-
+use wcf\system\acl\ACLHandler;
+use wcf\data\package\PackageCache;
+use wcf\system\language\I18nHandler;
+use wcf\system\cache\runtime\GuildRuntimeChache;
+use wcf\data\guild\group\application\GuildGroupApplication;
+use wcf\data\guild\group\application\GuildGroupApplicationAction;
+use wcf\data\guild\group\application\GuildGroupApplicationEditor;
+use wcf\data\guild\group\application\field\ApplicationFieldList;
+use wcf\data\guild\group\application\field\ViewableApplicationFieldList;
+use wcf\data\guild\group\application\action\ApplicationActionList;
+use wcf\data\guild\group\application\action\ViewableApplicationActionList;
 /**
  * Gilden Gruppen bearbeiten
  * @author	    Veneanar Falkenbann
@@ -18,29 +23,18 @@ use wcf\data\wow\character\WowCharacter;
  *
  */
 class GuildGroupApplicationEditForm extends GuildGroupApplicationAddForm {
-	/**
-	 * @inheritDoc
-	 */
-	public $activeMenuItem = 'wcf.acp.menu.link.gman.grouplist';
-
     /**
-     * Application ID
-     * @var integer
+     *  Form action
+     * @var string
      */
-    public $applicationID = 0;
+    public $action = 'edit';
 
-    
+
 	/**
 	 * @inheritDoc
 	 */
 	public function assignVariables() {
 		parent::assignVariables();
-
-		WCF::getTPL()->assign([
-			'action' => 'edit',
-			'guildGroupObject' => $this->guildGroupObject
-		]);
-
 
     }
 
@@ -49,42 +43,28 @@ class GuildGroupApplicationEditForm extends GuildGroupApplicationAddForm {
 	 */
 	public function readData() {
 		parent::readData();
+
+        I18nHandler::getInstance()->setOptions('description', PackageCache::getInstance()->getPackageID('info.falkenbann.gman'), $this->board->description, 'wcf.gman.apllication\d+.description');
+        I18nHandler::getInstance()->setOptions('title', PackageCache::getInstance()->getPackageID('info.falkenbann.gman'), $this->board->title, 'wcf.gman.apllication\d+');
+
+
 		if (empty($_POST)) {
-			$this->groupName            = $this->guildGroupObject->groupName;
-            $this->groupTeaser          = $this->guildGroupObject->groupTeaser;
-            $this->wcfGroupID           = $this->guildGroupObject->wcfGroupID;
-            $this->showCalender         = $this->guildGroupObject->showCalender;
-            $this->calendarCategoryID   = $this->guildGroupObject->calendarCategoryID;
-            $this->calendarTitle        = $this->guildGroupObject->calendarTitle;
-            $this->calendarText         = $this->guildGroupObject->calendarText;
-            $this->calendarQuery        = $this->guildGroupObject->calendarQuery;
-            $this->categoryList         = $this->guildGroupObject->categoryList;
-            $this->gameRank             = $this->guildGroupObject->gameRank;
-            $this->showRoaster          = $this->guildGroupObject->showRoaster;
-            $this->articleID            = $this->guildGroupObject->articleID;
-            $this->boardID              = $this->guildGroupObject->boardID;
-            $this->imageID              = $this->guildGroupObject->imageID;
-            $this->iconID               = $this->guildGroupObject->iconID;
-            $this->threadID             = $this->guildGroupObject->threadID;
-            $this->isRaidgruop          = $this->guildGroupObject->isRaidgruop;
-            $this->fetchWCL             = $this->guildGroupObject->fetchWCL;
-            $this->wclQuery             = $this->guildGroupObject->wclQuery;
-            $this->orderNo              = $this->guildGroupObject->orderNo;
-
-            $this->leaderList = new WowCharacterList();
-            $this->leaderList->getConditionBuilder()->add('gman_character.characterID IN (
-				SELECT	leaderID
-				FROM	wcf'.WCF_N.'_gman_group_leader
-				WHERE	groupID = ?
-			)', [$this->guildGroupObject->groupID]);
-            $this->leaderList->sqlOrderBy = 'gman_character.charname ASC';
-            $this->leaderList->readObjects();
-
-            $this->leader = [];
-            foreach ($this->leaderList as $wowChar) {
-                $this->leader[] = $wowChar->charname;
-            }
+            $this->appGroupID = $this->applicationObject->appGroupID;
+            $this->appForumID = $this->applicationObject->appForumID;
+            $this->appArticleID = $this->applicationObject->appArticleID;
+            $this->isActive = $this->applicationObject->isActive;
+            $this->title = $this->applicationObject->appTitle;
+            $this->desciption = $this->applicationObject->appDescription;
+            $this->hasPoll = $this->applicationObject->hasPoll;
+            $this->isCommentable = $this->applicationObject->isCommentable;
+            $this->pollDescription = $this->applicationObject->pollDescription;
+            $this->pollTitle = $this->applicationObject->pollTitle;
+            $this->requireUser = $this->applicationObject->requireUser;
         }
+
+        $this->applicationFieldList = ViewableApplicationFieldList::getApplicationFields($this->applicationObject->appID);
+        $this->applicationActionList = ViewableApplicationActionList::getApplicationFields($this->applicationObject->appID);
+
     }
 
 
@@ -94,71 +74,79 @@ class GuildGroupApplicationEditForm extends GuildGroupApplicationAddForm {
 	public function readParameters() {
 		parent::readParameters();
 
-		if (isset($_REQUEST['id'])) $this->groupID = intval($_REQUEST['id']);
-		$this->guildGroupObject = new GuildGroup($this->groupID);
-		if (!$this->guildGroupObject->groupID) {
+		if (isset($_REQUEST['id'])) $this->applicationID = intval($_REQUEST['id']);
+		$this->applicationObject = new GuildGroupApplication($this->applicationID);
+		if (!$this->applicationObject->appID) {
 			throw new IllegalLinkException();
 		}
 	}
+
+
+	/**
+     * Updates i18n values.
+     *
+     * @param	GuildGroupApplication		$application
+     * @param	string		$columnName
+     */
+	public function updateI18nValue(GuildGroupApplication $application, $columnName) {
+        $prefix = 'wcf.gman.application';
+        $suffix = (strpos($columnName, 'poll') !== false) ? '.poll' : '';
+        $suffix .= (strpos($columnName, 'Description') !== false) ? '.description' : '';
+        if (I18nHandler::getInstance()->isPlainValue($columnName)) {
+            I18nHandler::getInstance()->remove($prefix.$columnName.$suffix);
+            return I18nHandler::getInstance()->getValue($columnName);
+        }
+        else {
+            I18nHandler::getInstance()->save($columnName, 'wcf.gman.apllication'.$application->appID.$suffix, 'wcf.gman', PackageCache::getInstance()->getPackageID('info.falkenbann.gman'));
+            return $prefix.$columnName.$suffix;
+        }
+    }
+
 
 	/**
 	 * @inheritDoc
 	 */
 	public function save() {
 		AbstractForm::save();
-		$this->objectAction = new GuildGroupAction([$this->guildGroupObject], 'update', [
-            'changeWCFGroup'    => $this->wcfGroupID != $this->guildGroupObject->wcfGroupID ? true : false,
-            'changeRank'        => $this->gameRank != $this->guildGroupObject->gameRank ? true : false,
-            'oldWCFGroups'     => [$this->guildGroupObject->wcfGroupID],
-            'oldRank'          => [$this->guildGroupObject->gameRank],
-            'data' =>  [
-			    'groupName'         => $this->groupName,
-                'groupTeaser'       => $this->groupTeaser,
-                'wcfGroupID'        => $this->wcfGroupID,
-                'showCalender'      => intval($this->showCalender),
-                'calendarTitle'     => $this->calendarTitle,
-                'calendarText'      => $this->calendarText,
-                'calendarQuery'     => $this->calendarQuery,
-                'calendarCategoryID'=> $this->calendarCategoryID,
-                'gameRank'          => $this->gameRank,
-                'showRoaster'       => intval($this->showRoaster),
-                'articleID'         => $this->articleID > 0 ? $this->articleID : null,
-                'boardID'           => $this->boardID > 0 ? $this->boardID : null ,
-                'imageID'           => $this->imageID > 0 ? $this->imageID: null,
-                'iconID'            => $this->iconID > 0 ? $this->iconID : null,
-                'threadID'          => $this->threadID > 0 ? $this->threadID : null,
-                'isRaidgruop'       => intval($this->isRaidgruop),
-                'fetchWCL'          => intval($this->fetchWCL),
-                'wclQuery'          => $this->wclQuery,
-                'orderNo'           => $this->orderNo,
-                'lastUpdate'        => TIME_NOW,
+
+        // update I18n values
+        $this->description = $this->updateI18nValue($this->applicationObject, 'description');
+		$this->title = $this->updateI18nValue($this->applicationObject, 'title');
+        $this->pollDescription = $this->updateI18nValue($this->applicationObject, 'pollDescription');
+		$this->pollTitle = $this->updateI18nValue($this->applicationObject, 'pollTitle');
+
+		$this->objectAction = new GuildGroupApplicationAction([$this->applicationObject], 'update', [
+			'data' =>  [
+			    'appTitle'          => $this->title,
+                'appDescription'    => $this->description,
+                'appArticleID'      => $this->appArticleID,
+                'appGroupID'        => $this->appGroupID,
+                'appForumID'        => $this->appForumID,
+                'isActive'          => intval($this->isActive),
+                'hasPoll'           => intval($this->hasPoll),
+                'pollTitle'         => $this->pollTitle,
+                'pollDescription'   => $this->pollDescription,
+                'isCommentable'     => intval($this->isCommentable),
+                'requireUser'       => intval($this->requireUser),
 			]
 		]);
-		$this->objectAction->executeAction();
+        $this->objectAction->executeAction();
 
-        // save group leaders
-        $sql = "DELETE FROM wcf".WCF_N."_gman_group_leader WHERE groupID = ?";
-        $statement = WCF::getDB()->prepareStatement($sql);
-        $statement->execute([$this->guildGroupObject->groupID]);
+        // save fields
+        $applicationAction = new GuildGroupApplicationAction([$this->applicationObject], 'upsertFields', [
+                    'fields' => $this->fieldList
+                    ]);
+        $applicationAction->executeAction();
 
-        if ($this->leaderList !== null) {
-            $sql = "INSERT INTO wcf".WCF_N."_gman_group_leader (groupID, leaderID) VALUES (?, ?)";
-            $statement = WCF::getDB()->prepareStatement($sql);
-            foreach ($this->leaderList as $wowChar) {
-                $statement->execute([$this->guildGroupObject->groupID, $wowChar->characterID]);
-                if (!$this->guildGroupObject->isMember($wowChar, null)) {
-                    $characterAction = new WowCharacterAction([$wowChar], 'AddToGroup', [
-                        'groupID' => $this->guildGroupObject->groupID
-                        ]);
-                    $characterAction->executeAction();
-                }
-            }
-        }
+        // save actions
+        $applicationAction = new GuildGroupApplicationAction([$this->applicationObject], 'upsertActions', [
+                    'actions' => $this->actionList
+                    ]);
+        $applicationAction->executeAction();
+        
+        ACLHandler::getInstance()->save($this->applicationObject->appID, $this->objectTypeID);
 
-        // add chars
-
-		$this->saved();
-
+        $this->saved();
 		WCF::getTPL()->assign('success', true);
 	}
 }

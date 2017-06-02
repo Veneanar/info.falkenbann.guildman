@@ -203,6 +203,8 @@ class GuildGroupAddForm extends AbstractForm {
 	public function assignVariables() {
 		parent::assignVariables();
 
+
+
         $articleList = new ArticleList;
         $articleList->readObjects();
         $articles = $articleList->getObjects();

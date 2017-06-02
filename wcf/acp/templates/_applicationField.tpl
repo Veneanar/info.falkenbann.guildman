@@ -7,12 +7,12 @@
                 </h3>
             </div>
             <dl>
-                <dt><label for="fieldPermission">{lang}wcf.gman.app.field.select.permission{/lang}</label></dt>
+                <dt><label for="fieldPermission">{lang}wcf.acp.gman.app.field.select.permission{/lang}</label></dt>
                 <dd>
                     <select name="fieldPermission[]" class="medium">
-                        <option value="1" {if $field->fieldPermission==1}selected{/if}>{lang}wcf.gman.app.field.permission.level1{/lang}</option>
-                        <option value="2" {if $field->fieldPermission==2}selected{/if}>{lang}wcf.gman.app.field.permission.level2{/lang}</option>
-                        <option value="3" {if $field->fieldPermission==3}selected{/if}>{lang}wcf.gman.app.field.permission.level3{/lang}</option>
+                        <option value="1" {if $field->fieldPermission==1}selected{/if}>{lang}wcf.acp.gman.app.field.permission.level1{/lang}</option>
+                        <option value="2" {if $field->fieldPermission==2}selected{/if}>{lang}wcf.acp.gman.app.field.permission.level2{/lang}</option>
+                        <option value="3" {if $field->fieldPermission==3}selected{/if}>{lang}wcf.acp.gman.app.field.permission.level3{/lang}</option>
                     </select>
                 </dd>
             </dl>
@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="jsTooltip pointer removebutton" title="{lang}wcf.acp.gman.app.field.remove{/lang}">
+                        <a class="jsTooltip pointer jsRemoveField removebutton"  data-id="{$field->fieldID}" title="{lang}wcf.acp.gman.app.field.remove{/lang}">
                             <span class="icon icon16 fa-times"></span>
                             <span class="invisible">{lang}wcf.acp.gman.app.field.remove{/lang}</span>
                         </a>

@@ -158,7 +158,7 @@
 			{event name='javascriptInit'}
 			
 			$('form[method=get]').attr('method', 'post');
-		});
+			});
 	</script>
 	{event name='javascriptInclude'}
 </head>
@@ -219,6 +219,27 @@
             }
         })
     });
+
+    {if $applicationObject|isset}
+        var appID = {$applicationObject->appID};
+    {else}
+        var appID = 0;
+    {/if}
+
+    require(['WoltLabSuite/GMan/Appfields/RemoveAppElement'], function (RemoveAppElement) {
+        new RemoveAppElement('jsRemoveField', appID,{
+            ajax: {
+                actionName: 'removeField',
+            }
+        })
+    });
+    require(['WoltLabSuite/GMan/Appfields/RemoveAppElement'], function (RemoveAppElement) {
+        new RemoveAppElement('jsRemoveAction', appID,{
+            ajax: {
+                actionName: 'removeAction',
+            }
+        })
+    });
 </script>
 
 {include file='multipleLanguageInputJavascript' elementIdentifier='description' forceSelection=false}
@@ -231,18 +252,7 @@
         <h1 class="contentTitle">{lang}wcf.acp.gman.app.{$action}{/lang}</h1>
         {if $action == 'edit'}<p class="contentHeaderDescription">{$application->title|language}</p>{/if}
     </div>
-
-    <nav class="contentHeaderNavigation">
-        <ul>
-        <li><a href="{link controller='GroupApplicationList'}{/link}" class="button"><span class="icon icon16 fa-list"></span> <span>{lang}wcf.acp.menu.link.gman.applist{/lang}</span></a></li>
-        {event name='contentHeaderNavigation'}
-        </ul>
-    </nav>
 </header>
-
-{if $application|isset}
-{$applicationObject|var_dump}
-{/if}
 
 {if $appID|isset}
 	{include file='aclPermissionJavaScript' containerID='userPermissionsContainer' categoryName='user.*' objectID=$applicationObject->appID}
@@ -258,7 +268,7 @@
 <p class="success">{lang}wcf.global.success.{$action}{/lang}</p>
 {/if}
 
-<form method="post" action="{if $action == 'add'}{link controller='GroupApplicationAdd'}{/link}{else}{link controller='GroupApplicationEdit' object=$applicationObject}{/link}{/if}">
+<form method="post" action="{if $action == 'add'}{link controller='GuildGroupApplicationAdd'}{/link}{else}{link controller='GuildGroupApplicationEdit' object=$applicationObject}{/link}{/if}">
     <div class="section tabMenuContainer" data-active="{$activeTabMenuItem}" data-store="activeTabMenuItem">
         <nav class="tabMenu">
             <ul>
@@ -276,7 +286,7 @@
 
             <section class="section">
                 <dl{if $errorField=='title'} class="formError" {/if}>
-                <dt><label for="title">{lang}wcf.global.title{/lang}</label></dt>
+                <dt><label for="title">{lang}wcf.acp.gman.app.title{/lang}</label></dt>
                 <dd>
                     <input type="text" id="title" name="title" value="{$i18nPlainValues['title']}" autofocus class="medium">
                     <small>{lang}wcf.acp.gman.app.title.description{/lang}</small>
@@ -295,7 +305,7 @@
                 </dl>
 
                 <dl{if $errorField=='description'} class="formError" {/if}>
-                <dt><label for="description">{lang}wcf.global.description{/lang}</label></dt>
+                <dt><label for="description">{lang}wcf.acp.gman.app.description{/lang}</label></dt>
                 <dd>
                     <textarea id="description" name="description" cols="40" rows="10">{$i18nPlainValues[description]}</textarea>
                     <small>{lang}wcf.acp.gman.app.description.description{/lang}</small>
@@ -388,6 +398,8 @@
                 <h2 class="sectionTitle">{lang}wcf.acp.gman.app.properties{/lang}</h2>
                 <dl>
                     <dd>
+                        
+                        <label><input type="checkbox" id="requireUser" name="requireUser" value="1" {if $requireUser} checked{/if}> {lang}wcf.acp.gman.app.requireUser{/lang}</label>
                         <label><input type="checkbox" id="isActive" name="isActive" value="1" {if $isActive} checked{/if}> {lang}wcf.acp.gman.app.isactive{/lang}</label>
                         <label><input type="checkbox" id="isCommentable" name="isCommentable" value="1" {if $isCommentable} checked{/if}> {lang}wcf.acp.gman.app.isCommentable{/lang}</label>
 
@@ -399,10 +411,10 @@
         </div>
         <div id="poll" class="tabMenuContent">
             <section class="section" id="propertiesContainer">
-                <h2 class="sectionTitle">{lang}wcf.acp.app.poll{/lang}</h2>
+                <h2 class="sectionTitle">{lang}wcf.acp.gman.app.poll{/lang}</h2>
                 <dl>
                     <dd>
-                        <label><input type="checkbox" id="hasPoll" name="hasPoll" value="1" {if $hasPoll} checked{/if}> {lang}wcf.acp.app.hasPoll{/lang}</label>
+                        <label><input type="checkbox" id="hasPoll" name="hasPoll" value="1" {if $hasPoll} checked{/if}> {lang}wcf.acp.gman.app.hasPoll{/lang}</label>
                     </dd>
                 </dl>
             </section>
@@ -448,7 +460,7 @@
             <section class="section">
                 <h2 class="sectionTitle">{lang}wcf.acp.gman.app.fieldAdd{/lang}</h2>
                 <dl>
-                    <dt><label for="avaibleFieldList">{lang}wcf.gman.app.field.select{/lang}</label></dt>
+                    <dt><label for="avaibleFieldList">{lang}wcf.acp.gman.app.field.select{/lang}</label></dt>
                     <dd>
                         <select name="avaibleFieldList" id="avaibleFieldList" class="medium">
                             {foreach from=$avaibleFieldList item=$field}
@@ -476,9 +488,9 @@
 
         <div id="actions" class="tabMenuContent">
             <section class="section">
-                <h2 class="sectionTitle">{lang}wcf.acp.gman.app.actionAdd{/lang}</h2>
+                <h2 class="sectionTitle">{lang}wcf.acp.gman.app.action.actionAdd{/lang}</h2>
                 <dl>
-                    <dt><label for="avaibleActionList">{lang}wcf.gman.app.action.select{/lang}</label></dt>
+                    <dt><label for="avaibleActionList">{lang}wcf.acp.gman.app.action.select{/lang}</label></dt>
                     <dd>
                         <select name="avaibleActionList" id="avaibleActionList" class="medium">
                             {foreach from=$avaibleActionList item=$action}
@@ -515,7 +527,7 @@
         <div id="moderatorPermissions" class="tabMenuContent">
             <div class="section">
                 <dl id="moderatorPermissionsContainer">
-                    <dt>{lang}wcf.acl.mod.permissions{/lang}</dt>
+                    <dt>{lang}wcf.acp.gman.app.moderatorPermissions{/lang}</dt>
                     <dd></dd>
                 </dl>
             </div>

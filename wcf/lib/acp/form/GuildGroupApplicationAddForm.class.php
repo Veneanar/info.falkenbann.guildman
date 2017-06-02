@@ -20,7 +20,7 @@ use wcf\data\guild\group\application\GuildGroupApplicationAction;
 use wcf\data\guild\group\application\GuildGroupApplicationEditor;
 use wcf\system\language\I18nHandler;
 use wcf\data\guild\group\application\field\ApplicationFieldList;
-use wcf\data\guild\group\application\field\ViewableApplicationAction;
+use wcf\data\guild\group\application\field\ViewableApplicationFieldList;
 use wcf\data\guild\group\application\action\ApplicationActionList;
 use wcf\data\guild\group\application\action\ViewableApplicationActionList;
 use wcf\data\user\group\UserGroupList;
@@ -89,12 +89,6 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 	 */
 	public $desciption = '';
 
-	/**
-     * is active?
-     * @var	integer
-     */
-	public $isActive = 0;
-
     /**
      * Board ID
      * @var	integer
@@ -115,6 +109,12 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 
     /**
      * Application Object
+     * @var integer
+     */
+    public $applicationID = 0;
+
+    /**
+     * Application Object
      * @var GuildGroupApplication
      */
     public $applicationObject = null;
@@ -125,21 +125,65 @@ class GuildGroupApplicationAddForm extends AbstractForm {
      */
 	public $applicationFieldList = [];
 
+    /**
+     * Formsubmit Fields
+     * @var array[]
+     */
+    public $fieldList = [];
+
 	/**
      * List of Actions
      * @var	\wcf\data\guild\group\application\action\ViewableApplicationActionList[]
      */
 	public $applicationActionList = [];
 
+    /**
+     * Formsubmit Actions
+     * @var array[];
+     */
+    public $actionList = [];
+
+    /**
+     * poll desc.
+     * @var string
+     */
     public $pollDescription = '';
 
+    /**
+     * poll title
+     * @var string
+     */
     public $pollTitle = '';
 
-    public $isCommentable = 0;
+    /**
+     * is app commentable
+     * @var boolean
+     */
+    public $isCommentable = false;
 
-    public $hasPoll = 0;
+    /**
+     * is app active
+     * @var boolean
+     */
+    public $isActive = false;
 
+    /**
+     * app has poll?
+     * @var boolean
+     */
+    public $hasPoll = false;
+
+    /**
+     *  Form action
+     * @var string
+     */
     public $action = 'add';
+
+    /**
+     * app requieres user account?
+     * @var boolean
+     */
+    public $requireUser = false;
 
 	/**
 	 * @inheritDoc
@@ -151,9 +195,7 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 		I18nHandler::getInstance()->register('title');
         I18nHandler::getInstance()->register('pollDescription');
 		I18nHandler::getInstance()->register('pollTitle');
-
         $this->objectTypeID = ACLHandler::getInstance()->getObjectTypeID('info.falkenbann.gman.userapplication');
-
     }
 
 	/**
@@ -167,16 +209,43 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 		// handle i18n plain input
 		if (I18nHandler::getInstance()->isPlainValue('description')) $this->description = I18nHandler::getInstance()->getValue('description');
 		if (I18nHandler::getInstance()->isPlainValue('title')) $this->title = I18nHandler::getInstance()->getValue('title');
-        if (I18nHandler::getInstance()->isPlainValue('pollDescription')) $this->pollDescription = I18nHandler::getInstance()->getValue('pollDescription');
-		if (I18nHandler::getInstance()->isPlainValue('pollTitle')) $this->pollTitle = I18nHandler::getInstance()->getValue('pollTitle');
-
 
         if (isset($_POST['appArticleID']))      $this->appArticleID         = intval($_POST['appArticleID']);
         if (isset($_POST['appGroupID']))        $this->appGroupID           = intval($_POST['appGroupID']);
         if (isset($_POST['appForumID']))        $this->appForumID           = intval($_POST['appForumID']);
-        if (isset($_POST['isCommentable']))     $this->isCommentable        = intval($_POST['isCommentable']);
-        if (isset($_POST['hasPoll']))           $this->hasPoll              = intval($_POST['hasPoll']);
+        $this->isActive = isset($_POST['isActive']) ? true: false;
+        $this->isCommentable = isset($_POST['isCommentable']) ? true: false;
+        $this->requireUser = isset($_POST['requireUser']) ? true: false;
 
+
+        if (I18nHandler::getInstance()->isPlainValue('pollDescription')) $this->pollDescription = I18nHandler::getInstance()->getValue('pollDescription');
+		if (I18nHandler::getInstance()->isPlainValue('pollTitle')) $this->pollTitle = I18nHandler::getInstance()->getValue('pollTitle');
+        $this->hasPoll = isset($_POST['hasPoll']) ? true : false;
+
+        // Fields
+        if (isset($_POST['fieldID'])) {
+            $fieldRange = array_keys($_POST['fieldID']);
+            foreach ($fieldRange as $key) {
+                $this->fieldList[] = [
+                    'fieldID'           => $_POST['fieldID'][$key],
+                    'fieldPermission'   => $_POST['fieldPermission'][$key],
+                    'fieldOrder'        => $_POST['fieldOrder'][$key],
+                    'fieldRequierd'     => isset($_POST['fieldRequierd'][$key]) ? 1:0,
+                    ];
+            }
+        }
+
+        // Actions
+        if (isset($_POST['actionID'])) {
+            $actionRange = array_keys($_POST['actionID']);
+            foreach ($actionRange as $key) {
+                $this->actionList[] = [
+                    'actionID'        => $_POST['actionID'][$key],
+                    'actionTrigger'   => $_POST['actionTrigger'][$key],
+                    'actionVariable'  => isset($_POST['actionVariable'][$key]) ? $_POST['actionVariable'][$key] : 0,
+                    ];
+            }
+        }
 
     }
 
@@ -202,12 +271,12 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 		}
 
         if ($this->hasPoll) {
-            if (!I18nHandler::getInstance()->validateValue('title')) {
-                if (I18nHandler::getInstance()->isPlainValue('title')) {
-                    throw new UserInputException('title');
+            if (!I18nHandler::getInstance()->validateValue('pollTitle')) {
+                if (I18nHandler::getInstance()->isPlainValue('pollTitle')) {
+                    throw new UserInputException('pollTitle');
                 }
                 else {
-                    throw new UserInputException('title', 'multilingual');
+                    throw new UserInputException('pollTitle', 'multilingual');
                 }
             }
 
@@ -225,8 +294,8 @@ class GuildGroupApplicationAddForm extends AbstractForm {
             if ($this->groupObject->getObjectID()==0) throw new UserInputException('wcfGroupID', 'notFound');
 		}
 
-        if ($this->articleID > 0) {
-            $artcile = new Article($this->articleID);
+        if ($this->appArticleID > 0) {
+            $artcile = new Article($this->appArticleID);
             if ($artcile === null) {
                 throw new UserInputException('articleID', 'notFound');
             }
@@ -242,7 +311,6 @@ class GuildGroupApplicationAddForm extends AbstractForm {
             }
         }
     }
-
 	/**
 	 * @inheritDoc
 	 */
@@ -250,15 +318,34 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 		parent::save();
 		$this->objectAction = new GuildGroupApplicationAction([], 'create', [
 			'data' =>  [
-			    'appTitle'          => $this->title,
-                'appDescription'    => $this->description,
+			    'title'          => $this->title,
+                'description'    => $this->description,
                 'appArticleID'      => $this->appArticleID,
                 'appGroupID'        => $this->appGroupID,
                 'appForumID'        => $this->appForumID,
-                'isActive'          => $this->isActive,
+                'isActive'          => intval($this->isActive),
+                'hasPoll'           => intval($this->hasPoll),
+                'pollTitle'         => $this->pollTitle,
+                'pollDescription'   => $this->pollDescription,
+                'isCommentable'     => intval($this->isCommentable),
+                'requireUser'       => intval($this->requireUser),
 			]
 		]);
 		$this->applicationObject = $this->objectAction->executeAction()['returnValues'];
+
+        // save fields
+        $applicationAction = new GuildGroupApplicationAction([$this->applicationObject], 'upsertFields', [
+                    'fields' => $this->fieldList
+                    ]);
+        $applicationAction->executeAction();
+
+        // save actions
+        $applicationAction = new GuildGroupApplicationAction([$this->applicationObject], 'upsertActions', [
+                    'actions' => $this->actionList
+                    ]);
+        $applicationAction->executeAction();
+
+        // save I18n values
         $this->saveI18nValue($this->applicationObject, 'description');
 		$this->saveI18nValue($this->applicationObject, 'title');
         $this->saveI18nValue($this->applicationObject, 'pollDescription');
@@ -268,17 +355,15 @@ class GuildGroupApplicationAddForm extends AbstractForm {
 
         $this->saved();
 
-// reset values
+        // reset values
         I18nHandler::getInstance()->reset();
         ACLHandler::getInstance()->disableAssignVariables();
-        $this->title = '';
-        $this->description = '';
-        $this->appGroupID = 0;
-        $this->appArticleID = 0;
-        $this->appForumID = 0;
-        $this->isActive = 0;
+        $this->title = $this->pollDescription = $this->pollTitle = $this->description = '';
+        $this->appForumID = $this->appArticleID = $this->appGroupID = 0;
+        $this->isCommentable = $this->hasPoll = $this->requireUser = $this->isActive = false;
+
 		WCF::getTPL()->assign('success', true);
-		WCF::getTPL()->assign('application', $this->application);
+		WCF::getTPL()->assign('applicationObject', $this->applicationObject);
 	}
 	/**
      * Saves i18n values.
@@ -288,12 +373,12 @@ class GuildGroupApplicationAddForm extends AbstractForm {
      */
 	public function saveI18nValue(GuildGroupApplication $application, $columnName) {
 		if (!I18nHandler::getInstance()->isPlainValue($columnName)) {
-			I18nHandler::getInstance()->save($columnName, 'wcf.gman.apllication'.$application->appID.($columnName == 'description' ? '.description' : ''), 'wbb.board', PackageCache::getInstance()->getPackageID('info.falkenbann.gman'));
-
-			// update description
-			$boardEditor = new GuildGroupApplicationEditor($application);
-			$boardEditor->update([
-				$columnName => 'wcf.gman.apllication'.$application->appID.($columnName == 'description' ? '.description' : '')
+            $suffix = (strpos($columnName, 'poll') !== false) ? '.poll' : '';
+            $suffix .= (strpos($columnName, 'Description') !== false) ? '.description' : '';
+			I18nHandler::getInstance()->save($columnName, 'wcf.gman.apllication'.$application->appID.$suffix, 'wcf.gman', PackageCache::getInstance()->getPackageID('info.falkenbann.gman'));
+			$applicationEditor = new GuildGroupApplicationEditor($application);
+			$applicationEditor->update([
+				$columnName => 'wcf.gman.apllication'.$application->appID.$suffix
 			]);
 		}
 	}
@@ -323,10 +408,8 @@ class GuildGroupApplicationAddForm extends AbstractForm {
         $avaibleActionList = new ApplicationActionList;
         $avaibleActionList->readObjects();
 
-        $avaibleGuildGroups = '';
-        $avaibleWCFGroups = '';
-
 		WCF::getTPL()->assign([
+            'applicationID'         => $this->applicationID,
             'guild'                 => $this->guild,
             'articleList'           => $articleList->getObjects(),
             'boardList'             => $boardList->getObjects(),
@@ -347,7 +430,8 @@ class GuildGroupApplicationAddForm extends AbstractForm {
             'hasPoll'               => $this->hasPoll,
             'isCommentable'         => $this->isCommentable,
             'pollDescription'       => $this->pollDescription,
-            'pollTitle'             => $this->pollTitle
+            'pollTitle'             => $this->pollTitle,
+            'requireUser'           => $this->requireUser,
 		]);
         //echo "assign Vars: <pre>"; var_dump($this->wcfGroupID); echo "</pre>"; die();
 	}

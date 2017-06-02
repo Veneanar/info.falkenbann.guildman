@@ -18,7 +18,7 @@ use wcf\system\cache\runtime\GuildRuntimeChache;
  *
  * @property	GuildGroupList		$objectList
  */
-class GuildGroupApplicationList extends SortablePage {
+class GuildGroupApplicationListPage extends SortablePage {
 
 	/**
      * @inheritDoc

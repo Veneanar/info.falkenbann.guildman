@@ -36,7 +36,7 @@
     <Compile Include="wcf\lib\acp\form\GuildGroupEditForm.class.php" />
     <Compile Include="wcf\lib\acp\form\GuildEditForm.class.php" />
     <Compile Include="wcf\lib\acp\page\CharacterListPage.class.php" />
-    <Compile Include="wcf\lib\acp\page\GuildGroupApplicationList.class.php" />
+    <Compile Include="wcf\lib\acp\page\GuildGroupApplicationListPage.class.php" />
     <Compile Include="wcf\lib\acp\page\GuildGroupListPage.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\Bosskill.class.php" />
     <Compile Include="wcf\lib\data\guild\bosskill\BosskillList.class.php" />
@@ -186,6 +186,7 @@
   <ItemGroup>
     <Folder Include="plugin\" />
     <Folder Include="plugin\language\" />
+    <Folder Include="plugin\update\" />
     <Folder Include="wcf\imports\" />
     <Folder Include="wcf\" />
     <Folder Include="wcf\acp\templates\" />
@@ -291,6 +292,7 @@
     <Content Include="plugin\page.xml" />
     <Content Include="plugin\templateListener.xml" />
     <Content Include="plugin\update.sql" />
+    <Content Include="plugin\update\acpMenu.xml" />
     <Content Include="plugin\userGroupOption.xml" />
     <Content Include="plugin\userMenu.xml" />
     <Content Include="plugin\userOption.xml" />
@@ -410,6 +412,7 @@
     <Content Include="wcf\images\wow\9-1-profilemain.jpg" />
     <Content Include="wcf\imports\artifactTraits.json" />
     <Content Include="wcf\imports\TextFile1.txt" />
+    <Content Include="wcf\js\WoltLabSuite\GMan\Appfields\RemoveAppElement.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Ui\Ul\UladdElement.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\CreateAndAdd.js" />
     <Content Include="wcf\js\WoltLabSuite\GMan\Character\SetMain.js" />
